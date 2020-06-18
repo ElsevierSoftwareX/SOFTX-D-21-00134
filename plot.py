@@ -7,13 +7,9 @@ Created on Tue May 19 10:45:28 2020
 Functions for pickle editing
 """
 
-
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
-
-
-
 
 def get_PollutantVolume(db, Table=True):
     """

@@ -1,15 +1,16 @@
-.. emipy-docs documentation master file, created by
-   sphinx-quickstart on Tue Jun  9 15:11:59 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to emipy-docs's documentation!
-======================================
+emipy: A pollutant-emission analysis tool
+**************************************
+emipy is a package for processing data of pollutant releases and pollutant transfers.
+It's main target is to enable a fast output of individual data set requests and to provide visualisation options.
+The data are provided by the European Environment Agency.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
+   
+   rawdata
+   filter
+   plot
 
 
 Indices and tables
