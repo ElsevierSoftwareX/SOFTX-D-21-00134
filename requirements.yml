@@ -1,4 +1,3 @@
-name: emipy
 channels:
   - conda-forge
   - defaults
