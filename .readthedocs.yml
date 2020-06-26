@@ -26,6 +26,6 @@ python:
 #      extra_requirements:
 #          - docs
 
-#conda implementation
-#conda:
-#   environment: environment.yml
+conda implementation
+conda:
+   environment: environment.yml
