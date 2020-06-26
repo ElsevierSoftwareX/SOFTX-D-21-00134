@@ -2,7 +2,6 @@ name: emipy
 channels:
   - conda-forge
   - defaults
-  - pip
 dependencies:
   - alabaster=0.7.12=py_0
   - argh=0.26.2=py37_1001
