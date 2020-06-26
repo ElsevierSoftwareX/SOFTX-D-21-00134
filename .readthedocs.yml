@@ -27,5 +27,5 @@ python:
 #          - docs
 
 #conda implementation
-conda:
-   environment: environment.yml
+#conda:
+#   environment: environment.yml
