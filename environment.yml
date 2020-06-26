@@ -63,6 +63,7 @@ dependencies:
   - mccabe=0.6.1=py_1
   - mistune=0.8.4=py37h8055547_1001
   - mkl=2020.0=166
+  - mkdocs
   - nbconvert=5.6.1=py37hc8dfbb8_1
   - nbformat=5.0.6=py_0
   - numpy=1.18.5=py37hae9e721_0
