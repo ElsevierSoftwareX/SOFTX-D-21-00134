@@ -28,4 +28,4 @@ python:
 
 #conda implementation
 conda:
-   environment: requirements.yml
+   environment: environment.yml
