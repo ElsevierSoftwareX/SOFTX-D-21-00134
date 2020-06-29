@@ -21,8 +21,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath('.'))))
 
 # -- Project information -----------------------------------------------------
 
-project = 'emipy-docs'
-copyright = '2020, Overberg, Morgenthaler'
+project = 'emipy'
+copyright = '2020, IEK-STE, Forschungszentrum Jülich GmbH'
 author = 'Overberg, Morgenthaler'
 
 # The full version, including alpha/beta/rc tags

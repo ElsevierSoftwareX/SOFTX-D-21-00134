@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue May 19 10:45:28 2020
-
-@author: f-ove
-
+XXX We need a proper description here XXX
 Functions for pickle editing
 """
 

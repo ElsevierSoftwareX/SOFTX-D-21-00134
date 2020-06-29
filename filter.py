@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 22 19:15:16 2020
-
-@author: f-ove
-
+XXX We need a proper description here XXX
 addapted filter.py script to work with data, that are not located in folder of the script
 """
 
