@@ -5,6 +5,11 @@ It's main target is to enable a fast output of individual data set requests and 
 The data are provided by the European Environment Agency.
 
 .. toctree::
+    :caption: Something foo bar:
+    
+    not sure
+
+.. toctree::
    :maxdepth: 2
    :caption: Contents:
    
