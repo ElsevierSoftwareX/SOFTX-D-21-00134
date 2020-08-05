@@ -7,22 +7,84 @@ addapted filter.py script to work with data, that are not located in folder of t
 import pandas as pd
 import os
 from os.path import join, isfile
+import geopandas
+
 
 def read_db(path):
     """
-    Reads complete database
-    Returns the whole database as dataframe
+    Loads complete pollution record.
+
+    Parameters
+    ----------
+    path : String
+        Path to the root of the project.
+
+    Returns
+    -------
+    db : DataFrame
+        complete pollution record.
+
     """
     try:
-        db = pd.read_pickle(os.path.join(path, 'rawdata\\db.pkl'))
+        db = pd.read_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
     except FileNotFoundError:
-        print('db.pkl does not exist, please rerun merging routine')
+        print('File not found in the given path.')
     return db
+
+
+def read_mb(path, Resolution, spatialtype, NUTS_LVL=None, m_year='2021', projection='4326', subset=None):
+    """
+    Reads the shp file with the specifications given in the input.
+
+    Parameters
+    ----------
+    path : String
+        Path to root of your project.
+    Resolution : String
+        Resolution of the map.
+    spatialtype : String
+        Format of data presentation.
+    NUTS_LVL : Int
+        NUTS-classification level, defined by the eurostat.
+    m_year : Int, optional
+        Year of publication of the geographical data. The default is 2021.
+    projection : Int, optional
+        Projection on the globe. The default is 4326.
+    subset : String, optional
+        Specification of spatialtype. The default is None.
+
+    Returns
+    -------
+    mb : DataFrame
+        DataFrame with geometry data.
+
+    """
+    m_year = str(m_year)
+    projection = str(projection)
+
+    path = os.path.join(path, 'MappingData')
+    if NUTS_LVL is None:
+        foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + m_year + '_' + projection + '.shp'
+    else:
+        NUTS_LVL = str(NUTS_LVL)
+        foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + m_year + '_' + projection + '_LEVL_' + NUTS_LVL + '.shp'
+    path = os.path.join(path, foo)
+    try:
+        mb = geopandas.read_file(path)
+    except FileNotFoundError:
+        print('file not found in the given path')
+    return mb
 
 
 def get_NACECode_filter_list():
     """
-    returns list of industry sectors
+    Displays a list of predefined industry sectors.
+
+    Returns
+    -------
+    NACElist : list
+        list of predefined industry sectors.
+
     """
     NACElist = []
     NACElist.append(' Cement & Chalk: cem')
@@ -38,7 +100,18 @@ def get_NACECode_filter_list():
 
 def get_NACECode_filter(group=None):
     """
-    returns a list with the NACECode for preselected industry sectors (actual selection: Simon's list)
+    Creates a list of NACE codes corresponding to the selected industry sectors.
+
+    Parameters
+    ----------
+    group : String, optional
+        industry sector. The default is None.
+
+    Returns
+    -------
+    NACECode : List
+        list of NACE codes corresponding to the specified industry sectors.
+
     """
     if group == 'cem':
         NACECode = ['23.51', '23.52']
@@ -91,7 +164,28 @@ def get_Pollutantlist(db):
     return Pollutantlist
 
 
-def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None):
+def get_CNTR_CODE_list(mb):
+    """
+    returns list of all possible CountryCodes in the given DataFrame.
+
+    Parameters
+    ----------
+    mb : DataFrame
+        Data of interest.
+
+    Returns
+    -------
+    CNTR_CODE_list : list
+        list of all Country codes present in the current DataFrame.
+
+    """
+    CNTR_CODE_list = []
+    for items in mb.CNTR_CODE.unique():
+        CNTR_CODE_list.append(items)
+    return CNTR_CODE_list
+
+
+def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None):
     """
     filters db by country, year, release medium name, pollutant name, pollutantgroupname, NACEMainEconomicActivityCode
 
@@ -133,7 +227,52 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
         else:
             db = db[db.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
 
+    if NUTSRegionGeoCode is not None:
+        if isinstance(NUTSRegionGeoCode, list):
+            db = db[db.NUTSRegionGeoCode.isin(NUTSRegionGeoCode)]
+        else:
+            db = db[db.NUTSRegionGeoCode == NUTSRegionGeoCode]
+            
     return db
+
+
+def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None):
+    """
+    Filters the geomatry data of the DataFrame by the specifications of the input.
+
+    Parameters
+    ----------
+    mb : DataFrame
+        Input DataFrame.
+    NUTS_ID : TYPE, optional
+        NUTS:ID assigned from eurostat. The default is None.
+    CNTR_CODE : TYPE, optional
+        Country code. The default is None.
+    NAME_LATIN : TYPE, optional
+        Name of Region, classified by eurostat. The default is None.
+
+    Returns
+    -------
+    mb : DataFrame
+        DataFrame with geometry data of the specified conditions.
+
+    """
+    if CNTR_CODE is not None:
+        if isinstance(CNTR_CODE, list):
+            mb = mb[mb.CNTR_CODE.isin(CNTR_CODE)]
+        else:
+            mb = mb[mb.CNTR_CODE == CNTR_CODE]
+    if NUTS_ID is not None:
+        if isinstance(NUTS_ID, list):
+            mb = mb[mb.NUTS_ID.isin(NUTS_ID)]
+        else:
+            mb = mb[mb.NUTS_ID == NUTS_ID]
+    if NAME_LATIN is not None:
+        if isinstance(NAME_LATIN, list):
+            mb = mb[mb.NAME_LATIN.isin(NAME_LATIN)]
+        else:
+            mb = mb[mb.NAME_LATIN == NAME_LATIN]
+    return mb
 
 
 def rename_columns(db):
@@ -152,3 +291,25 @@ def row_reduction(db):
     """
     db = db[['PollutantReleaseAndTransferReportID', 'CountryName', 'ReportingYear', 'FacilityReportID', 'PollutantReleaseID', 'ReleaseMediumName', 'PollutantName', 'PollutantGroupName', 'TotalQuantity', 'NACEMainEconomicActivityCode']]
     return db
+
+
+def export_db(db, path, filename):
+    """
+    Exports the filtered database to a .pkl file in the folder filterdata
+
+    Parameters
+    ----------
+    db : DataFrame
+        Filtered database, that is to export.
+    path : string
+        path to the storage folder.
+    filename : String
+        Name of .pkl file
+
+    Returns
+    -------
+    Export of .pkl file
+
+    """
+    filename = 'filterdata' + filename
+    db.to_pickle(os.path.join(path, filename))
