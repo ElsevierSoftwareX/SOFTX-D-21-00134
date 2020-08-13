@@ -4,12 +4,12 @@ Testing area.
 Maybe template for init file.
 """
 
-#testing area
+
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-import geopandas
+import geopandas as gpd
 import filter
 import plot
 import rawdata
@@ -17,55 +17,69 @@ import time
 import csv
 
 
+timeline = []
+timeline.append(time.time())
+
 """
 setup area initiation:
 """
 
-path = 'C:\\Witthaut\\Daten\\test1'
-# rawdata.download_PollutionData(path=path)
-# rawdata.download_MapFiles(path=path)
-# rawdata.download_postalcode_NUTS_transition(path=path)
-# rawdata.pickle_rawdata(path=path, force_rerun = True)
-# rawdata.merge_frompickle(path=path, force_rerun = True)
-
+path = 'path to root of project'
+#rawdata.download_PollutionData(path=path)
+#rawdata.download_MapFiles(path=path)
+#rawdata.download_postalcode_NUTS_transition(path=path)
+#rawdata.pickle_rawdata(path=path, force_rerun = True)
+#rawdata.merge_frompickle(path=path, force_rerun = True)
+timeline.append(time.time())
 """
 setup area data tables:
 """
-path = 'C:\\Witthaut\\Daten\\test1'
-#db = filter.read_db(path)
-
-# Countrylist = ['Germany']
-# Pollutantlist = ['Carbon dioxide (CO2)']
-# Pollutantlist = ['Methane (CH4)', 'Carbon dioxide (CO2)']
-# ReportingYear = [2017]
-# NUTS_ID = ['DE92']
-# data = filter.f_db(db, CountryName=Countrylist, PollutantName=Pollutantlist, ReportingYear=ReportingYear)
 
 
+path = 'path to root of project'
+db = filter.read_db(path)
+#db = filter.f_db(db, ExclaveExclude=True)[0]
+timeline.append(time.time())
+
+Countrylist = ['Germany']
+Pollutantlist = ['Carbon dioxide (CO2)']
+#Pollutantlist = ['Methane (CH4)', 'Carbon dioxide (CO2)']
+ReportingYear = [2015, 2016, 2017]
+# NUTSRegionGeoCode = ['DE92']
+data = filter.f_db(db, CountryName=Countrylist, PollutantName=Pollutantlist, ReportingYear=ReportingYear)[0]
+
+timeline.append(time.time())
 """
 setup area map table loading:
 """
-# NUTS_LVL = '3'
-# Resolution = '01M'
-# datatype = 'shp'
-# projection = '4326'
-# spatialtype = 'RG'
-# m_year = '2021'
+NUTS_LVL = '2'
+Resolution = '01M'
+datatype = 'shp'
+projection = '4326'
+spatialtype = 'RG'
+m_year = '2021'
 
 
 """
 loading map table:
 """
-# mb = filter.read_mb(path=path, Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+mb = filter.read_mb(path=path, Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+mb = filter.f_mb(mb, ExclaveExclude=True)
 
-# CNTR_CODE = ['DE']
-# NUTS_ID = ['DE92']
-# mapdata = filter.f_mb(mb, CNTR_CODE=CNTR_CODE)
+CNTR_CODE = ['DE']
+NUTS_ID = ['DE92']
+mapdata = filter.f_mb(mb, CNTR_CODE=CNTR_CODE)
 
-
+timeline.append(time.time())
 """
 testing functions area:
 """
+fig1, fig1_axes = plt.subplots(2, 2)
+fig1_axes[0,0] = plot.plot_PollutantVolume(data, FirstOrder='ReportingYear', ax=fig1_axes[0,0])
+fig1_axes[1,0] = plot.plot_PollutantVolume_rel(data, FirstOrder='ReportingYear', ax=fig1_axes[1,0])
+fig1_axes[0,1] = plot.plot_PollutantVolumeChange(data, FirstOrder='ReportingYear', ax=fig1_axes[0,1])
+fig1_axes[1,1] = plot.plot_PollutantVolume(data, FirstOrder='ReportingYear', ax=fig1_axes[1,1], color='r')
+plt.show()
 
 
 
@@ -74,135 +88,60 @@ testing functions area:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-Function for merging, to check for NUTS3 Code:
-
-
-fr = pd.read_pickle(os.path.join(path, 'PollutionData\\fr.pkl'))
-pr = pd.read_pickle(os.path.join(path, 'PollutionData\\pr.pkl'))
-pratr = pd.read_pickle(os.path.join(path, 'PollutionData\\pratr.pkl'))
-
-db01 = pd.merge(fr, pratr, on=['PollutantReleaseAndTransferReportID', 'CountryName', 'CountryCode'])
-db02 = pd.merge(db01, pr, on=['FacilityReportID', 'ConfidentialIndicator', 'ConfidentialityReasonCode', 'ConfidentialityReasonName'], how='right')
-
-df = pd.DataFrame()
-for item in os.listdir(os.path.join(path, 'PostalCode_NUTS')):
-    if item.endswith('.pkl'):
-        print(item)
-        item_data = pd.read_pickle(os.path.join(os.path.join(path, 'PostalCode_NUTS'), item))
-        # some PostalCodes are present multiple times, drop for each item, because countrys may use same postal code
-        item_data = item_data.drop_duplicates(subset=['CODE'])
-        df = pd.concat([df, item_data])
-df = df.rename(columns={'CODE': 'PostalCode'})
-df['CountryCode'] = df['NUTS3'].str[1:3]
-df.PostalCode = df['PostalCode'].str[1:-1]
-df.NUTS3 = df['NUTS3'].str[1:-1]
-
-
-db = pd.merge(db02, df, how='left', on=['PostalCode', 'CountryCode'])
-
-test1 = db[db.NUTS3.isna()]
-test2 = db[db.PostalCode.isna()]
-"""
-# mapdata.plot()
-
-# countrylist = mapping.get_CNTR_CODE_list(mb)
-# lines=plot.map_PollutantSource(data, mapdata, markersize=0)
-# lines=plot.map_PollutantSource(data, mapdata,markersize=50, category='ReportingYear')[0]
-
-
-# a=plot.get_PollutantVolume(data, FirstOrder='ReportingYear')
-# a=plot.get_PollutantVolume(data, FirstOrder='ReportingYear', SecondOrder='CountryName')
-# b=plot.get_PollutantVolumeChange(data, FirstOrder='ReportingYear')
-# c=plot.get_PollutantVolume_rel(data, FirstOrder='ReportingYear',norm=2013)
-# c=plot.get_PollutantVolume_rel(data, FirstOrder='ReportingYear', SecondOrder='CountryName')
-# b=plot.get_PollutantVolumeChange(data, FirstOrder='ReportingYear', SecondOrder='CountryName')
-# plot.plot_PollutantVolume(data, FirstOrder='ReportingYear', SecondOrder='CountryName', stacked=True)
-# plot.plot_PollutantVolume(data,FirstOrder='ReportingYear')
-# plot.plot_PollutantVolume_rel(data, FirstOrder='ReportingYear', SecondOrder='CountryName', stacked=False)
-# plot.plot_PollutantVolume_hist(data, FirstOrder='ReportingYear')
-
-
-""" testing merge routine
-fr = pd.read_pickle(os.path.join(path, 'PollutionData\\fr.pkl'))
-pr = pd.read_pickle(os.path.join(path, 'PollutionData\\pr.pkl'))
-pratr = pd.read_pickle(os.path.join(path, 'PollutionData\\pratr.pkl'))
-
-db01 = pd.merge(fr, pratr, on=['PollutantReleaseAndTransferReportID', 'CountryName', 'CountryCode'])
-db02 = pd.merge(db01, pr, on=['FacilityReportID', 'ConfidentialIndicator' , 'ConfidentialityReasonCode', 'ConfidentialityReasonName'], how='right')
-
-
-
-df = pd.DataFrame(columns={'PostalCode', 'NUTSID', 'CountryCode'})
-start2 = time.time()
-for item in os.listdir(os.path.join(path, 'PostalCode_NUTS')):
-    if ('at' in item):
-        if item.endswith('.pkl'):
-            start1 = time.time()
-            print(item)
-            item_data = pd.read_pickle(os.path.join(os.path.join(path, 'PostalCode_NUTS'), item))
-            dict = {}
-            for i in range(len(item_data)):
-                dict[i] = {'NUTSID': item_data.iloc[i][0][1:6], 'PostalCode': item_data.iloc[i][0][9:-1], 'CountryCode': item_data.iloc[i][0][1:3]}
-                #dict[i] = {'NUTSID': item_data.iloc[i][0][1:item_data.iloc[i][0].find(';') - 1], 'PostalCode': item_data.iloc[i][0][item_data.iloc[i][0].find(';') + 2:-1], 'CountryCode': item_data.iloc[i][0][1:3]}
-            item_df = pd.DataFrame.from_dict(dict, 'index')
-            item_df = item_df.drop_duplicates(subset=['PostalCode'])
-            end1 = time.time()
-            print(end1 - start1)
-            df = pd.concat([df, item_df])
-db = pd.merge(db02, df, how='left', on=['PostalCode', 'CountryCode'])
-end2 = time.time()
-print(end2 - start2)
+"""testing exclavefilter
+test1 = filter.f_db(db, CountryName='Spain', ExclaveExclude=True)[0]
+test2 = filter.f_db(db, CountryName='Spain', ExclaveExclude=True)[1]
+test3 = filter.f_mb(mb, ExclaveExclude=True)
 """
 
-# test1 = filter.f_db(db, CountryName='Austria')
-# test2 = test1[test1.NUTSID.notna()]
-# test3 = test1[test1.NUTSID.isna()]
-# test4 = pd.DataFrame.from_dict(dict, 'index')
-# test6 = test3.PostalCode.unique()
-# test7 = test3[test3.ReportingYear == 2017]
-# test8 = test3[test3.ReportingYear != 2017]
-""" speed test for dict method for merge
-start = time.time()
-dict = {}
-for i in range(len(item_data)):
-    dict[i] = {'NUTSID': item_data.iloc[i][0][:item_data.iloc[i][0].find(';')], 'PostalCode': item_data.iloc[i][0][item_data.iloc[i][0].find(';') + 1:]}
-df = pd.DataFrame.from_dict(dict, 'index')
-end = time.time()
-print(end-start)
-"""
+"""testing advanced plotting
+plt.ioff()
 
-""" speed test for append method for merge
-start = time.time()
-df = pd.DataFrame(columns={'PostalCode', 'NUTSID'})
-for i in range(len(item_data)):
-    df = df.append({'NUTSID': item_data.iloc[i][0][:item_data.iloc[i][0].find(';')], 'PostalCode': item_data.iloc[i][0][item_data.iloc[i][0].find(';') + 1:]}, ignore_index=True)
-end = time.time()
-print(end-start)
+fig1, fig1_axes = plt.subplots(2, 2)
+
+fig1_axes[0,0] = plot.map_PollutantSource(data, mapdata, category='PollutantName', ax=fig1_axes[0, 0])[0]
+fig1_axes[0,0].set_xlabel('Longitude')
+fig1_axes[0,0].set_ylabel('Latitude')
+fig1_axes[0,0].set_title('CO2 and Methane Sources')
+fig1_axes[0,1] = mapdata.plot(ax=fig1_axes[0,1])
+fig1_axes[1,0] = mb.plot(ax=fig1_axes[1,0])
+fig1_axes[1,1] = mb.plot(ax=fig1_axes[1,1], color='r')
+fig1_axes[1,0].set_ylim(40,80)
+fig1_axes[0,0].collections[1].set_color('g')
+
+timeline.append(time.time())
+
+fig2 = plt.figure()
+ax1 = fig2.add_subplot(1, 1, 1)
+ax1 = mb.plot(ax=ax1, color='lightgrey')
+ax1 = plot.map_PollutantSource(data, mapdata, ax=ax1)[0]
+
+plt.show()
 """
+timeline.append(time.time())
+
+
+
+
+print(timeline[1]-timeline[0])
+print(timeline[2]-timeline[1])
+print(timeline[3]-timeline[2])
+print(timeline[4]-timeline[3])
+print(timeline[5]-timeline[4])
+#print(timeline[6]-timeline[5])
+
+
+#plot.plot_PollutantVolume(data, FirstOrder='ReportingYear', SecondOrder='CountryName')
+#plot.map_PollutantSource(data, mapdata, markersize=0, category='PollutantName')
+
+
+#db03 = db[db.NUTS3.isna()]
+#gdf = geopandas.GeoDataFrame(db03, geometry=geopandas.points_from_xy(db03.Long, db03.Lat)).reset_index(drop=True)
+#pointin = geopandas.sjoin(gdf, mb, how='left')
+#pointin = pointin.drop(['NUTS3', 'index_right', 'FID', 'LEVL_CODE', 'CNTR_CODE', 'NAME_LATN', 'NUTS_NAME', 'MOUNT_TYPE', 'URBN_TYPE', 'COAST_TYPE', 'FID'], axis=1)
+
+
+#db02 = db[db.NUTS3.notna()]
+#gdf = geopandas.GeoDataFrame(db02, geometry=geopandas.points_from_xy(db02.Long, db02.Lat)).reset_index(drop=True)
+#pointin = geopandas.sjoin(gdf, mb, how='left')
+#pointin = pointin.drop(['index_right', 'FID', 'LEVL_CODE', 'CNTR_CODE', 'NAME_LATN', 'NUTS_NAME', 'MOUNT_TYPE', 'URBN_TYPE', 'COAST_TYPE', 'FID'], axis=1)

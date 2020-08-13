@@ -185,12 +185,40 @@ def get_CNTR_CODE_list(mb):
     return CNTR_CODE_list
 
 
-def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None):
+def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ExclaveExclude=False):
     """
-    filters db by country, year, release medium name, pollutant name, pollutantgroupname, NACEMainEconomicActivityCode
+    Takes DataFrame and filters out data, according to input parameters.
 
-    To do: Think about excluding filters, not just wanted filters
+    Parameters
+    ----------
+    db : DataFrame
+        Input DataFrame.
+    CountryName : String/List, optional
+        List of countries to be maintained. The default is None.
+    ReportingYear : String/List, optional
+        List of reporting years to be maintained. The default is None.
+    ReleaseMediumName : String/List, optional
+        List of release medium names to be maintained. The default is None.
+    PollutantName : String/List, optional
+        List of pollutant names to be maintained. The default is None.
+    PollutantGroupName : String/List, optional
+        List of polllutant group names to be maintained. The default is None.
+    NACEMainEconomicActivityCode : String/List, optional
+        List of NACE main economic activity codes to be maintained. The default is None.
+    NUTSRegionGeoCode : String/List, optional
+        List of NUTS region geocodes to be maintained. The default is None.
+    ExclaveExclude : Boolean, optional
+        If True, exclaves that are unique NUTS-LVL1 regions are excluded. The default is False.
+
+    Returns
+    -------
+    db : DataFrame
+        DataFrame after filter process.
+    dbna : DataFrame
+        DataFrame that is filtered out, but has na values for the filter column. If they are filtered out correctly is not known.
+
     """
+    dbna = pd.DataFrame()
     if CountryName is not None:
         if isinstance(CountryName, list):
             db = db[db.CountryName.isin(CountryName)]
@@ -229,14 +257,20 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
 
     if NUTSRegionGeoCode is not None:
         if isinstance(NUTSRegionGeoCode, list):
-            db = db[db.NUTSRegionGeoCode.isin(NUTSRegionGeoCode)]
+            db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) is True]
         else:
-            db = db[db.NUTSRegionGeoCode == NUTSRegionGeoCode]
-            
-    return db
+            db = db[db.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) is True]
+
+    ExclaveList = ('ES7', 'FRY', 'PT2', 'PT3')
+    if ExclaveExclude is True:
+        # negation does not work on na-values
+        dbna = db[db.NUTSRegionGeoCode.isna()]
+        db = db[db.NUTSRegionGeoCode.notna()]
+        db = db[~db.NUTSRegionGeoCode.str.startswith(ExclaveList)]
+    return (db, dbna)
 
 
-def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None):
+def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False):
     """
     Filters the geomatry data of the DataFrame by the specifications of the input.
 
@@ -262,16 +296,26 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None):
             mb = mb[mb.CNTR_CODE.isin(CNTR_CODE)]
         else:
             mb = mb[mb.CNTR_CODE == CNTR_CODE]
+
     if NUTS_ID is not None:
         if isinstance(NUTS_ID, list):
-            mb = mb[mb.NUTS_ID.isin(NUTS_ID)]
+            mb = mb[mb.NUTS_ID.str.startswith(tuple(NUTS_ID)) is True]
         else:
-            mb = mb[mb.NUTS_ID == NUTS_ID]
+            mb = mb[mb.NUTS_ID.str.startswith(NUTS_ID) is True]
+
     if NAME_LATIN is not None:
         if isinstance(NAME_LATIN, list):
             mb = mb[mb.NAME_LATIN.isin(NAME_LATIN)]
         else:
             mb = mb[mb.NAME_LATIN == NAME_LATIN]
+    #ExclaveList has to be a tuple. invert does not work with list
+    ExclaveList = ('ES7', 'FRY', 'PT2', 'PT3')           
+    if ExclaveExclude is True:
+        if mb.LEVL_CODE.sum() < len(mb):
+            print('Exclave Exclusion is not yet possible on this NUTS_LVL.')
+        else:
+            mb = mb[~mb.NUTS_ID.str.startswith(ExclaveList)]
+
     return mb
 
 

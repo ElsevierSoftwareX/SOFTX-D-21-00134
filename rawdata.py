@@ -170,7 +170,7 @@ def pickle_rawdata(path, force_rerun=False):
         if (os.path.isfile(os.path.join(os.path.join(path, 'PostalCode_NUTS'), (item[:-3] + '.pkl'))) is False) or force_rerun:
             if item.endswith('edit.csv'):
                 item_data = pd.read_csv(os.path.join(os.path.join(path, 'PostalCode_NUTS'), item), low_memory=False, sep=',')
-                #if len(item_data.columns) == 1:
+                # if len(item_data.columns) == 1:
                 #    item_data = pd.read_csv(os.path.join(os.path.join(path, 'PostalCode_NUTS'), item), low_memory=False, sep=',')
                 item_data.to_pickle(os.path.join(os.path.join(path, 'PostalCode_NUTS'), (item[:-3] + '.pkl')))
 
@@ -218,22 +218,4 @@ def merge_frompickle(path, force_rerun=False):
         df.NUTS3 = df['NUTS3'].str[1:-1]
         db = pd.merge(db02, df, how='left', on=['PostalCode', 'CountryCode'])
         db.to_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
-
-
     return None
-
-    """
-        df = pd.DataFrame(columns={'PostalCode', 'NUTSID', 'CountryCode'})
-        for item in os.listdir(os.path.join(path, 'PostalCode_NUTS')):
-            if item.endswith('.pkl'):
-                item_data = pd.read_pickle(os.path.join(os.path.join(path, 'PostalCode_NUTS'), item))
-                dict = {}
-                for i in range(len(item_data)):
-                    #additional column CountryCode is needed, because PostalCodes can exists in multiple countrys. Comment line is more general but slower and this function takes about 15 minutes (UK has 1.7 million different postal codes.)
-                    dict[i] = {'NUTSID': item_data.iloc[i][0][1:6], 'PostalCode': item_data.iloc[i][0][9:-1], 'CountryCode': item_data.iloc[i][0][1:3]}
-                    #dict[i] = {'NUTSID': item_data.iloc[i][0][1:item_data.iloc[i][0].find(';') - 1], 'PostalCode': item_data.iloc[i][0][item_data.iloc[i][0].find(';') + 2:-1], 'CountryCode': item_data.iloc[i][0][1:3]}
-                item_df = pd.DataFrame.from_dict(dict, 'index')
-                #following line is needed because some postal codes exist multiple times (Germany). Could there be a reason??
-                item_df = item_df.drop_duplicates(subset=['PostalCode'])
-                df = pd.concat([df, item_df])
-    """
