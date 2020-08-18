@@ -134,8 +134,18 @@ def get_NACECode_filter(group=None):
 
 def get_Countrylist(db):
     """
-    Reads db.pkl
-    Returns a list of all appearing countrys in given dataframe
+    Returns a list of all appearing countries in given dataframe.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Data in which is looked for unique countries.
+
+    Returns
+    -------
+    Countrylist : List
+        List of unique countries.
+
     """
     Countrylist = []
     for items in db.CountryName.unique():
@@ -145,8 +155,18 @@ def get_Countrylist(db):
 
 def get_Yearlist(db):
     """
-    Reads db.pkl
-    Returns a list of all appearing reporting years in given dataframe
+    Returns a list of all appearing reporting years in given dataframe.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Data in which is looked for unique reporting years.
+
+    Returns
+    -------
+    Countrylist : List
+        List of unique reporting years.
+
     """
     Yearlist = []
     for items in db.ReportingYear.unique():
@@ -156,7 +176,18 @@ def get_Yearlist(db):
 
 def get_Pollutantlist(db):
     """
-    Returns a list of all appearing pollutants in given dataframe
+    Returns a list of all appearing pollutant names in given dataframe.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Data in which is looked for unique pollutant names.
+
+    Returns
+    -------
+    Countrylist : List
+        List of unique pollutant names.
+
     """
     Pollutantlist = []
     for items in db.PollutantName.unique():
@@ -321,7 +352,18 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
 
 def rename_columns(db):
     """
-    Change columnnames of db
+    Renames specific column names of the DataFrame.
+
+    Parameters
+    ----------
+    db : DataFrame
+        DataFrame which's column names should be changed.
+
+    Returns
+    -------
+    db : DataFrame
+        DataFrame with changed column names.
+
     """
     db = db.rename(columns={'CountryName': 'Country'})
     db = db.rename(columns={'ReportingYear': 'Year'})
@@ -330,8 +372,18 @@ def rename_columns(db):
 
 def row_reduction(db):
     """
-    Reduces table to wanted rows
-    To do: reduction to row names, that are given by input
+    Reduced DataFrame to specific columns.
+
+    Parameters
+    ----------
+    db : DataFrame
+        DataFrame which data shall be reduced.
+
+    Returns
+    -------
+    db : DatFrame
+        DataFrame with reduced number of columns.
+
     """
     db = db[['PollutantReleaseAndTransferReportID', 'CountryName', 'ReportingYear', 'FacilityReportID', 'PollutantReleaseID', 'ReleaseMediumName', 'PollutantName', 'PollutantGroupName', 'TotalQuantity', 'NACEMainEconomicActivityCode']]
     return db

@@ -219,3 +219,4 @@ def merge_frompickle(path, force_rerun=False):
         db = pd.merge(db02, df, how='left', on=['PostalCode', 'CountryCode'])
         db.to_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
     return None
+

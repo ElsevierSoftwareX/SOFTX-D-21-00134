@@ -125,6 +125,10 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
         Name of column, the data are sorted in the second order.. The default is None.
     stacked : Boolean, optional
         Stacks the bars for second order. The default is False.
+    *args : TYPE
+        Geopandas.plot() input variables.
+    **kwargs : TYPE
+        Geopandas.plot() input variables.
 
     Returns
     -------
@@ -155,6 +159,10 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
         Name of column, the data are sorted in the second order.. The default is None.
     stacked : Boolean, optional
         Stacks the bars for second order. The default is False.
+    *args : TYPE
+        Geopandas.plot() input variables.
+    **kwargs : TYPE
+        Geopandas.plot() input variables.
 
     Returns
     -------
@@ -188,6 +196,10 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
         Stacks the bars for second order. The default is False.
     norm : variable, optional
         specific first order value, the data is normed to. The default is None. For None it searches the overall maximum.
+    *args : TYPE
+        Geopandas.plot() input variables.
+    **kwargs : TYPE
+        Geopandas.plot() input variables.
 
     Returns
     -------
@@ -289,6 +301,10 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
         The column name of db, which gets new colors for every unique entry.
     markersize : Int
         maximal size of the largest marker.
+    *args : TYPE
+        Geopandas.plot() input variables.
+    **kwargs : TYPE
+        Geopandas.plot() input variables.
 
     Returns
     -------
@@ -332,14 +348,31 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
     return(ax, gdfp, gdfd)
 
 
-#def map_PollutantRegions(db, mb, *args, **kwargs):
+def map_PollutantRegions(db, mb, *args, **kwargs):
+    """
+    Visualizes the pollutant emission of regions with a color map. The classification of regions is selected with the choice of mb.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Pollution data that are plotted.
+    mb : TYPE
+        Map data for plotting. The region selection corresponds to the selection of mb.
+    *args : TYPE
+        Geopandas.plot() input variables.
+    **kwargs : TYPE
+        Geopandas.plot() input variables.
+
+    Returns
+    -------
+    ax : Axes
+        Axes with colormap of the pollution emission.
+
+    """
+    db01 = get_PollutantVolume(db, FirstOrder='NUTSRegionGeoCode')
+    db01 = db01.rename(columns={'NUTSRegionGeoCode': 'NUTS_ID'})
+    db02 = pd.merge(mb, db01, how='left', on=['NUTS_ID'])
+    ax = db02.plot(column='TotalQuantity', *args, **kwargs)
+    return(ax)
     
-    
-
-
-
-
-
-
-
-    
+     
