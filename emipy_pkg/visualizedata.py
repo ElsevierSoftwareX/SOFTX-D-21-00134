@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-XXX We need a proper description here XXX
-Functions for pickle editing
+This module contains all functions to visualize the data set.
 """
 
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-import geopandas
-import filter
+import geopandas as gpd
+import processdata
 
 
 def get_PollutantVolume(db, FirstOrder=None, SecondOrder=None):
@@ -252,7 +251,7 @@ def excludeData_NotInBorders(borders,gdf):
 
     """
     gdft = gdf
-    gdff = geopandas.GeoDataFrame(columns=gdf.columns)
+    gdff = gpd.GeoDataFrame(columns=gdf.columns)
     gdff['geometry'] = ""
     for i in range(len(gdf)):
         if (gdf.geometry.iloc[i].x < borders[0]) or (gdf.geometry.iloc[i].x > borders[2]) or (gdf.geometry.iloc[i].y < borders[1]) or (gdf.geometry.iloc[i].y > borders[3]):
@@ -322,7 +321,7 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
     colorlist = ['r', 'y', 'g', 'c', 'm', 'b']
     borders = get_mb_borders(mb)
     if category is None:
-        gdf = geopandas.GeoDataFrame(db, geometry=geopandas.points_from_xy(db.Long, db.Lat)).reset_index(drop=True)
+        gdf = gpd.GeoDataFrame(db, geometry=gpd.points_from_xy(db.Long, db.Lat)).reset_index(drop=True)
         gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
         gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
         gdfp = add_markersize(gdfp, maxmarker=markersize)
@@ -336,7 +335,7 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
             colorlist.remove(color)
             itemdata = db[db[category] == items].reset_index()
 #            itemdata = filter.f_db(db, category=items)
-            gdf = geopandas.GeoDataFrame(itemdata, geometry=geopandas.points_from_xy(itemdata.Long, itemdata.Lat))
+            gdf = gpd.GeoDataFrame(itemdata, geometry=gpd.points_from_xy(itemdata.Long, itemdata.Lat))
             gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
             gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
             gdfp = add_markersize(gdfp, maxmarker=markersize)

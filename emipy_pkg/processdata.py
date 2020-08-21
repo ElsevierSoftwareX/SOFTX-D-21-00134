@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-XXX We need a proper description here XXX
-addapted filter.py script to work with data, that are not located in folder of the script
+This module contains all functions to produce the data set of interest.
 """
 
 import pandas as pd
 import os
 from os.path import join, isfile
 import geopandas
+import configparser
 
 
-def read_db(path):
+def read_db(path=None):
     """
     Loads complete pollution record.
 
     Parameters
     ----------
-    path : String
+    path : String, optional
         Path to the root of the project.
 
     Returns
@@ -25,6 +25,11 @@ def read_db(path):
         complete pollution record.
 
     """
+    if path==None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'configuration.ini'))        
+        path = config['PATH']['Path']
+        print(path)
     try:
         db = pd.read_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
     except FileNotFoundError:
@@ -32,23 +37,23 @@ def read_db(path):
     return db
 
 
-def read_mb(path, Resolution, spatialtype, NUTS_LVL=None, m_year='2021', projection='4326', subset=None):
+def read_mb(Resolution='01M', spatialtype='RG', path=None, NUTS_LVL=None, m_year='2021', projection='4326', subset=None):
     """
     Reads the shp file with the specifications given in the input.
 
     Parameters
     ----------
-    path : String
-        Path to root of your project.
     Resolution : String
-        Resolution of the map.
+        Resolution of the map. The default is 01M
     spatialtype : String
-        Format of data presentation.
-    NUTS_LVL : Int
+        Format of data presentation. The default is RG
+    path : String, optional
+        Path to root of your project.
+    NUTS_LVL : Int, optional
         NUTS-classification level, defined by the eurostat.
-    m_year : Int, optional
+    m_year : Int
         Year of publication of the geographical data. The default is 2021.
-    projection : Int, optional
+    projection : Int
         Projection on the globe. The default is 4326.
     subset : String, optional
         Specification of spatialtype. The default is None.
@@ -61,7 +66,11 @@ def read_mb(path, Resolution, spatialtype, NUTS_LVL=None, m_year='2021', project
     """
     m_year = str(m_year)
     projection = str(projection)
-
+    if path==None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'configuration.ini'))        
+        path = config['PATH']['Path']
+        print(path)
     path = os.path.join(path, 'MappingData')
     if NUTS_LVL is None:
         foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + m_year + '_' + projection + '.shp'
@@ -389,7 +398,7 @@ def row_reduction(db):
     return db
 
 
-def export_db(db, path, filename):
+def export_db(db, filename, path=None):
     """
     Exports the filtered database to a .pkl file in the folder filterdata
 
@@ -397,15 +406,15 @@ def export_db(db, path, filename):
     ----------
     db : DataFrame
         Filtered database, that is to export.
-    path : string
-        path to the storage folder.
     filename : String
         Name of .pkl file
+    path : string, optional
+        path to the storage folder.
 
     Returns
     -------
     Export of .pkl file
 
     """
-    filename = 'filterdata' + filename
+    filename = 'ExportData' + filename
     db.to_pickle(os.path.join(path, filename))
