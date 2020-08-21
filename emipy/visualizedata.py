@@ -373,5 +373,3 @@ def map_PollutantRegions(db, mb, *args, **kwargs):
     db02 = pd.merge(mb, db01, how='left', on=['NUTS_ID'])
     ax = db02.plot(column='TotalQuantity', *args, **kwargs)
     return(ax)
-    
-     

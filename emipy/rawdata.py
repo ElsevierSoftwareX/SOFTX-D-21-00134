@@ -173,9 +173,9 @@ def change_rootpath(path):
 
     """
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'configuration.ini'))
+    config.read(os.path.join(os.path.realpath(__file__), 'configuration\\configuration.ini'))
     config.set('PATH', 'path', path)
-    with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'configuration.ini'), 'w') as configfile:
+    with open(os.path.join(os.path.realpath(__file__), 'configuration\\configuration.ini'), 'w') as configfile:
         config.write(configfile)
 
 

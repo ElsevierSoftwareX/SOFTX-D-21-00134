@@ -27,9 +27,8 @@ def read_db(path=None):
     """
     if path==None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'configuration.ini'))        
-        path = config['PATH']['Path']
-        print(path)
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        path = config['PATH']['path']
     try:
         db = pd.read_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
     except FileNotFoundError:
@@ -68,9 +67,8 @@ def read_mb(Resolution='01M', spatialtype='RG', path=None, NUTS_LVL=None, m_year
     projection = str(projection)
     if path==None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'configuration.ini'))        
-        path = config['PATH']['Path']
-        print(path)
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))        
+        path = config['PATH']['path']
     path = os.path.join(path, 'MappingData')
     if NUTS_LVL is None:
         foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + m_year + '_' + projection + '.shp'
@@ -416,5 +414,11 @@ def export_db(db, filename, path=None):
     Export of .pkl file
 
     """
-    filename = 'ExportData' + filename
-    db.to_pickle(os.path.join(path, filename))
+    if path==None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.realpath(__file__), 'configuration\\configuration.ini'))        
+        path = config['PATH']['Path']    
+        filename = 'ExportData' + filename
+        db.to_pickle(os.path.join(path, filename))
+    else:
+        db.to_pickle(path)
