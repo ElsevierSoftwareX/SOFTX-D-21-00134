@@ -8,7 +8,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import geopandas as gpd
-import processdata
+from emipy import processdata
 
 
 def get_PollutantVolume(db, FirstOrder=None, SecondOrder=None):

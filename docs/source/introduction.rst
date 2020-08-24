@@ -4,12 +4,25 @@ Introduction and quick start guide
 =============
 Introduction
 =============    
-emipy is a python module to analyse industrial emission sources within Europe.
-It contains information about CO2 amounts, locations, industry, impurities and more.
+Emipy is a python package to analyse industrial emission sources within Europe.
+The package accesses data from the European Environmental Agency and Eurostat, and allows to generate a desired data set with clearly structured filter functions. Furthermore, functions are provided that allow a quick visualization of the data.
 
 =============
 Installation    
 =============
+
+Requirements
+------------
+
+Emipy  requires:
+1. Python, version 3.7 or higher
+2. Additional add-on modules (see below for the complete list)
+3. The emipy package itself
+
+Recommended installation
+------------------------
+The easiest way to
+
 Emipy can be installed using the following command:
 
 ``pip install emipy``    
