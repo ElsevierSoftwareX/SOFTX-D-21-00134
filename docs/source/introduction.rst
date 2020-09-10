@@ -14,7 +14,7 @@ Installation
 Requirements
 ------------
 
-Emipy  requires:
+Emipy  requires (XXXSIMONTESTXXX):
 1. Python, version 3.7 or higher
 2. Additional add-on modules (see below for the complete list)
 3. The emipy package itself
