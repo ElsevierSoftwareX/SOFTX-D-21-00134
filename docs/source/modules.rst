@@ -10,19 +10,19 @@ Module rawdata
 
 
 ==============
-Module filter
+Module processdata
 ==============
 
-.. automodule:: filter
+.. automodule:: processdata
    :members:
    :undoc-members:
    :show-inheritance:
 
 
 ==============
-Module plot
+Module visualizedata
 ==============
-.. automodule:: plot
+.. automodule:: visualizedata
    :members:
    
 
