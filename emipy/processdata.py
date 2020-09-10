@@ -65,7 +65,7 @@ def read_mb(Resolution='01M', spatialtype='RG', path=None, NUTS_LVL=None, m_year
     """
     m_year = str(m_year)
     projection = str(projection)
-    if path==None:
+    if path == None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))        
         path = config['PATH']['path']
@@ -337,9 +337,9 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
 
     if NUTS_ID is not None:
         if isinstance(NUTS_ID, list):
-            mb = mb[mb.NUTS_ID.str.startswith(tuple(NUTS_ID)) is True]
+            mb = mb[mb.NUTS_ID.str.startswith(tuple(NUTS_ID)) == True]
         else:
-            mb = mb[mb.NUTS_ID.str.startswith(NUTS_ID) is True]
+            mb = mb[mb.NUTS_ID.str.startswith(NUTS_ID) == True]
 
     if NAME_LATIN is not None:
         if isinstance(NAME_LATIN, list):
