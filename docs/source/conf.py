@@ -17,7 +17,7 @@ import matplotlib.pyplot
 import geopandas
 import descartes
 import emipy
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath('.'))),'emipy')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath('.'))),'emipy'))
 
 
 
