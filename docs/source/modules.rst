@@ -5,7 +5,7 @@ Modules
 ==============
 Module rawdata
 ==============
-.. automodule:: rawdata
+.. automodule:: emipy.rawdata
    :members:
 
 
@@ -13,7 +13,7 @@ Module rawdata
 Module processdata
 ==============
 
-.. automodule:: processdata
+.. automodule:: emipy.processdata
    :members:
    :undoc-members:
    :show-inheritance:
@@ -22,7 +22,7 @@ Module processdata
 ==============
 Module visualizedata
 ==============
-.. automodule:: visualizedata
+.. automodule:: emipy.visualizedata
    :members:
    
 
