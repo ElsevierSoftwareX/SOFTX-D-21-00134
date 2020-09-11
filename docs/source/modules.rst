@@ -9,9 +9,9 @@ Module rawdata
    :members:
 
 
-==============
+==================
 Module processdata
-==============
+==================
 
 .. automodule:: emipy.processdata
    :members:
@@ -19,9 +19,9 @@ Module processdata
    :show-inheritance:
 
 
-==============
+====================
 Module visualizedata
-==============
+====================
 .. automodule:: emipy.visualizedata
    :members:
    
