@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# Our downloaded data
+*.cpg
+*.dbf
+*.prj
+*.shp
+*.shx
+
 # csv (data)
 # pkl
 *.csv
