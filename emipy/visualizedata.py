@@ -8,6 +8,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import geopandas as gpd
+import configparser
 from emipy import processdata
 
 
@@ -301,9 +302,9 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
     markersize : Int
         maximal size of the largest marker.
     *args : TYPE
-        Geopandas.plot() input variables.
+        Geopandas.plot() input arguments.
     **kwargs : TYPE
-        Geopandas.plot() input variables.
+        Geopandas.plot() input arguments.
 
     Returns
     -------
@@ -358,9 +359,9 @@ def map_PollutantRegions(db, mb, *args, **kwargs):
     mb : TYPE
         Map data for plotting. The region selection corresponds to the selection of mb.
     *args : TYPE
-        Geopandas.plot() input variables.
+        Geopandas.plot() input arguments.
     **kwargs : TYPE
-        Geopandas.plot() input variables.
+        Geopandas.plot() input arguments.
 
     Returns
     -------
@@ -373,3 +374,35 @@ def map_PollutantRegions(db, mb, *args, **kwargs):
     db02 = pd.merge(mb, db01, how='left', on=['NUTS_ID'])
     ax = db02.plot(column='TotalQuantity', *args, **kwargs)
     return(ax)
+
+
+def export_fig(fig, path=None, filename=None, **kwargs):
+    """
+    Exports the choosen figure to a given path or to the export folder of the project if no path is given.
+
+    Parameters
+    ----------
+    fig : figure
+        The figure that is to export.
+    path : String, optional
+        Path under which the file is stored. The filename has to be included. The default is None.
+    filename : String, optional
+        Filename under which the figure is stored in the Export folder of the project. The default is None.
+    **kwargs : TYPE
+        Matplotlib.savefig() input arguments.
+
+    Returns
+    -------
+    None.
+
+    """
+    if (path==None and filename==None):
+        print('A filename is required.')
+        return None
+    if path==None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        path = config['PATH']['path']
+        path = os.path.join(os.path.join(path, 'ExportData'), filename)
+    fig.savefig(path, **kwargs)
+    return None
