@@ -4,8 +4,8 @@ Introduction and quick start guide
 =============
 Introduction
 =============    
-| emipy is a python package to analyse industrial emission sources within Europe.
-| The package accesses data from the European Environmental Agency and Eurostat, and allows to generate a desired data set with clearly structured filter functions. Furthermore, functions are provided that allow a quick visualization of the data.
+emipy is a python package to analyse industrial emission sources within Europe.
+The package accesses data from the European Environmental Agency and Eurostat, and allows to generate a desired data set with clearly structured filter functions. Furthermore, functions are provided that allow a quick visualization of the data.
 
 =============
 Installation    
