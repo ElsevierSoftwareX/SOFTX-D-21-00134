@@ -42,7 +42,6 @@ Generating data sets
 | You can filter for multiple columns at the same time:
 
 .. code-block::
-    :linenos:
 
     CountryName = ['Germany', 'Austria', 'Switzerland']
     ReportingYear = [2014, 2015, 2016,2017]
@@ -64,7 +63,6 @@ Generating data sets
 | As a last step you might want to save your just created data tables. Depending on the storage data type, you can use different functions. These functions have the same arguments as the pandas export functions, but automatically store the data in the export file of your emipy project, if there is no path given.
 
 .. code-block::
-    :linenos:
 
     processdata.export_db_topickle(data1, filename='Deutschland.pkl')
     processdata.export_db_tocsv(data2, filename='DeutschsprachigerRaum.pkl')
@@ -77,7 +75,6 @@ Visualize data sets
 | Let's start with generating a filtered data set:
 
 .. code-block::
-    :linenos:
 
     from emipy import processdata
     from emipy import visualizedata
@@ -125,7 +122,6 @@ Visualize data sets
 | As a third option, you can plot normalised values. With the parameter norm, you can specify the First Order value, that the data is normed to. For e good example we create a new data table:
 
 .. code-blocks::
-    :linenos:
 
     CountryName = ['Germany', 'Austria', 'Switzerland']
     ReportingYear = [2014, 2015, 2016, 2017]
@@ -162,7 +158,6 @@ Using map data
 .. image:: ../pictures/Tut3pic1.jpg
     :width: 20%
     :align: center
-    :height: 100px
     :alt: testtesttest
 
 | The filtering happens with the function f_mb(). Depending on the NUTS level, you can filter for countries or the corresponding NUTS-ID. Additionally, there is the argument ExclaveExclude which you can put on true to exclude the exclaves and map continental europe.  
@@ -171,7 +166,6 @@ Using map data
 .. image:: ../pictures/Tut3pic2.jpg
     :width: 20%
     :align: center
-    :height: 100px
     :alt: testtesttest
 
 | To combine map data and pollution data you have two options. You can plot the pollution sources on the map or create a colormap of the pollution in the regions.
