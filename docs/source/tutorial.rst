@@ -183,7 +183,7 @@ Using map data
 | map_PollutantSource returns three objects, therefore you have to specifiy which one you want to return. [0] returns the axes-object, or the plot. [1] returns the DataFrame with all data that are plotted. [2] returns the DataFrame with all data that is not plotted. This might happen, when the coordinates of the data is bad and not inside the regions or not given at all.  
 | You can also plot different pollutants and color them differently with the parameter 'category'.
 
-.. image:: ../pictures/Tut3pic4.JPG
+.. image:: ./pictures/Tut3pic4.JPG
     :width: 20%
     :align: center
     :height: 100px
