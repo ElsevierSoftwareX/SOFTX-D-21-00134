@@ -6,7 +6,7 @@ Generating data sets
 
 | At first import the module processdata and read the data base:
 
-.. image:: ./pictures/Tut1pic1.jpg
+.. image:: ./pictures/Tut1pic1.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -15,7 +15,7 @@ Generating data sets
 | The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function read_db() the path in form of a String as an argument.
 | A list of possible columnnames to filter for is displaced with:
 
-.. image:: ./pictures/Tut1pic2.jpg
+.. image:: ../pictures/Tut1pic2.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -41,8 +41,7 @@ Generating data sets
 
 | You can filter for multiple columns at the same time:
 
-.. code-block:: sh
-    :linenos:
+.. code-block:: python
 
     CountryName = ['Germany', 'Austria', 'Switzerland']
     ReportingYear = [2014, 2015, 2016,2017]
@@ -63,7 +62,7 @@ Generating data sets
 | Now you can generate your own data set of interest with a few lines of code. Since db is a DataFrame object, you can use all `pandas <https://pandas.pydata.org/docs/index.html>`_ functions as well, to personalize your data generation.
 | As a last step you might want to save your just created data tables. Depending on the storage data type, you can use different functions. These functions have the same arguments as the pandas export functions, but automatically store the data in the export file of your emipy project, if there is no path given.
 
-.. code-block:: sh
+.. code-block:: python
 
     processdata.export_db_topickle(data1, filename='Deutschland.pkl')
     processdata.export_db_tocsv(data2, filename='DeutschsprachigerRaum.pkl')
@@ -123,7 +122,7 @@ Visualize data sets
 
 | As a third option, you can plot normalised values. With the parameter norm, you can specify the First Order value, that the data is normed to. For e good example we create a new data table:
 
-.. code-blocks::
+.. code-blocks:: python
 
     CountryName = ['Germany', 'Austria', 'Switzerland']
     ReportingYear = [2014, 2015, 2016, 2017]
