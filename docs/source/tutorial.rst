@@ -3,6 +3,7 @@ Tutorials
 
 Generating data sets
 --------------------
+
 | At first import the module processdata and read the data base:
 
 .. image:: ../pictures/Tut1pic1.jpg
@@ -72,6 +73,7 @@ Generating data sets
 
 Visualize data sets
 -------------------
+
 | Let's start with generating a filtered data set:
 
 .. code-block:: sh
@@ -152,9 +154,10 @@ Visualize data sets
 
 Using map data
 --------------
+
 | The first thing that you will realise is, that there is not just one data set for the map like in the pollution data. There are different parameters that change the layout of the maps, therefore when reading the map data you can choose from these parameters. Nevertheless, there is a presetting, that gives you a map by the hand.  
 | Of special interest is the parameter "NUTS_LVL", which is the level of the NUTS-ID's which are the codes for categorized regions. See `here <https://ec.europa.eu/eurostat/de/web/nuts/nuts-maps>`_ for more information.  
-|We start with the following set up:
+| We start with the following set up:
 
 .. image:: ../pictures/Tut3pic1.jpg
     :width: 20%
