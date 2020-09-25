@@ -41,7 +41,8 @@ Generating data sets
 
 | You can filter for multiple columns at the same time:
 
-.. code-block::
+.. code-block:: sh
+    :linenos:
 
     CountryName = ['Germany', 'Austria', 'Switzerland']
     ReportingYear = [2014, 2015, 2016,2017]
@@ -62,7 +63,7 @@ Generating data sets
 | Now you can generate your own data set of interest with a few lines of code. Since db is a DataFrame object, you can use all `pandas <https://pandas.pydata.org/docs/index.html>`_ functions as well, to personalize your data generation.
 | As a last step you might want to save your just created data tables. Depending on the storage data type, you can use different functions. These functions have the same arguments as the pandas export functions, but automatically store the data in the export file of your emipy project, if there is no path given.
 
-.. code-block::
+.. code-block:: sh
 
     processdata.export_db_topickle(data1, filename='Deutschland.pkl')
     processdata.export_db_tocsv(data2, filename='DeutschsprachigerRaum.pkl')
@@ -74,7 +75,7 @@ Visualize data sets
 
 | Let's start with generating a filtered data set:
 
-.. code-block::
+.. code-block:: python
 
     from emipy import processdata
     from emipy import visualizedata
