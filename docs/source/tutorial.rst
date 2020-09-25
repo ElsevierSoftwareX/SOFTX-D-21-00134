@@ -5,7 +5,7 @@ Generating data sets
 --------------------
 At first import the module processdata and read the data base:
 
-.. image:: /pictures/Tut1pic1.jpg
+.. image:: ../pictures/Tut1pic1.jpg
     :width: 20%
     :align: center
     :height: 100px
@@ -33,7 +33,7 @@ You can filter for multiple columns at the same time:
     PollutantName = ['Carbon dioxide (CO2)', 'Methane (CH4)']
 
     data3 = processdata.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
-```
+
 Take into account that numbers a not from type string and therefore do not need '' around them. For the precise values use the get_xy() function. You can also filter step by step. For this you would have to insert the filtered database into the filter function.
 You can adjust two more arguments in f_db().
 ``data4 = processdata.f_db(db, ExclaveExclude=True)``
