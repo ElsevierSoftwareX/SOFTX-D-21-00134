@@ -4,6 +4,13 @@ Tutorials
 Generating data sets
 --------------------
 At first import the module processdata and read the data base:
+
+.. image:: /pictures/Tut1pic1.jpg
+    :width: 200px
+    :align: center
+    :height: 100px
+    :alt: alternate text
+
 ![Tutorial1picture1](/pictures/Tut1pic1.jpg)
 The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function read_db() the path in form of a String as an argument.
 A list of possible columnnames to filter for is displaced with:
