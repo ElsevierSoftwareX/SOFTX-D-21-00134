@@ -29,7 +29,7 @@ Installation & initialisation
 ----------------------------- 
 
 For beginners of the Python world, we provide a step by step installation guide: <br>
-1. Download and install the Anaconda distribution from [here](https://www.anaconda.com/products/individual).
+1. Download and install the Anaconda distribution from `here <https://www.anaconda.com/products/individual>`_.
 2. Create a new environment. For this:
     1. Download the environment.yml file from [here](https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy/-/tree/UploadforPresentation).
     2. Start the console "Anaconda Prompt"
