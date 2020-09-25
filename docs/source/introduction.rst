@@ -50,7 +50,7 @@ For beginners of the Python world, we provide a step by step installation guide:
 
 Experienced users can download the emipy package via the package manager pip:
 
-``>pip install emipy``
+    ``>pip install emipy``
 
 Keep in mind, that you have to install the list of packages given above. Execute point 3 from the step by step guide to initialize a new project.
     
@@ -67,8 +67,6 @@ Quick start
 3. Load the data into your current session with:
     | ``db = processdata.read_db()``
     | ``mb = processdata.read_mb()``
-   and display it with:
+4. and display it with:
     | ``db.head()``
     | ``mb.plot()``
-
-

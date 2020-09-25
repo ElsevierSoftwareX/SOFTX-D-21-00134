@@ -6,14 +6,14 @@ Generating data sets
 At first import the module processdata and read the data base:
 
 .. image:: /pictures/Tut1pic1.jpg
-    :width: 200px
+    :width: 20%
     :align: center
     :height: 100px
-    :alt: alternate text
+    :alt: testtesttest
 
 ![Tutorial1picture1](/pictures/Tut1pic1.jpg)
-The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function read_db() the path in form of a String as an argument.
-A list of possible columnnames to filter for is displaced with:
+| The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function read_db() the path in form of a String as an argument.
+| A list of possible columnnames to filter for is displaced with:
 ![Tutorial1picture2](/pictures/Tut1pic2.jpg)
 If you are interested in e.g. the countries that occur in your database you can receive a list with:
 ![Tutorial1picture3](/pictures/Tut1pic3.jpg)
@@ -24,12 +24,15 @@ Let's filter for pollution in Germany:
 If you want to filter for multiple values in one column you have to insert a list.
 ``data2 = processdata.f_db(db, CountryName=['Germany', 'Switzerland', 'Austria'])``
 You can filter for multiple columns at the same time:
-```
-CountryName = ['Germany', 'Austria', 'Switzerland']
-ReportingYear = [2014, 2015, 2016,2017]
-PollutantName = ['Carbon dioxide (CO2)', 'Methane (CH4)']
 
-data3 = processdata.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
+.. code-block:: sh
+    :linenos:
+  
+    CountryName = ['Germany', 'Austria', 'Switzerland']
+    ReportingYear = [2014, 2015, 2016,2017]
+    PollutantName = ['Carbon dioxide (CO2)', 'Methane (CH4)']
+
+    data3 = processdata.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 ```
 Take into account that numbers a not from type string and therefore do not need '' around them. For the precise values use the get_xy() function. You can also filter step by step. For this you would have to insert the filtered database into the filter function.
 You can adjust two more arguments in f_db().
