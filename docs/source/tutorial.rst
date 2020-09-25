@@ -6,7 +6,7 @@ Generating data sets
 
 | At first import the module processdata and read the data base:
 
-.. image:: /pictures/Tut1pic1.jpg
+.. image:: ./pictures/Tut1pic1.jpg
     :width: 20%
     :align: center
     :height: 100px
