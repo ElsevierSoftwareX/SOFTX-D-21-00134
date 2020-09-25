@@ -6,7 +6,7 @@ Generating data sets
 
 | At first import the module processdata and read the data base:
 
-.. image:: ../pictures/Tut1pic1.jpg
+.. image:: /pictures/Tut1pic1.jpg
     :width: 20%
     :align: center
     :height: 100px
@@ -94,6 +94,7 @@ Visualize data sets
     :align: center
     :height: 100px
     :alt: testtesttest
+
 | As you can see, the first order is equivalent to the x-axis of the plot and the first parameter that the data is sorted by.
 | We can now take a deeper look into our data and sort it additionally by another order:
 
