@@ -30,7 +30,7 @@ You can adjust two more arguments in f_db().
 sorts out the exclaves of countries, if you are only interested in the continent Europe and
 ``data5 = processdata.f_db(db, returnna=True)``
 returns a data table, which contains all entries that would be sorted out in the filter process but just do not possess enough information to pass the filter. If this table is empty, then it is a good sign.
-Now you can generate your own data set of interest with a few lines of code. Since db is a DataFrame object, you can use all [pandas](https://pandas.pydata.org/docs/index.html) functions as well, to personalize your data generation.
+Now you can generate your own data set of interest with a few lines of code. Since db is a DataFrame object, you can use all `pandas <https://pandas.pydata.org/docs/index.html>`_ functions as well, to personalize your data generation.
 As a last step you might want to save your just created data tables. Depending on the storage data type, you can use different functions. These functions have the same arguments as the pandas export functions, but automatically store the data in the export file of your emipy project, if there is no path given.
 ```
 processdata.export_db_topickle(data1, filename='Deutschland.pkl')
@@ -71,7 +71,7 @@ PollutantName=['Zinc and compounds (as Zn)', 'Nickel and compounds (as Ni)']
 data2 = processdata.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 ```
 ![Tutorial2picture5](/pictures/Tut2pic5.jpg)
-If you want to customize the layout of the graphs, you can enter the known arguments of the PyPlot package into the functions. For a detailed documentation look [here](https://matplotlib.org/3.1.1/tutorials/index.html). Since the functions return a matplotlib.axes object, you can access and modify the individual elements of the plots like in PyPlot.
+If you want to customize the layout of the graphs, you can enter the known arguments of the PyPlot package into the functions. For a detailed documentation look `here <https://matplotlib.org/3.1.1/tutorials/index.html>`_. Since the functions return a matplotlib.axes object, you can access and modify the individual elements of the plots like in PyPlot.
 ![Tutorial2picture6](/pictures/Tut2pic6.jpg)
 As a last step you might want to save the plots you have created. This can be done with the savefig() function of PyPlot. Another method is to use the export_fig() function of emipy. This function will automatically save the function to the export folder of your emipy project. All selection arguments of the savefig() function are implemented.
 ```
@@ -97,4 +97,4 @@ You can also plot different pollutants and color them differently with the param
 ![Tutorial3picture4](/pictures/Tut3pic4.jpg)
 To plot the emission of specific regions you can use the `map_PollutantRegions()` function. In the following example we plot the emission of CO2 in Austria on NUTS-level 2.
 ![Tutorial3picture5](/pictures/Tut3pic5.jpg)
-Since the returns of the functions are Axes-objects, you can use PyPlot functions and arguments to change the layout. You can also use [Geopandas](https://geopandas.org/) to personalize the plot generation because the map data is stored as a GeoDataFrame.
+Since the returns of the functions are Axes-objects, you can use PyPlot functions and arguments to change the layout. You can also use `Geopandas <https://geopandas.org/>`_ to personalize the plot generation because the map data is stored as a GeoDataFrame.
