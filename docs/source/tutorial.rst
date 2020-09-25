@@ -15,7 +15,7 @@ Generating data sets
 | The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function read_db() the path in form of a String as an argument.
 | A list of possible columnnames to filter for is displaced with:
 
-.. image:: ../pictures/Tut1pic2.JPG
+.. image:: ./pictures/Tut1pic2.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -23,7 +23,7 @@ Generating data sets
 
 | If you are interested in e.g. the countries that occur in your database you can receive a list with:
 
-.. image:: ./pictures/Tut1pic3.jpg
+.. image:: ./pictures/Tut1pic3.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -89,7 +89,7 @@ Visualize data sets
 
 | Now we can plot the CO2 volume against the reporting years:
 
-.. image:: ./pictures/Tut2pic1.jpg
+.. image:: ./pictures/Tut2pic1.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -98,7 +98,7 @@ Visualize data sets
 | As you can see, the first order is equivalent to the x-axis of the plot and the first parameter that the data is sorted by.
 | We can now take a deeper look into our data and sort it additionally by another order:
 
-.. image:: ./pictures/Tut2pic2.jpg
+.. image:: ./pictures/Tut2pic2.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -106,7 +106,7 @@ Visualize data sets
 
 | Keep in mind, that the plot functions do not filter the data. If you would like to plot e.g. just the output from Austria you would have to create a new data set, and specifiy this as input in a new plot:
 
-.. image:: ./pictures/Tut2pic3.jpg
+.. image:: ./pictures/Tut2pic3.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -114,7 +114,7 @@ Visualize data sets
 
 | Additionaly to the pollutant emmisions, you can analyse the change of the emmission over time. As this calculation needs information of the year before, the function can only provide this result for all but the first year in the data table.
 
-.. image:: ./pictures/Tut2pic4.jpg
+.. image:: ./pictures/Tut2pic4.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -130,7 +130,7 @@ Visualize data sets
 
     data2 = processdata.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 
-.. image:: ./pictures/Tut2pic5.jpg
+.. image:: ./pictures/Tut2pic5.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -138,7 +138,7 @@ Visualize data sets
 
 | If you want to customize the layout of the graphs, you can enter the known arguments of the PyPlot package into the functions. For a detailed documentation look `here <https://matplotlib.org/3.1.1/tutorials/index.html>`_. Since the functions return a matplotlib.axes object, you can access and modify the individual elements of the plots like in PyPlot.
 
-.. image:: ./pictures/Tut2pic6.jpg
+.. image:: ./pictures/Tut2pic6.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -156,7 +156,7 @@ Using map data
 | Of special interest is the parameter "NUTS_LVL", which is the level of the NUTS-ID's which are the codes for categorized regions. See `here <https://ec.europa.eu/eurostat/de/web/nuts/nuts-maps>`_ for more information.  
 | We start with the following set up:
 
-.. image:: ./pictures/Tut3pic1.jpg
+.. image:: ./pictures/Tut3pic1.JPG
     :width: 20%
     :align: center
     :alt: testtesttest
@@ -164,7 +164,7 @@ Using map data
 | The filtering happens with the function f_mb(). Depending on the NUTS level, you can filter for countries or the corresponding NUTS-ID. Additionally, there is the argument ExclaveExclude which you can put on true to exclude the exclaves and map continental europe.  
 | To map e.g. North Rhine-Westphalia you have to know, that the NUTS-ID is 'DEA' and can use it as a filter. You can look up the NUTS_ID' at the link above or take a look in the DataFrame mb.
 
-.. image:: ./pictures/Tut3pic2.jpg
+.. image:: ./pictures/Tut3pic2.JPG
     :width: 20%
     :align: center
     :alt: testtesttest
@@ -172,7 +172,7 @@ Using map data
 | To combine map data and pollution data you have two options. You can plot the pollution sources on the map or create a colormap of the pollution in the regions.
 | Let's start with mapping the CO2 sources in Germany and Austria in the year 2017.
 
-.. image:: ./pictures/Tut3pic3.jpg
+.. image:: ./pictures/Tut3pic3.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -183,7 +183,7 @@ Using map data
 | map_PollutantSource returns three objects, therefore you have to specifiy which one you want to return. [0] returns the axes-object, or the plot. [1] returns the DataFrame with all data that are plotted. [2] returns the DataFrame with all data that is not plotted. This might happen, when the coordinates of the data is bad and not inside the regions or not given at all.  
 | You can also plot different pollutants and color them differently with the parameter 'category'.
 
-.. image:: ../pictures/Tut3pic4.jpg
+.. image:: ../pictures/Tut3pic4.JPG
     :width: 20%
     :align: center
     :height: 100px
@@ -191,7 +191,7 @@ Using map data
 
 | To plot the emission of specific regions you can use the `map_PollutantRegions()` function. In the following example we plot the emission of CO2 in Austria on NUTS-level 2.
 
-.. image:: ./pictures/Tut3pic5.jpg
+.. image:: ./pictures/Tut3pic5.JPG
     :width: 20%
     :align: center
     :height: 100px
