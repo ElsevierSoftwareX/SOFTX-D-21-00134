@@ -33,6 +33,7 @@ def read_db(path=None):
         db = pd.read_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
     except FileNotFoundError:
         print('File not found in the given path.')
+        return None
     return db
 
 
@@ -171,7 +172,7 @@ def get_Yearlist(db):
 
     Returns
     -------
-    Countrylist : List
+    Yearlist : List
         List of unique reporting years.
 
     """
@@ -192,7 +193,7 @@ def get_Pollutantlist(db):
 
     Returns
     -------
-    Countrylist : List
+    Pollutant : List
         List of unique pollutant names.
 
     """
@@ -223,7 +224,7 @@ def get_CNTR_CODE_list(mb):
     return CNTR_CODE_list
 
 
-def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ExclaveExclude=False):
+def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ExclaveExclude=False, ReturnUnknown=False):
     """
     Takes DataFrame and filters out data, according to input parameters.
 
@@ -231,6 +232,8 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
     ----------
     db : DataFrame
         Input DataFrame.
+    FacilityReportID : Int/List, optional
+        List of FacilityReportID's to be maintained. The default is None. 
     CountryName : String/List, optional
         List of countries to be maintained. The default is None.
     ReportingYear : String/List, optional
@@ -247,6 +250,8 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
         List of NUTS region geocodes to be maintained. The default is None.
     ExclaveExclude : Boolean, optional
         If True, exclaves that are unique NUTS-LVL1 regions are excluded. The default is False.
+    ReturnUnknown : Boolean, optional
+        If True, function returns DataFrame that is sorted out due to not enough information for the filter process. The default is False.
 
     Returns
     -------
@@ -257,43 +262,58 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
 
     """
     dbna = pd.DataFrame()
+
+    if FacilityReportID is not None:
+        dbna = db[db.FacilityReportID.isna()]
+        if isinstance(FacilityReportID, list):
+            db = db[db.FacilityReportID.isin(FacilityReportID)]
+        else:
+            db = db[db.FacilityReportID == FacilityReportID]
+
     if CountryName is not None:
+        dbna = db[db.CountryName.isna()]
         if isinstance(CountryName, list):
             db = db[db.CountryName.isin(CountryName)]
         else:
             db = db[db.CountryName == CountryName]
 
     if ReportingYear is not None:
+        dbna = db[db.ReportingYear.isna()]
         if isinstance(ReportingYear, list):
             db = db[db.ReportingYear.isin(ReportingYear)]
         else:
             db = db[db.ReportingYear == ReportingYear]
 
     if ReleaseMediumName is not None:
+        dbna = db[db.ReleaseMediumName.isna()]
         if isinstance(ReleaseMediumName, list):
             db = db[db.ReleaseMediumName.isin(ReleaseMediumName)]
         else:
             db = db[db.ReleaseMediumName == ReleaseMediumName]
 
     if PollutantName is not None:
+        dbna = db[db.PollutantName.isna()]
         if isinstance(PollutantName, list):
             db = db[db.PollutantName.isin(PollutantName)]
         else:
             db = db[db.PollutantName == PollutantName]
 
     if PollutantGroupName is not None:
+        dbna = db[db.PollutantGroupName.isna()]
         if isinstance(PollutantGroupName, list):
             db = db[db.PollutantGroupName.isin(PollutantGroupName)]
         else:
             db = db[db.PollutantGroupName == PollutantGroupName]
 
     if NACEMainEconomicActivityCode is not None:
+        dbna = db[db.NACEMainEconomicActivityCode.isna()]
         if isinstance(NACEMainEconomicActivityCode, list):
             db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
         else:
             db = db[db.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
 
     if NUTSRegionGeoCode is not None:
+        dbna = db[db.NUTSRegionGeoCode.isna()]
         if isinstance(NUTSRegionGeoCode, list):
             db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) is True]
         else:
@@ -305,7 +325,11 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
         dbna = db[db.NUTSRegionGeoCode.isna()]
         db = db[db.NUTSRegionGeoCode.notna()]
         db = db[~db.NUTSRegionGeoCode.str.startswith(ExclaveList)]
-    return (db, dbna)
+
+    if ReturnUnknown == True:
+        return dbna
+    else:
+        return db
 
 
 def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False):
@@ -316,11 +340,11 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
     ----------
     mb : DataFrame
         Input DataFrame.
-    NUTS_ID : TYPE, optional
+    NUTS_ID : String/List, optional
         NUTS:ID assigned from eurostat. The default is None.
-    CNTR_CODE : TYPE, optional
+    CNTR_CODE : String/List, optional
         Country code. The default is None.
-    NAME_LATIN : TYPE, optional
+    NAME_LATIN : String/List, optional
         Name of Region, classified by eurostat. The default is None.
 
     Returns
@@ -346,8 +370,8 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
             mb = mb[mb.NAME_LATIN.isin(NAME_LATIN)]
         else:
             mb = mb[mb.NAME_LATIN == NAME_LATIN]
-    #ExclaveList has to be a tuple. invert does not work with list
-    ExclaveList = ('ES7', 'FRY', 'PT2', 'PT3')           
+    # ExclaveList has to be a tuple. invert does not work with list
+    ExclaveList = ('ES7', 'FRY', 'PT2', 'PT3')
     if ExclaveExclude is True:
         if mb.LEVL_CODE.sum() < len(mb):
             print('Exclave Exclusion is not yet possible on this NUTS_LVL.')
@@ -357,9 +381,45 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
     return mb
 
 
+def change_RenameDict(total=None, add=None, sub=None, reset=False):
+    """
+    Changes the column name dict in the config file.
+
+    Parameters
+    ----------
+    total : Dict, optional
+        Replacement dictionary that replaces the complete column name dict. The default is None.
+    add : Dict, optional
+        Dictionary that gets added to the column name dict. The default is None.
+    sub : Dict, optional
+        Dictionary that is substracted from the column name dict. The default is None.
+    reset : Boolean, optional
+        If True, the column name dict gets resetted to the standard settings. The default is False.
+
+    Returns
+    -------
+    None.
+
+    """
+    config = configparser.ConfigParser()
+    config.optionxform=str
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    if reset==True:
+        resetdict = {'ReportingYear':'Year', 'CountryName':'Country', 'NUTSRegionGeoCode':'NUTSID', 'NACEMainEconomicActivityCode':'NACEID', 'NACEMainEconomicActivityName':'NACEName', 'PollutantName':'Pollutant', 'UnitCode':'Unit'}
+        config['COLUMNNAMES'] = resetdict
+    if total != None:
+        config['COLUMNNAMES'] = total
+    if add != None:
+        config['COLUMNNAMES'].update(add)
+    if sub != None:
+        all(map( config['COLUMNNAMES'].pop, sub))
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+        config.write(configfile)
+
+
 def rename_columns(db):
     """
-    Renames specific column names of the DataFrame.
+    Renames column names of the DataFrame, specified by the "COLUMNNAMES" dict in the config file.
 
     Parameters
     ----------
@@ -372,14 +432,71 @@ def rename_columns(db):
         DataFrame with changed column names.
 
     """
-    db = db.rename(columns={'CountryName': 'Country'})
-    db = db.rename(columns={'ReportingYear': 'Year'})
+    config = configparser.ConfigParser()
+    config.optionxform=str
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    columndict = dict(config.items('COLUMNNAMES'))
+    db = db.rename(columns=columndict)
     return db
+
+
+def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
+    """
+    Changes the list of column names in the config file, that are of interest.
+
+    Parameters
+    ----------
+    total : List/String, optional
+        Replaces the column names at all with the given list. If total is a string the names have to be seperated by a ",".  The default is None.
+    add : List/String, optional
+        Adds the given column names to the existing ones. If add is a string the names have to be seperated by a ",".The default is None.
+    sub : List/String, optional
+        Subtracts the given column names from the existing ones. If sub is a string the names have to be seperated by a ",".The default is None.
+    reset : Boolean, optional
+        Resets the list of column names to the presettings. The default is False.
+
+    Returns
+    -------
+    None.
+
+    """
+    config = configparser.ConfigParser()
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    if reset==True:
+        columnnames = 'CountryCode,CountryName,Lat,Long,NUTSRegionGeoCode,NACEMainEconomicActivityCode,NACEMainEconomicActivityName,ReportingYear,PollutantReleaseID,PollutantName,TotalQuantity,UnitCode'
+        config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)        
+    if total != None:
+        if isinstance(total, list):
+            columnnames = ','.join(total)
+            config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
+        else:
+            config.set('COLUMNSOFINTEREST', 'columnnames', total)
+    if add != None:
+        if isinstance(add, list):
+            columnnames = config['COLUMNSOFINTEREST']['columnnames'].split(',') + add
+            columnnames = ','.join(columnnames)
+            config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
+        else:
+            columnnames = config['COLUMNSOFINTEREST']['columnnames'] + ',' + add
+            config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
+    if sub != None:
+        if isinstance(sub, list):
+            columnnames = [item for item in config['COLUMNSOFINTEREST']['columnnames'].split(',') if item not in sub]
+            columnnames = ','.join(columnnames)
+            config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
+        else:
+            columnnames = config['COLUMNSOFINTEREST']['columnnames'].split(',')
+            # this method stores the variable automatically
+            columnnames.remove(sub)
+            columnnames = ','.join(columnnames)
+            config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)           
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+        config.write(configfile)
 
 
 def row_reduction(db):
     """
-    Reduced DataFrame to specific columns.
+    Reduces DataFrame to columns specified in the conifg file.
 
     Parameters
     ----------
@@ -392,33 +509,108 @@ def row_reduction(db):
         DataFrame with reduced number of columns.
 
     """
-    db = db[['PollutantReleaseAndTransferReportID', 'CountryName', 'ReportingYear', 'FacilityReportID', 'PollutantReleaseID', 'ReleaseMediumName', 'PollutantName', 'PollutantGroupName', 'TotalQuantity', 'NACEMainEconomicActivityCode']]
+    config = configparser.ConfigParser()
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+    remain = config['COLUMNSOFINTEREST']['columnnames']
+    remain = remain.split(',')
+    db = db[remain]
     return db
 
 
-def export_db(db, filename, path=None):
+def export_db_topickle(db, path=None, filename=None, **kwargs):
     """
-    Exports the filtered database to a .pkl file in the folder filterdata
+    Stores the DataFrame given in the input as a .pkl file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
 
     Parameters
     ----------
     db : DataFrame
         Filtered database, that is to export.
-    filename : String
-        Name of .pkl file
-    path : string, optional
-        path to the storage folder.
+    path : String, optional
+        Path under which the DataFrame is stored.
+    filename : String, optional
+        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
+    kwargs : Type, optional
+        pandas.to_pickle() input arguments
 
     Returns
     -------
-    Export of .pkl file
+    None
 
     """
+    if (path==None and filename==None):
+        print('A filename is required')
+        return None
     if path==None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.realpath(__file__), 'configuration\\configuration.ini'))        
-        path = config['PATH']['Path']    
-        filename = 'ExportData' + filename
-        db.to_pickle(os.path.join(path, filename))
-    else:
-        db.to_pickle(path)
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        path = config['PATH']['path']
+        path = os.path.join(os.path.join(path, 'ExportData'), filename)
+
+    db.to_pickle(path, **kwargs)
+    return None
+
+
+def export_db_tocsv(db, path=None, filename=None, **kwargs):
+    """
+    Stores the DataFrame given in the input as a .csv file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Filtered database, that is to export.
+    path : String, optional
+        Path under which the DataFrame is stored.
+    filename : String, optional
+        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
+    kwargs : Type, optional
+        pandas.to_csv() input arguments
+
+    Returns
+    -------
+    None
+
+    """
+    if (path==None and filename==None):
+        print('A filename is required')
+        return None
+    if path==None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        path = config['PATH']['path']
+        path = os.path.join(os.path.join(path, 'ExportData'), filename)
+
+    db.to_csv(path, **kwargs)
+    return None
+
+def export_db_toexcel(db, path=None, filename=None, **kwargs):
+    """
+    Stores the DataFrame given in the input as a .xlsx file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Filtered database, that is to export.
+    path : String, optional
+        Path under which the DataFrame is stored.
+    filename : String, optional
+        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
+    kwargs : Type, optional
+        pandas.to_excel() input arguments
+
+    Returns
+    -------
+    None
+
+    """
+    if (path==None and filename==None):
+        print('A filename is required')
+        return None
+    if path==None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        path = config['PATH']['path']
+        path = os.path.join(os.path.join(path, 'ExportData'), filename)
+
+    db.to_excel(path, **kwargs)
+    return None
+
