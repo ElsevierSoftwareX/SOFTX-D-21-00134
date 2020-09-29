@@ -5,24 +5,24 @@ Modules
 ==============
 Module rawdata
 ==============
-.. automodule:: rawdata
+.. automodule:: emipy.rawdata
    :members:
 
 
-==============
-Module filter
-==============
+==================
+Module processdata
+==================
 
-.. automodule:: filter
+.. automodule:: emipy.processdata
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-==============
-Module plot
-==============
-.. automodule:: plot
+====================
+Module visualizedata
+====================
+.. automodule:: emipy.visualizedata
    :members:
    
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-XXX We need a proper description here XXX
-addapted rawdataversion to work with data, that are not located in folder of the scripts
+This module contains all functions, necessary for the inititation of an emipy project.
 """
 
 import pandas as pd
@@ -10,6 +9,7 @@ from os.path import join, isfile
 import matplotlib.pyplot as plt
 import requests, zipfile, io
 import csv
+import configparser
 
 
 def download_PollutionData(path, chunk_size=128):
@@ -92,48 +92,6 @@ def download_MapFiles(path, chunk_size=128):
                 os.remove(file_name)
 
 
-def download_postalcode_NUTS_transition(path, chunk_size=128):
-    """
-    Download csv files for postal code to NUTS code transition to given path.
-
-    Parameters
-    ----------
-    path : String
-        Path to the root of the project.
-    chunk_size : TYPE, optional
-        DESCRIPTION. The default is 128.
-
-    Returns
-    -------
-    None.
-
-    """
-    directory = 'PostalCode_NUTS'
-    path = os.path.join(path, directory)
-    if os.path.isdir(path) is False:
-        os.mkdir(path)
-    if not os.listdir(path):
-        url = 'https://gisco-services.ec.europa.eu/tercet/NUTS-2021/pc2020_NUTS-2021_v1.0.zip'
-        r = requests.get(url, stream=True)
-        z = zipfile.ZipFile(io.BytesIO(r.content))
-        z.extractall(path)
-        extension = '.zip'
-        os.chdir(path)
-        for item in os.listdir(path):
-            if item.endswith(extension):
-                file_name = os.path.abspath(item)
-                zip_ref = zipfile.ZipFile(file_name)
-                zip_ref.extractall(path)
-                zip_ref.close()
-                os.remove(file_name)
-    for item in os.listdir(path):
-        if item.endswith('.csv'):
-            with open(os.path.join(path,item)) as filein:
-                with open(os.path.join(path, item[:-3])+'edit'+'.csv', 'w') as fileout:
-                    for line in filein.readlines():
-                        fileout.write(line.replace(';', ','))
-
-
 def pickle_rawdata(path, force_rerun=False):
     """
     loads files of interest, converts them into .pkl file and saves them in the same path.
@@ -164,15 +122,6 @@ def pickle_rawdata(path, force_rerun=False):
     if ((os.path.isfile(os.path.join(path, 'PollutionData\\pr.pkl')) is False) or force_rerun):
         pr = pd.read_csv(os.path.join(path, 'PollutionData\\dbo.PUBLISH_POLLUTANTRELEASE.csv'), low_memory=False)
         pr.to_pickle(os.path.join(path, 'PollutionData\\pr.pkl'))
-
-    # NUTS_Code
-    for item in os.listdir(os.path.join(path, 'PostalCode_NUTS')):
-        if (os.path.isfile(os.path.join(os.path.join(path, 'PostalCode_NUTS'), (item[:-3] + '.pkl'))) is False) or force_rerun:
-            if item.endswith('edit.csv'):
-                item_data = pd.read_csv(os.path.join(os.path.join(path, 'PostalCode_NUTS'), item), low_memory=False, sep=',')
-                # if len(item_data.columns) == 1:
-                #    item_data = pd.read_csv(os.path.join(os.path.join(path, 'PostalCode_NUTS'), item), low_memory=False, sep=',')
-                item_data.to_pickle(os.path.join(os.path.join(path, 'PostalCode_NUTS'), (item[:-3] + '.pkl')))
 
     return None
 
@@ -205,18 +154,57 @@ def merge_frompickle(path, force_rerun=False):
         # Some data have no PostalCode, wrong fomrated postal code or not actual PostalCode
         db01 = pd.merge(fr, pratr, on=['PollutantReleaseAndTransferReportID', 'CountryName', 'CountryCode'])
         db02 = pd.merge(db01, pr, on=['FacilityReportID', 'ConfidentialIndicator', 'ConfidentialityReasonCode', 'ConfidentialityReasonName'])
-        df = pd.DataFrame()
-        for item in os.listdir(os.path.join(path, 'PostalCode_NUTS')):
-            if item.endswith('.pkl'):
-                item_data = pd.read_pickle(os.path.join(os.path.join(path, 'PostalCode_NUTS'), item))
-                # some PostalCodes are present multiple times
-                item_data = item_data.drop_duplicates(subset=['CODE'])
-                df = pd.concat([df, item_data])
-        df = df.rename(columns={'CODE': 'PostalCode'})
-        df['CountryCode'] = df['NUTS3'].str[1:3]
-        df.PostalCode = df['PostalCode'].str[1:-1]
-        df.NUTS3 = df['NUTS3'].str[1:-1]
-        db = pd.merge(db02, df, how='left', on=['PostalCode', 'CountryCode'])
-        db.to_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
+        db02.to_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
     return None
 
+
+def change_rootpath(path):
+    """
+    changes the Path of the root to the project in the configuration.ini file
+
+    Parameters
+    ----------
+    path : String
+        Path to the project, which is to access.
+
+    Returns
+    -------
+    None.
+
+    """
+    config = configparser.ConfigParser()
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    config.set('PATH', 'path', path)
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+        config.write(configfile)
+
+
+def init_emipy_project(path, force_rerun=False):
+    """
+    Executes the initiation of a new project. Downloads all needed data and to the given path and merges data of interest.
+
+    Parameters
+    ----------
+    path : String
+        Path to root of project.
+    force_rerun : Boolean, optional
+        Forces the programm to rerun the merging routine, if True. The default is False.
+
+    Returns
+    -------
+    None.
+
+    """
+    if path is None:
+        print('A path to the root of the project is needed to initialize the project.')
+        return None
+    change_rootpath(path)
+    download_PollutionData(path=path)
+    download_MapFiles(path=path)
+    pickle_rawdata(path=path, force_rerun=force_rerun)
+    merge_frompickle(path=path, force_rerun=force_rerun)
+    directory = 'ExportData'
+    path = os.path.join(path, directory)
+    if os.path.isdir(path) is False:
+        os.mkdir(path)    
+    return None

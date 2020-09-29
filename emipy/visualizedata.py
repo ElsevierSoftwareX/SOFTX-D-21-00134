@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-XXX We need a proper description here XXX
-Functions for pickle editing
+This module contains all functions to visualize the data set.
 """
 
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-import geopandas
-import filter
+import geopandas as gpd
+import configparser
+from emipy import processdata
 
 
 def get_PollutantVolume(db, FirstOrder=None, SecondOrder=None):
@@ -107,6 +107,7 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     for items in data.columns:
         if items != FirstOrder:
             data[items] = data[items].diff()
+    data = data.iloc[1:]
     return data
 
 
@@ -118,7 +119,7 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
     Parameters
     ----------
     db : DataFrame
-        DESCRIPTION.
+        The data to be plotted.
     FirstOrder : String, optional
         Name of column, the data are sorted in the first order. The default is None.
     SecondOrder : String, optional
@@ -132,7 +133,8 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
 
     Returns
     -------
-    Plot
+    ax : Axes
+        Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
@@ -145,6 +147,7 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
             ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
     return(ax)
 
+
 def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
     """
     Plots the volume change of the data set. The first order is the x-axis, the second order is a differentiation of the y-values.
@@ -152,7 +155,7 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
     Parameters
     ----------
     db : DataFrame
-        DESCRIPTION.
+        The data to be plotted.
     FirstOrder : String, optional
         Name of column, the data are sorted in the first order. The default is None.
     SecondOrder : String, optional
@@ -166,7 +169,8 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
 
     Returns
     -------
-    Plot
+    ax : Axes
+        Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
     data = get_PollutantVolumeChange(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
@@ -187,7 +191,7 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
     Parameters
     ----------
     db : DataFrame
-        DESCRIPTION.
+        The data to be plotted.
     FirstOrder : String, optional
         Name of column, the data are sorted in the first order. The default is None.
     SecondOrder : String, optional
@@ -203,7 +207,8 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
 
     Returns
     -------
-    Plot
+    ax : Axes
+        Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
     data = get_PollutantVolume_rel(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder, norm=norm)
@@ -235,7 +240,8 @@ def get_mb_borders(mb):
     borders = (foo.minx.min(), foo.miny.min(), foo.maxx.max(), foo.maxy.max())
     return list(borders)
 
-def excludeData_NotInBorders(borders,gdf):
+
+def excludeData_NotInBorders(borders, gdf):
     """
     seperates data, that are inside and outside given borders
 
@@ -248,11 +254,14 @@ def excludeData_NotInBorders(borders,gdf):
 
     Returns
     -------
-    [1] GeoDataFrame with data inside the borders. [2] GeoDataFrame with data outside the borders.
+    gdft : DataFrame
+        GeoDataFrame with data inside the borders.
+    gdff : DataFrame
+        GeoDataFrame with data outside the borders.
 
     """
     gdft = gdf
-    gdff = geopandas.GeoDataFrame(columns=gdf.columns)
+    gdff = gpd.GeoDataFrame(columns=gdf.columns)
     gdff['geometry'] = ""
     for i in range(len(gdf)):
         if (gdf.geometry.iloc[i].x < borders[0]) or (gdf.geometry.iloc[i].x > borders[2]) or (gdf.geometry.iloc[i].y < borders[1]) or (gdf.geometry.iloc[i].y > borders[3]):
@@ -287,7 +296,7 @@ def add_markersize(gdf, maxmarker):
     return gdf
 
 
-def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
+def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *args, **kwargs):
     """
     maps pollutant sources given by db on map given by mb.
 
@@ -301,10 +310,12 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
         The column name of db, which gets new colors for every unique entry.
     markersize : Int
         maximal size of the largest marker.
+    ReturnMarker : Int
+        If put on 1, the function returns a DataFrame with all data that are plotted. If put on 2, the function returns a DataFrame with all data  that are not plotted, because their coordinates are outside the geo borders.
     *args : TYPE
-        Geopandas.plot() input variables.
+        Geopandas.plot() input arguments.
     **kwargs : TYPE
-        Geopandas.plot() input variables.
+        Geopandas.plot() input arguments.
 
     Returns
     -------
@@ -313,7 +324,7 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
     gdfp : GeoDataFrame
         GeoDataFrame with all sources that are within geo borders and therefore plotted.
     gdfd : GeoDataFrame
-        GeoDataFrame with all sources that are outside geo borders and there fore
+        GeoDataFrame with all sources that are outside geo borders and therefore dropped.
 
     """
 # color selecting is bad.
@@ -322,7 +333,7 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
     colorlist = ['r', 'y', 'g', 'c', 'm', 'b']
     borders = get_mb_borders(mb)
     if category is None:
-        gdf = geopandas.GeoDataFrame(db, geometry=geopandas.points_from_xy(db.Long, db.Lat)).reset_index(drop=True)
+        gdf = gpd.GeoDataFrame(db, geometry=gpd.points_from_xy(db.Long, db.Lat)).reset_index(drop=True)
         gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
         gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
         gdfp = add_markersize(gdfp, maxmarker=markersize)
@@ -336,7 +347,7 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
             colorlist.remove(color)
             itemdata = db[db[category] == items].reset_index()
 #            itemdata = filter.f_db(db, category=items)
-            gdf = geopandas.GeoDataFrame(itemdata, geometry=geopandas.points_from_xy(itemdata.Long, itemdata.Lat))
+            gdf = gpd.GeoDataFrame(itemdata, geometry=gpd.points_from_xy(itemdata.Long, itemdata.Lat))
             gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
             gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
             gdfp = add_markersize(gdfp, maxmarker=markersize)
@@ -345,7 +356,12 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
         print('Some data points are out of borders')
     else:
         print('All data points are within rectangular borders')
-    return(ax, gdfp, gdfd)
+    if ReturnMarker == 0:
+        return(ax)
+    elif ReturnMarker == 1:
+        return(gdfp)
+    else:
+        return(gdfd)
 
 
 def map_PollutantRegions(db, mb, *args, **kwargs):
@@ -359,9 +375,9 @@ def map_PollutantRegions(db, mb, *args, **kwargs):
     mb : TYPE
         Map data for plotting. The region selection corresponds to the selection of mb.
     *args : TYPE
-        Geopandas.plot() input variables.
+        Geopandas.plot() input arguments.
     **kwargs : TYPE
-        Geopandas.plot() input variables.
+        Geopandas.plot() input arguments.
 
     Returns
     -------
@@ -374,5 +390,35 @@ def map_PollutantRegions(db, mb, *args, **kwargs):
     db02 = pd.merge(mb, db01, how='left', on=['NUTS_ID'])
     ax = db02.plot(column='TotalQuantity', *args, **kwargs)
     return(ax)
-    
-     
+
+
+def export_fig(fig, path=None, filename=None, **kwargs):
+    """
+    Exports the choosen figure to a given path or to the export folder of the project if no path is given.
+
+    Parameters
+    ----------
+    fig : figure
+        The figure that is to export.
+    path : String, optional
+        Path under which the file is stored. The filename has to be included. The default is None.
+    filename : String, optional
+        Filename under which the figure is stored in the Export folder of the project. The default is None.
+    **kwargs : TYPE
+        Matplotlib.savefig() input arguments.
+
+    Returns
+    -------
+    None.
+
+    """
+    if (path==None and filename==None):
+        print('A filename is required.')
+        return None
+    if path==None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        path = config['PATH']['path']
+        path = os.path.join(os.path.join(path, 'ExportData'), filename)
+    fig.savefig(path, **kwargs)
+    return None
