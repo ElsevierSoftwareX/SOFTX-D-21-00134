@@ -7,27 +7,27 @@ Generating data sets
 | At first import the module processdata and read the data base:
 
 .. image:: ./pictures/Tut1pic1.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut1pic1
 
 | The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function read_db() the path in form of a String as an argument.
 | A list of possible columnnames to filter for is displaced with:
 
 .. image:: ./pictures/Tut1pic2.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut1pic2
 
 | If you are interested in e.g. the countries that occur in your database you can receive a list with:
 
 .. image:: ./pictures/Tut1pic3.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut1pic3
 
 | There are more get_xy() functions to get information about possible filter parameters. See the processdata module description for this.
 | The actual filtering happens with the function f_db(). You have to specifiy the database that you want to filter and the columnnames and column values that you want to filter for.
@@ -65,8 +65,8 @@ Generating data sets
 .. code-block:: python
 
     processdata.export_db_topickle(data1, filename='Deutschland.pkl')
-    processdata.export_db_tocsv(data2, filename='DeutschsprachigerRaum.pkl')
-    processdata.export_db_toexcel(data3, filename='CO2undMethan.pkl')
+    processdata.export_db_tocsv(data2, filename='Germanspeakingarea.pkl')
+    processdata.export_db_toexcel(data3, filename='CO2andMethan.pkl')
 
 
 Visualize data sets
@@ -90,35 +90,35 @@ Visualize data sets
 | Now we can plot the CO2 volume against the reporting years:
 
 .. image:: ./pictures/Tut2pic1.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut2pic1
 
 | As you can see, the first order is equivalent to the x-axis of the plot and the first parameter that the data is sorted by.
 | We can now take a deeper look into our data and sort it additionally by another order:
 
 .. image:: ./pictures/Tut2pic2.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut2pic2
 
 | Keep in mind, that the plot functions do not filter the data. If you would like to plot e.g. just the output from Austria you would have to create a new data set, and specifiy this as input in a new plot:
 
 .. image:: ./pictures/Tut2pic3.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut2pic3
 
 | Additionaly to the pollutant emmisions, you can analyse the change of the emmission over time. As this calculation needs information of the year before, the function can only provide this result for all but the first year in the data table.
 
 .. image:: ./pictures/Tut2pic4.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut2pic4
 
 | As a third option, you can plot normalised values. With the parameter norm, you can specify the First Order value, that the data is normed to. For e good example we create a new data table:
 
@@ -131,18 +131,18 @@ Visualize data sets
     data2 = processdata.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 
 .. image:: ./pictures/Tut2pic5.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut2pic5
 
 | If you want to customize the layout of the graphs, you can enter the known arguments of the PyPlot package into the functions. For a detailed documentation look `here <https://matplotlib.org/3.1.1/tutorials/index.html>`_. Since the functions return a matplotlib.axes object, you can access and modify the individual elements of the plots like in PyPlot.
 
 .. image:: ./pictures/Tut2pic6.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut2pic6
 
 | As a last step you might want to save the plots you have created. This can be done with the savefig() function of PyPlot. Another method is to use the export_fig() function of emipy. This function will automatically save the function to the export folder of your emipy project. All selection arguments of the savefig() function are implemented.
 
@@ -157,26 +157,28 @@ Using map data
 | We start with the following set up:
 
 .. image:: ./pictures/Tut3pic1.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut3pic1
 
 | The filtering happens with the function f_mb(). Depending on the NUTS level, you can filter for countries or the corresponding NUTS-ID. Additionally, there is the argument ExclaveExclude which you can put on true to exclude the exclaves and map continental europe.  
 | To map e.g. North Rhine-Westphalia you have to know, that the NUTS-ID is 'DEA' and can use it as a filter. You can look up the NUTS_ID' at the link above or take a look in the DataFrame mb.
 
 .. image:: ./pictures/Tut3pic2.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut3pic2
 
 | To combine map data and pollution data you have two options. You can plot the pollution sources on the map or create a colormap of the pollution in the regions.
 | Let's start with mapping the CO2 sources in Germany and Austria in the year 2017.
 
 .. image:: ./pictures/Tut3pic3.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut3pic3
 
 | If you uncomment everything, you'll get a complete map of europe in light grey without emission sources, while Germany and Austria are highlighted and show their sources.
 | For the `map_PollutantSource() you have to insert the data and map set. You can choose the markersize, which is the size of the maximal output. The other sources are normalized to this value. If markersize is put on zero or is not given at all, all marker have the same size.  
@@ -184,17 +186,17 @@ Using map data
 | You can also plot different pollutants and color them differently with the parameter 'category'.
 
 .. image:: ./pictures/Tut3pic4.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut3pic4
 
 | To plot the emission of specific regions you can use the `map_PollutantRegions()` function. In the following example we plot the emission of CO2 in Austria on NUTS-level 2.
 
 .. image:: ./pictures/Tut3pic5.JPG
-    :width: 20%
+    :width: 80%
     :align: center
-    :height: 100px
-    :alt: testtesttest
+    :height: 400px
+    :alt: Tut3pic5
 
 | Since the returns of the functions are Axes-objects, you can use PyPlot functions and arguments to change the layout. You can also use `Geopandas <https://geopandas.org/>`_ to personalize the plot generation because the map data is stored as a GeoDataFrame.
