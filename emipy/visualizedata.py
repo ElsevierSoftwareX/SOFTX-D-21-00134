@@ -107,6 +107,7 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     for items in data.columns:
         if items != FirstOrder:
             data[items] = data[items].diff()
+    data = data.iloc[1:]
     return data
 
 
@@ -118,7 +119,7 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
     Parameters
     ----------
     db : DataFrame
-        DESCRIPTION.
+        The data to be plotted.
     FirstOrder : String, optional
         Name of column, the data are sorted in the first order. The default is None.
     SecondOrder : String, optional
@@ -132,7 +133,8 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
 
     Returns
     -------
-    Plot
+    ax : Axes
+        Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
@@ -145,6 +147,7 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
             ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
     return(ax)
 
+
 def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
     """
     Plots the volume change of the data set. The first order is the x-axis, the second order is a differentiation of the y-values.
@@ -152,7 +155,7 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
     Parameters
     ----------
     db : DataFrame
-        DESCRIPTION.
+        The data to be plotted.
     FirstOrder : String, optional
         Name of column, the data are sorted in the first order. The default is None.
     SecondOrder : String, optional
@@ -166,7 +169,8 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
 
     Returns
     -------
-    Plot
+    ax : Axes
+        Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
     data = get_PollutantVolumeChange(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
@@ -187,7 +191,7 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
     Parameters
     ----------
     db : DataFrame
-        DESCRIPTION.
+        The data to be plotted.
     FirstOrder : String, optional
         Name of column, the data are sorted in the first order. The default is None.
     SecondOrder : String, optional
@@ -203,7 +207,8 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
 
     Returns
     -------
-    Plot
+    ax : Axes
+        Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
     data = get_PollutantVolume_rel(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder, norm=norm)
@@ -235,7 +240,8 @@ def get_mb_borders(mb):
     borders = (foo.minx.min(), foo.miny.min(), foo.maxx.max(), foo.maxy.max())
     return list(borders)
 
-def excludeData_NotInBorders(borders,gdf):
+
+def excludeData_NotInBorders(borders, gdf):
     """
     seperates data, that are inside and outside given borders
 
@@ -248,7 +254,10 @@ def excludeData_NotInBorders(borders,gdf):
 
     Returns
     -------
-    [1] GeoDataFrame with data inside the borders. [2] GeoDataFrame with data outside the borders.
+    gdft : DataFrame
+        GeoDataFrame with data inside the borders.
+    gdff : DataFrame
+        GeoDataFrame with data outside the borders.
 
     """
     gdft = gdf
@@ -287,7 +296,7 @@ def add_markersize(gdf, maxmarker):
     return gdf
 
 
-def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
+def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *args, **kwargs):
     """
     maps pollutant sources given by db on map given by mb.
 
@@ -301,6 +310,8 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
         The column name of db, which gets new colors for every unique entry.
     markersize : Int
         maximal size of the largest marker.
+    ReturnMarker : Int
+        If put on 1, the function returns a DataFrame with all data that are plotted. If put on 2, the function returns a DataFrame with all data  that are not plotted, because their coordinates are outside the geo borders.
     *args : TYPE
         Geopandas.plot() input arguments.
     **kwargs : TYPE
@@ -313,7 +324,7 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
     gdfp : GeoDataFrame
         GeoDataFrame with all sources that are within geo borders and therefore plotted.
     gdfd : GeoDataFrame
-        GeoDataFrame with all sources that are outside geo borders and there fore
+        GeoDataFrame with all sources that are outside geo borders and therefore dropped.
 
     """
 # color selecting is bad.
@@ -345,7 +356,12 @@ def map_PollutantSource(db, mb, category=None, markersize=0, *args, **kwargs):
         print('Some data points are out of borders')
     else:
         print('All data points are within rectangular borders')
-    return(ax, gdfp, gdfd)
+    if ReturnMarker == 0:
+        return(ax)
+    elif ReturnMarker == 1:
+        return(gdfp)
+    else:
+        return(gdfd)
 
 
 def map_PollutantRegions(db, mb, *args, **kwargs):

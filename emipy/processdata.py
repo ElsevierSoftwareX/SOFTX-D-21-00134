@@ -172,7 +172,7 @@ def get_Yearlist(db):
 
     Returns
     -------
-    Countrylist : List
+    Yearlist : List
         List of unique reporting years.
 
     """
@@ -193,7 +193,7 @@ def get_Pollutantlist(db):
 
     Returns
     -------
-    Countrylist : List
+    Pollutant : List
         List of unique pollutant names.
 
     """
@@ -224,7 +224,7 @@ def get_CNTR_CODE_list(mb):
     return CNTR_CODE_list
 
 
-def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ExclaveExclude=False):
+def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ExclaveExclude=False, ReturnUnknown=False):
     """
     Takes DataFrame and filters out data, according to input parameters.
 
@@ -232,6 +232,8 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
     ----------
     db : DataFrame
         Input DataFrame.
+    FacilityReportID : Int/List, optional
+        List of FacilityReportID's to be maintained. The default is None. 
     CountryName : String/List, optional
         List of countries to be maintained. The default is None.
     ReportingYear : String/List, optional
@@ -248,6 +250,8 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
         List of NUTS region geocodes to be maintained. The default is None.
     ExclaveExclude : Boolean, optional
         If True, exclaves that are unique NUTS-LVL1 regions are excluded. The default is False.
+    ReturnUnknown : Boolean, optional
+        If True, function returns DataFrame that is sorted out due to not enough information for the filter process. The default is False.
 
     Returns
     -------
@@ -258,43 +262,58 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
 
     """
     dbna = pd.DataFrame()
+
+    if FacilityReportID is not None:
+        dbna = db[db.FacilityReportID.isna()]
+        if isinstance(FacilityReportID, list):
+            db = db[db.FacilityReportID.isin(FacilityReportID)]
+        else:
+            db = db[db.FacilityReportID == FacilityReportID]
+
     if CountryName is not None:
+        dbna = db[db.CountryName.isna()]
         if isinstance(CountryName, list):
             db = db[db.CountryName.isin(CountryName)]
         else:
             db = db[db.CountryName == CountryName]
 
     if ReportingYear is not None:
+        dbna = db[db.ReportingYear.isna()]
         if isinstance(ReportingYear, list):
             db = db[db.ReportingYear.isin(ReportingYear)]
         else:
             db = db[db.ReportingYear == ReportingYear]
 
     if ReleaseMediumName is not None:
+        dbna = db[db.ReleaseMediumName.isna()]
         if isinstance(ReleaseMediumName, list):
             db = db[db.ReleaseMediumName.isin(ReleaseMediumName)]
         else:
             db = db[db.ReleaseMediumName == ReleaseMediumName]
 
     if PollutantName is not None:
+        dbna = db[db.PollutantName.isna()]
         if isinstance(PollutantName, list):
             db = db[db.PollutantName.isin(PollutantName)]
         else:
             db = db[db.PollutantName == PollutantName]
 
     if PollutantGroupName is not None:
+        dbna = db[db.PollutantGroupName.isna()]
         if isinstance(PollutantGroupName, list):
             db = db[db.PollutantGroupName.isin(PollutantGroupName)]
         else:
             db = db[db.PollutantGroupName == PollutantGroupName]
 
     if NACEMainEconomicActivityCode is not None:
+        dbna = db[db.NACEMainEconomicActivityCode.isna()]
         if isinstance(NACEMainEconomicActivityCode, list):
             db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
         else:
             db = db[db.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
 
     if NUTSRegionGeoCode is not None:
+        dbna = db[db.NUTSRegionGeoCode.isna()]
         if isinstance(NUTSRegionGeoCode, list):
             db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) is True]
         else:
@@ -306,7 +325,11 @@ def f_db(db, CountryName=None, ReportingYear=None, ReleaseMediumName=None, Pollu
         dbna = db[db.NUTSRegionGeoCode.isna()]
         db = db[db.NUTSRegionGeoCode.notna()]
         db = db[~db.NUTSRegionGeoCode.str.startswith(ExclaveList)]
-    return (db, dbna)
+
+    if ReturnUnknown == True:
+        return dbna
+    else:
+        return db
 
 
 def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False):
@@ -347,8 +370,8 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
             mb = mb[mb.NAME_LATIN.isin(NAME_LATIN)]
         else:
             mb = mb[mb.NAME_LATIN == NAME_LATIN]
-    #ExclaveList has to be a tuple. invert does not work with list
-    ExclaveList = ('ES7', 'FRY', 'PT2', 'PT3')           
+    # ExclaveList has to be a tuple. invert does not work with list
+    ExclaveList = ('ES7', 'FRY', 'PT2', 'PT3')
     if ExclaveExclude is True:
         if mb.LEVL_CODE.sum() < len(mb):
             print('Exclave Exclusion is not yet possible on this NUTS_LVL.')
