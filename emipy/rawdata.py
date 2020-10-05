@@ -206,5 +206,6 @@ def init_emipy_project(path, force_rerun=False):
     directory = 'ExportData'
     path = os.path.join(path, directory)
     if os.path.isdir(path) is False:
-        os.mkdir(path)    
+        os.mkdir(path)
+    print('The Initialisation process is completed.')   
     return None
