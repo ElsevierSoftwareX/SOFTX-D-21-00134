@@ -7,12 +7,14 @@ Generating data sets
 | At first import the module processdata and read the data base.
 | The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function `read_db()` the path in form of a String as an argument.
 
+
 .. code-block:: python
 
     from emipy import processdata
 
     db = processdata.read_db()
     db.head()
+
 
 .. raw:: html
 
@@ -190,6 +192,7 @@ Generating data sets
 
     db.columns
 
+
 .. parsed-literal::
 
     Index(['FacilityReportID', 'PollutantReleaseAndTransferReportID', 'FacilityID',
@@ -227,9 +230,11 @@ Generating data sets
 
 | If you are interested in e.g. the countries that occur in your database you can receive a list with the `get_columnname()` functions. For more information take a look at the :ref:`processdata module description <moduleprocessdata>`.
 
+
 .. code-block:: python
 
     processdata.get_Countrylist(db)
+
 
 .. parsed-literal::
 
@@ -271,7 +276,8 @@ Generating data sets
 
 .. note::
 
-    The following lines only create the DataFrame and do not display it. To display the data table, execute e.g. `data1.head()`.
+    | The following lines only create the DataFrame and do not display it. To display the data table, execute e.g. `data1.head()`.
+    | For a better overview, you can use `db = processdata.row_reduction(db)`. The new DataFrame is reduced to a list of columns. This list can be adjusted.
 
 | Let's filter for pollution in Germany:
 
@@ -308,11 +314,11 @@ Generating data sets
 
     data4 = processdata.f_db(db, ExclaveExclude=True)
 
-| If you put returnna on True the function returns a data table, which contains all entries that would be sorted out in the filter process but just do not possess enough information to pass the filter. If this table is empty, then it is a good sign.
+| If you put ReturnUnknown on True the function returns a data table, which contains all entries that would be sorted out in the filter process but just do not possess enough information to pass the filter. If this table is empty, then it is a good sign.
 
 .. code-block:: python
 
-    data5 = processdata.f_db(db, returnna=True)
+    data5 = processdata.f_db(db, CountryName='Germany', ReturnUnknown=True,)
 
 | Now you can generate your own data set of interest with a few lines of code. Since db is a DataFrame object, you can use all `pandas <https://pandas.pydata.org/docs/index.html>`_ functions as well, to personalize your data generation.
 | 
@@ -437,7 +443,7 @@ Visualize data sets
 
 .. code-block:: python
 
-    visualizedata.export_fig(fig1, filename='CO2_Daten.png', dpi=80, bbox_inches=#tight')
+    visualizedata.export_fig(fig1, filename='CO2_Daten.jpg', dpi=80, bbox_inches='tight')
 
 
 Using map data
@@ -450,6 +456,8 @@ Using map data
     from emipy import processdata
     from emipy import visualizedata
     mb = processdata.read_mb()
+    db = processdata.read_db()
+
     mb.plot()
 
 | Of special interest is the parameter "NUTS_LVL", which is the level of the NUTS-ID's which are the codes for categorized regions. See the `Eurostat <https://ec.europa.eu/eurostat/de/web/nuts/nuts-maps>`_ page for more information.  
@@ -473,7 +481,6 @@ Using map data
     :alt: Tut3pic1
 
 | The filtering happens with the function f_mb(). Depending on the NUTS level, you can filter for countries or the corresponding NUTS-ID. Additionally, there is the argument ExclaveExclude which you can put on true to exclude the exclaves and map continental europe.  
-| To map e.g. North Rhine-Westphalia you have to know, that the NUTS-ID is 'DEA' and can use it as a filter. You can look up the NUTS_ID' at the link above or take a look in the DataFrame mb.
 
 .. code-block:: python
 
@@ -485,6 +492,8 @@ Using map data
     :align: center
     :alt: Tut3pic2
 
+| Lets generate a map of Germany
+
 .. code-block:: python
 
     mapdata2 = processdata.f_mb(mb, CNTR_CODE='DE')
@@ -494,6 +503,8 @@ Using map data
     :width: 80%
     :align: center
     :alt: Tut3pic3
+
+| To map e.g. North Rhine-Westphalia you have to know, that the NUTS-ID is 'DEA' and can use it as a filter. You can look up the NUTS_ID' at the link above or take a look in the DataFrame mb.
 
 .. code-block:: python
 
@@ -534,7 +545,7 @@ Using map data
 | If you uncomment everything, you'll get a complete map of Europe in light grey without emission sources, while Germany and Austria are highlighted and show their sources.
 | For the `map_PollutantSource()` you have to insert the data and map set. You can choose the markersize, which is the size of the maximal output. The other sources are normalized to this value. If markersize is put on zero or is not given at all, all marker have the same size.  
 | 
-| `map_PollutantSource()` returns three objects, therefore you have to specifiy which one you want to return. [0] returns the axes-object, or the plot. [1] returns the DataFrame with all data that are plotted. [2] returns the DataFrame with all data that is not plotted. This might happen, when the coordinates of the data is bad and not inside the regions or not given at all.  
+| `map_PollutantSource()` can return three different objects. The return is specified by the argument ReturnMarker which is [0] by default. If not choosen differently the function returns the axes-object, or the plot. ReturnMarker=1 returns the DataFrame with all data that are plotted. ReturnMarker=2 returns the DataFrame with all data that is not plotted. This might happen, when the coordinates of the data is bad and not inside the regions or not given at all.  
 | You can also plot different pollutants and color them differently with the parameter 'category'.
 
 .. code-block:: python
@@ -589,3 +600,10 @@ Using map data
     :alt: Tut3pic7
 
 | Since the returns of the functions are Axes-objects, you can use PyPlot functions and arguments to change the layout. You can also use `Geopandas <https://geopandas.org/>`_ to personalize the plot generation because the map data is stored as a GeoDataFrame.
+
+| As a last step you might want to save the plots you have created. This can be done with the `savefig()` function of PyPlot. Another method is to use the `export_fig()` function of emipy. This function will automatically save the function to the export folder of your emipy project. All selection arguments of the `savefig()` function are implemented.
+
+.. code-block:: python
+
+    visualizedata.export_fig(fig3, filename='Austria.jpg', dpi=80, bbox_inches='tight')
+

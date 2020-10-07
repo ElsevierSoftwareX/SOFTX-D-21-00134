@@ -38,12 +38,14 @@ For beginners of the Python world, we provide a step by step installation guide:
     3. Create the environment with the just downloaded file via executing the following line in the console:
 
         .. note::
-            You have to change the path to the path, where you stored environment.yml !
+            | You have to change the path to the path, where you stored environment.yml!
+	    | Make sure you have no blanks in your path!
 
     	``>conda env create -f C:\your\individual\path\environment.yml``
     4. Enter 'y' when asked to install all required packages.
     5. Activate the environment with:
-	``>conda activate emipy``
+	| ``>conda activate emipy``
+	| The environment is active when your active code line starts with "(emipy)" instead of "(base)".
 3. Initialize a new emipy project. For this:
     1. Open a Python skript in the Anaconda Prompt console via entering:
         ``>python``
@@ -52,11 +54,11 @@ For beginners of the Python world, we provide a step by step installation guide:
 	    You have to change the path to the location, where you want the data to be stored!
 
 	.. note::
-	    Since we now are in Python, the inserted path needs a special format. Python reads "\\" as a escape, like \\n for new line. You can either use "\\\\" or "/" instead of a single "\\" or, alternatively you can put a "r" before the path.
+	    Since we now are in Python, the inserted path needs a special format. Python reads ``"\"`` as a escape, like ``"\n"`` for new line. You can either use ``"\\"`` or "/" instead of a single ``"\"`` or, alternatively you can put a "r" before the path.
 	    Python needs the single mark quotes around the path to recognize it as a String. Keep that in mind, for all further applications of the emipy functions!
 
 	| ``>>>from emipy import rawdata``
-	| ``>>>rawdata.init_emipy_project(r'C:\Choose\a\path')``
+	| ``>>>rawdata.init_emipy_project('C:\\Choose\\a\\path')``
 	| ``>>>exit()``
 	| If the Init function completed it's task, it prints 'The Initialisation process is completed.' If you do not receive this message, check for typos and repeat executing the function.
 
@@ -85,4 +87,4 @@ Quick start
     | ``mb.plot()``
 
 .. note::
-    Use one Notebook box for each display line. Jupyter Notebook displays just the last object of the box. Therefore it just shows the plot of mb but not the table db, if you write both into the same box.
+    Use one Notebook box for each display line (db.head() and mb.plot()). Jupyter Notebook displays just the last object of the box. Therefore it just shows the plot of mb but not the table db, if you write both into the same box.
