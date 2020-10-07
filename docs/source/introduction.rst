@@ -87,4 +87,4 @@ Quick start
     | ``mb.plot()``
 
 .. note::
-    Use one Notebook box for each display line (db.head() and mb.plot()). Jupyter Notebook displays just the last object of the box. Therefore it just shows the plot of mb but not the table db, if you write both into the same box.
+    Use one Notebook box for each display line (``db.head()`` and ``mb.plot()``). Jupyter Notebook displays just the last object of the box. Therefore it just shows the plot of mb but not the table db, if you write both into the same box.

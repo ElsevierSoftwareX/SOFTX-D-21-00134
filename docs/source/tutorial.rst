@@ -15,6 +15,7 @@ Generating data sets
     db = processdata.read_db()
     db.head()
 
+| 
 
 .. raw:: html
 
@@ -192,6 +193,7 @@ Generating data sets
 
     db.columns
 
+| 
 
 .. parsed-literal::
 
@@ -235,6 +237,7 @@ Generating data sets
 
     processdata.get_Countrylist(db)
 
+| 
 
 .. parsed-literal::
 
