@@ -8,6 +8,7 @@ import os
 from os.path import join, isfile
 import geopandas
 import configparser
+import copy
 
 
 def read_db(path=None):
@@ -381,9 +382,62 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
     return mb
 
 
+def change_Unit(db, Unit=None):
+    """
+    Changes the Units of the emission in the table and adapts the numbers of TotalQuantity in the according way. If no Unit is given, no changes are applied.
+
+    Parameters
+    ----------
+    db : DataFrame
+        DataFrame which Units are to be changed.
+    Unit : string, optional
+        New Unit. The default is None.
+
+    Returns
+    -------
+    data : DataFrame
+        DataFrame with changed emission units.
+
+    """
+    if Unit == None:
+        print('New Unit is needed. No changes applied.')
+        return None
+    UnitNumberDict = {
+        'gram': 1,
+        'kilogram': 10**3,
+        'ton': 10**6,
+        'kiloton': 10**9,
+        'megaton': 10**12,
+        'gigaton': 10**15}
+    UnitCodeDict = {
+        'gram': 'GM',
+        'kilogram': 'KGM',
+        'ton': 'TN',
+        'kiloton': 'KTN',
+        'megaton': 'MTN',
+        'gigaton': 'GTN'}
+
+    data = copy.deepcopy(db)
+    if len(data.UnitName.unique()) > 1:
+        print('Warning: multiple units in DataFrame!')
+
+    # The first two lines are just applicable, if the DataFrame has just one Unit. They represent two ways how to call the values that are to change.
+    # factor = UnitNumberDict[db.UnitName.unique()[0]] / UnitNumberDict[Unit]
+    # The third line is more generally applicable. It's written more "Pythonic" but the dict can't be called from a hasable object.
+    # data.loc[:, 'TotalQuantity'] = data.loc[:, 'TotalQuantity'] * factor
+    # data.TotalQuantity = data.TotalQuantity * factor
+    # data.TotalQuantity = data.TotalQuantity * UnitNumberDict[data.UnitName] / UnitNumberDict[Unit]
+    for i in range(len(data)):
+        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[data.loc[i,'UnitName']] / UnitNumberDict[Unit]
+
+    data.loc[:, 'UnitName'] = Unit
+    data.loc[:, 'UnitCode'] = UnitCodeDict[Unit]
+    return data
+
+
 def change_RenameDict(total=None, add=None, sub=None, reset=False):
     """
-    Changes the column name dict in the config file.
+    Changes the column name dict in the config file and returns the actual column names dict.
 
     Parameters
     ----------
@@ -398,13 +452,14 @@ def change_RenameDict(total=None, add=None, sub=None, reset=False):
 
     Returns
     -------
-    None.
+    config['COLUMNNAMES'] : dict
+        actualised column name dictionary.
 
     """
     config = configparser.ConfigParser()
-    config.optionxform=str
+    config.optionxform = str
     config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
-    if reset==True:
+    if reset == True:
         resetdict = {'ReportingYear':'Year', 'CountryName':'Country', 'NUTSRegionGeoCode':'NUTSID', 'NACEMainEconomicActivityCode':'NACEID', 'NACEMainEconomicActivityName':'NACEName', 'PollutantName':'Pollutant', 'UnitCode':'Unit'}
         config['COLUMNNAMES'] = resetdict
     if total != None:
@@ -415,6 +470,7 @@ def change_RenameDict(total=None, add=None, sub=None, reset=False):
         all(map( config['COLUMNNAMES'].pop, sub))
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
         config.write(configfile)
+    return config['COLUMNNAMES']
 
 
 def rename_columns(db):
@@ -433,7 +489,7 @@ def rename_columns(db):
 
     """
     config = configparser.ConfigParser()
-    config.optionxform=str
+    config.optionxform = str
     config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
     columndict = dict(config.items('COLUMNNAMES'))
     db = db.rename(columns=columndict)
@@ -510,7 +566,7 @@ def row_reduction(db):
 
     """
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
     remain = config['COLUMNSOFINTEREST']['columnnames']
     remain = remain.split(',')
     db = db[remain]
@@ -540,11 +596,17 @@ def export_db_topickle(db, path=None, filename=None, **kwargs):
     if (path==None and filename==None):
         print('A filename is required')
         return None
-    if path==None:
+    elif path == None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
+    elif (path != None and filename != None):
+        path = os.path.join(path, filename)
+
+    if path.endswith('.pkl') == False:
+        print('The file name or path must end with .pkl')
+        return None
 
     db.to_pickle(path, **kwargs)
     return None
@@ -573,11 +635,17 @@ def export_db_tocsv(db, path=None, filename=None, **kwargs):
     if (path==None and filename==None):
         print('A filename is required')
         return None
-    if path==None:
+    elif path==None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
+    elif (path != None and filename != None):
+        path = os.path.join(path, filename)
+
+    if path.endswith('.csv') == False:
+        print('The file name or path must end with .csv')
+        return None
 
     db.to_csv(path, **kwargs)
     return None
@@ -602,15 +670,20 @@ def export_db_toexcel(db, path=None, filename=None, **kwargs):
     None
 
     """
-    if (path==None and filename==None):
+    if (path == None and filename == None):
         print('A filename is required')
         return None
-    if path==None:
+    elif path == None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
+    elif (path != None and filename != None):
+        path = os.path.join(path, filename)
+
+    if path.endswith('.xlsx') == False:
+        print('The file name or path must end with .xlsx')
+        return None
 
     db.to_excel(path, **kwargs)
     return None
-

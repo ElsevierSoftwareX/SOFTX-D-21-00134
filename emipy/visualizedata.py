@@ -415,10 +415,17 @@ def export_fig(fig, path=None, filename=None, **kwargs):
     if (path==None and filename==None):
         print('A filename is required.')
         return None
-    if path==None:
+    elif path==None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
+    elif (path != None and filename != None):
+        path = os.path.join(path, filename)
+
+    if path.endswith(r'\\') == True:
+        print('The file name or path must end with a file type extension')
+        return None
+
     fig.savefig(path, **kwargs)
     return None
