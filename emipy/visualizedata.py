@@ -111,7 +111,7 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     return data
 
 
-def plot_PollutantVolume(db, ax=None, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
+def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
     """
 
     Plots the filtered data set. The first order is the x-axis, the second order is a differentiation of the y-values.
@@ -137,21 +137,19 @@ def plot_PollutantVolume(db, ax=None, FirstOrder=None, SecondOrder=None, stacked
         Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
-    if ax is None:
-        ax = plt.gca()
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
     if SecondOrder is None:
-        data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', ax=ax,
+        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar',
                   *args, **kwargs)
     else:
         if stacked is True:
-            data.plot.bar(x=FirstOrder, stacked=True, ax=ax, *args, **kwargs)
+            ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
         else:
-            data.plot.bar(x=FirstOrder, ax=ax, *args, **kwargs)
-    return(ax)
+            ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
+    return ax
 
 
-def plot_PollutantVolumeChange(db, ax=None, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
+def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
     """
     Plots the volume change of the data set. The first order is the x-axis, the second order is a differentiation of the y-values.
 
@@ -176,22 +174,19 @@ def plot_PollutantVolumeChange(db, ax=None, FirstOrder=None, SecondOrder=None, s
         Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
-    if ax is None:
-        ax = plt.gca()
     data = get_PollutantVolumeChange(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
     if SecondOrder is None:
-        data.plot(x=FirstOrder, y='TotalQuantityChange', kind='bar',
-                  ax=ax, *args, **kwargs)
+        ax = data.plot(x=FirstOrder, y='TotalQuantityChange', kind='bar', 
+                       *args, **kwargs)
     else:
         if stacked is True:
-            data.plot.bar(x=FirstOrder, stacked=True, ax=ax,
-                               *args, **kwargs)
+            ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
         else:
-            data.plot.bar(x=FirstOrder, ax=ax, *args, **kwargs)
-    return(ax)
+            ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
+    return ax
 
 
-def plot_PollutantVolume_rel(db, ax=None, FirstOrder=None, SecondOrder=None, stacked=False, norm=None, *args, **kwargs):
+def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=False, norm=None, *args, **kwargs):
     """
     Plots the normed pollutant volume of the data set, The first order is the x-axis, the second order is a differentiation of the y-values.
 
@@ -218,18 +213,15 @@ def plot_PollutantVolume_rel(db, ax=None, FirstOrder=None, SecondOrder=None, sta
         Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
-    if ax is None:
-        ax = plt.gca()
     data = get_PollutantVolume_rel(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder, norm=norm)
     if SecondOrder is None:
-        data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', ax=ax,
+        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar',
                   *args, **kwargs)
     else:
         if stacked is True:
-            data.plot.bar(x=FirstOrder, stacked=True, ax=ax,
-                          *args, **kwargs)
+            ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
         else:
-            data.plot.bar(x=FirstOrder, ax=ax, *args, **kwargs)
+            ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
     return ax
 
 
@@ -279,7 +271,7 @@ def excludeData_NotInBorders(borders, gdf):
         if (gdf.geometry.iloc[i].x < borders[0]) or (gdf.geometry.iloc[i].x > borders[2]) or (gdf.geometry.iloc[i].y < borders[1]) or (gdf.geometry.iloc[i].y > borders[3]):
             gdff = gdff.append(gdf.iloc[i])
             gdft = gdft.drop([i], axis=0)
-    return(gdft, gdff)
+    return gdft, gdff
 
 
 def add_markersize(gdf, maxmarker):
@@ -308,7 +300,7 @@ def add_markersize(gdf, maxmarker):
     return gdf
 
 
-def map_PollutantSource(db, mb, ax=None, category=None, markersize=0, ReturnMarker=0, *args, **kwargs):
+def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *args, **kwargs):
     """
     maps pollutant sources given by db on map given by mb.
 
@@ -341,9 +333,7 @@ def map_PollutantSource(db, mb, ax=None, category=None, markersize=0, ReturnMark
     """
     # color selecting is bad.
     # Calling gdfp, gdfd requires 2 times performing the function, perhaps better way.
-    if ax is None:
-        ax = plt.gca()
-    mb.plot(zorder=1, ax=ax, *args, **kwargs)
+    ax = mb.plot(zorder=1, *args, **kwargs)
     colorlist = ['r', 'y', 'g', 'c', 'm', 'b']
     borders = get_mb_borders(mb)
     if category is None:
@@ -351,7 +341,7 @@ def map_PollutantSource(db, mb, ax=None, category=None, markersize=0, ReturnMark
         gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
         gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
         gdfp = add_markersize(gdfp, maxmarker=markersize)
-        gdfp.plot(color='r', zorder=1, markersize=gdfp['markersize'], ax=ax,
+        ax = gdfp.plot(color='r', zorder=1, markersize=gdfp['markersize'],
                   *args, **kwargs)
     else:
         for items in db[category].unique():
@@ -366,8 +356,8 @@ def map_PollutantSource(db, mb, ax=None, category=None, markersize=0, ReturnMark
             gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
             gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
             gdfp = add_markersize(gdfp, maxmarker=markersize)
-            gdfp.plot(color=color, zorder=1, markersize=gdfp['markersize'],
-                      ax=ax, *args, **kwargs)
+            ax = gdfp.plot(color=color, zorder=1, markersize=gdfp['markersize'],
+                      *args, **kwargs)
     if gdfd.empty is False:
         print('Some data points are out of borders')
     else:
@@ -380,7 +370,7 @@ def map_PollutantSource(db, mb, ax=None, category=None, markersize=0, ReturnMark
         return gdfd
 
 
-def map_PollutantRegions(db, mb, ax=None, *args, **kwargs):
+def map_PollutantRegions(db, mb, legend=True, *args, **kwargs):
     """
     Visualizes the pollutant emission of regions with a color map. The classification of regions is selected with the choice of mb.
 
@@ -401,25 +391,15 @@ def map_PollutantRegions(db, mb, ax=None, *args, **kwargs):
         Axes with colormap of the pollution emission.
 
     """
-    if ax is None:
-        ax = plt.gca()
     db01 = get_PollutantVolume(db, FirstOrder='NUTSRegionGeoCode')
     db01 = db01.rename(columns={'NUTSRegionGeoCode': 'NUTS_ID'})
     db02 = pd.merge(mb, db01, how='left', on=['NUTS_ID'])
-    db02.plot(column='TotalQuantity', ax=ax, *args, **kwargs)
+    ax = db02.plot(column='TotalQuantity', *args, **kwargs)
 
     # BITTE KURZ PRÜFEN
     ax.set_xlabel('Longitude [°]')
     ax.set_ylabel('Latitude [°]')
 
-    # @FLORIAN BITTE TESTEN UND PRÜFEN !!!
-    vmin = db02.TotalQuantity.min()
-    vmax = db02.TotalQuantity.max()
-    sm = plt.cm.ScalarMappable(norm=plt.Normalize(vmin=vmin, vmax=vmax),
-                               *args, **kwargs)
-    sm._A = []
-    cbar = plt.colorbar(sm, ax=ax)
-    cbar.ax.tick_params(labelsize=plt.rcParams['axes.labelsize'])
     return ax
 
 
