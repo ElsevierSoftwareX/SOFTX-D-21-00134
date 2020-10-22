@@ -111,7 +111,7 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     return data
 
 
-def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
+def plot_PollutantVolume(db, ax=None, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
     """
 
     Plots the filtered data set. The first order is the x-axis, the second order is a differentiation of the y-values.
@@ -137,14 +137,17 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
         Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
 
     """
+    if ax is None:
+        ax = plt.gca()
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
     if SecondOrder is None:
-        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', *args, **kwargs)
+        data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', ax=ax,
+                  *args, **kwargs)
     else:
         if stacked is True:
-            ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
+            data.plot.bar(x=FirstOrder, stacked=True, ax=ax, *args, **kwargs)
         else:
-            ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
+            data.plot.bar(x=FirstOrder, ax=ax, *args, **kwargs)
     return(ax)
 
 
