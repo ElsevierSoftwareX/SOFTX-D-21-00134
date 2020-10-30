@@ -320,7 +320,7 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         else:
             db = db[db.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) is True]
 
-    ExclaveList = ('ES7', 'FRY', 'PT2', 'PT3')
+    ExclaveList = ('ES7', 'FRY', 'FRA','FR9', 'PT2', 'PT3')
     if ExclaveExclude is True:
         # negation does not work on na-values
         dbna = db[db.NUTSRegionGeoCode.isna()]
@@ -372,7 +372,7 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
         else:
             mb = mb[mb.NAME_LATIN == NAME_LATIN]
     # ExclaveList has to be a tuple. invert does not work with list
-    ExclaveList = ('ES7', 'FRY', 'PT2', 'PT3')
+    ExclaveList = ('ES7', 'FRY', 'FRA','FR9', 'PT2', 'PT3')
     if ExclaveExclude is True:
         if mb.LEVL_CODE.sum() < len(mb):
             print('Exclave Exclusion is not yet possible on this NUTS_LVL.')
