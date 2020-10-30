@@ -38,22 +38,22 @@ def read_db(path=None):
     return db
 
 
-def read_mb(Resolution='01M', spatialtype='RG', path=None, NUTS_LVL=None, m_year='2021', projection='4326', subset=None):
+def read_mb(path=None, Resolution='10M', spatialtype='BN', NUTS_LVL=0, m_year=2016, projection=4326, subset=None):
     """
     Reads the shp file with the specifications given in the input.
 
     Parameters
     ----------
-    Resolution : String
-        Resolution of the map. The default is 01M
-    spatialtype : String
-        Format of data presentation. The default is RG
     path : String, optional
         Path to root of your project.
+    Resolution : String
+        Resolution of the map. The default is '10M'.
+    spatialtype : String
+        Format of data presentation. The default is 'BN'.
     NUTS_LVL : Int, optional
-        NUTS-classification level, defined by the eurostat.
+        NUTS-classification level, defined by the eurostat. The default is 0.
     m_year : Int
-        Year of publication of the geographical data. The default is 2021.
+        Year of publication of the geographical data. The default is 2016.
     projection : Int
         Projection on the globe. The default is 4326.
     subset : String, optional

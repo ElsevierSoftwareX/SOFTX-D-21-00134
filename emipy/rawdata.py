@@ -39,7 +39,7 @@ def download_PollutionData(path, chunk_size=128):
         z.extractall(path)
 
 
-def download_MapFiles(path, chunk_size=128):
+def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
     """
     Download shp files to given path
 
@@ -47,6 +47,10 @@ def download_MapFiles(path, chunk_size=128):
     ----------
     path : String
         Path to the root of the project.
+    Resolution : int/list, optional
+        Defines the resolution, that the downloaded maps have. Selectable are 1,3,10,20,60. The default is 10.
+    clear : Boolean
+        If put on True, the function clears the MappingData Directory, before downloading the data., The default is False.
     chunk_size : TYPE, optional
         DESCRIPTION. The default is 128.
 
@@ -57,30 +61,77 @@ def download_MapFiles(path, chunk_size=128):
     """
     directory = 'MappingData'
     path = os.path.join(path, directory)
+
     if os.path.isdir(path) is False:
         os.mkdir(path)
-    if not os.listdir(path):
-        # It might be better to feed the process for each link in order to reuse cache
-        url1 = 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-01m.shp.zip'
-        url3 = 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-03m.shp.zip'
-        url10 = 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-10m.shp.zip'
-        url20 = 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-20m.shp.zip'
-        url60 = 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-60m.shp.zip'
-        r1 = requests.get(url1, stream=True)
-        r3 = requests.get(url3, stream=True)
-        r10 = requests.get(url10, stream=True)
-        r20 = requests.get(url20, stream=True)
-        r60 = requests.get(url60, stream=True)
-        z1 = zipfile.ZipFile(io.BytesIO(r1.content))
-        z3 = zipfile.ZipFile(io.BytesIO(r3.content))
-        z10 = zipfile.ZipFile(io.BytesIO(r10.content))
-        z20 = zipfile.ZipFile(io.BytesIO(r20.content))
-        z60 = zipfile.ZipFile(io.BytesIO(r60.content))
-        z1.extractall(path)
-        z3.extractall(path)
-        z10.extractall(path)
-        z20.extractall(path)
-        z60.extractall(path)
+
+    if clear == True:
+       os.chdir(path)
+       for item in os.listdir(path):
+           file_name = os.path.abspath(item)
+           os.remove(file_name)
+
+    urldict = {
+        202101: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-01m.shp.zip',
+        202103: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-03m.shp.zip',
+        202110: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-10m.shp.zip',
+        202120: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-20m.shp.zip',
+        202160: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-60m.shp.zip',
+
+        201601: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-01m.shp.zip',
+        201603: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-03m.shp.zip',
+        201610: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-10m.shp.zip',
+        201620: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-20m.shp.zip',
+        201660: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-60m.shp.zip',
+
+        201301: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-01m.shp.zip',
+        201303: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-03m.shp.zip',
+        201310: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-10m.shp.zip',
+        201320: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-20m.shp.zip',
+        201360: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-60m.shp.zip',
+
+        201001: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-01m.shp.zip',
+        201003: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-03m.shp.zip',
+        201010: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-10m.shp.zip',
+        201020: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-20m.shp.zip',
+        201060: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-60m.shp.zip',
+
+        200601: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-01m.shp.zip',
+        200603: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-03m.shp.zip',
+        200610: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-10m.shp.zip',
+        200620: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-20m.shp.zip',
+        200660: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-60m.shp.zip',
+
+        200301: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-01m.shp.zip',
+        200303: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-03m.shp.zip',
+        200310: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-10m.shp.zip',
+        200320: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-20m.shp.zip',
+    }
+
+    publist = [2021, 2016, 2013, 2010, 2006, 2003]
+    urllist = []
+    for items in publist:
+        if isinstance(Resolution, list):
+            for res in Resolution:
+                if len(str(res)) == 1:
+                    urlkey = int(str(items) + str(0) + str(res))
+                else:
+                    urlkey = int(str(items) + str(res))
+                urllist.append(urldict.get(urlkey))
+        else:
+            if len(str(Resolution)) == 1:
+                urlkey = int(str(items) + str(0) + str(Resolution))
+            else:
+                urlkey = int(str(items) + str(Resolution))
+            urllist.append(urldict.get(urlkey))
+
+    for items in urllist:
+        print(items)
+        if items == None:
+            continue
+        r = requests.get(items, stream=True)
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(path)
         extension = '.zip'
         os.chdir(path)
         for item in os.listdir(path):
@@ -179,7 +230,7 @@ def change_rootpath(path):
         config.write(configfile)
 
 
-def init_emipy_project(path, force_rerun=False):
+def init_emipy_project(path, Resolution=10, force_rerun=False):
     """
     Executes the initiation of a new project. Downloads all needed data and to the given path and merges data of interest.
 
@@ -189,6 +240,8 @@ def init_emipy_project(path, force_rerun=False):
         Path to root of project.
     force_rerun : Boolean, optional
         Forces the programm to rerun the merging routine, if True. The default is False.
+    Resolution : int/list, optional
+        Defines the resolution, that the downloaded maps have. Selectable are 1,3,10,20,60. The default is 10.
 
     Returns
     -------
@@ -200,7 +253,7 @@ def init_emipy_project(path, force_rerun=False):
         return None
     change_rootpath(path)
     download_PollutionData(path=path)
-    download_MapFiles(path=path)
+    download_MapFiles(path=path, Resolution=Resolution)
     pickle_rawdata(path=path, force_rerun=force_rerun)
     merge_frompickle(path=path, force_rerun=force_rerun)
     directory = 'ExportData'
