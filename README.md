@@ -1,5 +1,5 @@
-[![PyPI version](https://img.shields.io/pypi/v/calliope.svg?style=flat-square)](https://pypi.org/project/emipy/)
-[![Documentation build status](https://img.shields.io/readthedocs/calliope.svg?style=flat-square)](https://readthedocs.org/projects/emipy/builds/)
+[![PyPI version](https://img.shields.io/pypi/v/emipy.svg?style=flat-square)](https://pypi.org/project/emipy/)
+[![Documentation build status](https://img.shields.io/readthedocs/emipy.svg?style=flat-square)](https://readthedocs.org/projects/emipy/builds/)
 
 # About
 emipy is a package for processing data of pollutant releases and pollutant transfers.
