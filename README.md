@@ -1,6 +1,6 @@
 [![PyPI version](https://img.shields.io/pypi/v/emipy.svg)](https://pypi.org/project/emipy/)
 [![Documentation build status](https://img.shields.io/readthedocs/emipy.svg)](https://readthedocs.org/projects/emipy/builds/)
-![Pythonversion](https://img.shields.io/pypi/pyversions/emipy.svg)
+![Python version](https://img.shields.io/pypi/pyversions/emipy.svg)
 ![LICENSE](https://img.shields.io/pypi/l/emipy.svg)
 
 # About
