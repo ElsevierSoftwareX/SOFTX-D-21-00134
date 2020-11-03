@@ -1,3 +1,6 @@
+[![PyPI version](https://img.shields.io/pypi/v/calliope.svg?style=flat-square)](https://pypi.org/project/emipy/)
+[![Documentation build status](https://img.shields.io/readthedocs/calliope.svg?style=flat-square)](https://readthedocs.org/projects/emipy/builds/)
+
 # About
 emipy is a package for processing data of pollutant releases and pollutant transfers.
 It's main target is to enable a fast output of individual data set requests and to provide visualisation options.
