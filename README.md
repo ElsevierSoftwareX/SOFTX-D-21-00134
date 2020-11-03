@@ -1,5 +1,5 @@
-[![PyPI version](https://img.shields.io/pypi/v/emipy.svg?style=flat-square)](https://pypi.org/project/emipy/)
-[![Documentation build status](https://img.shields.io/readthedocs/emipy.svg?style=flat-square)](https://readthedocs.org/projects/emipy/builds/)
+[![PyPI version](https://img.shields.io/pypi/v/emipy.svg](https://pypi.org/project/emipy/)
+[![Documentation build status](https://img.shields.io/readthedocs/emipy.svg](https://readthedocs.org/projects/emipy/builds/)
 ![pythonversion](https://img.shields.io/pypi/pyversions/emipy)
 ![LICENSE](https://img.shields.io/pypi/l/emipy.svg)
 
