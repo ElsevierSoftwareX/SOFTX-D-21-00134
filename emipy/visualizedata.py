@@ -364,9 +364,9 @@ def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *ar
         return(gdfd)
 
 
-def map_PollutantRegions(db, mb, *args, **kwargs):
+def map_PollutantRegions(db, mb, ReturnMarker=0, *args, **kwargs):
     """
-    Visualizes the pollutant emission of regions with a color map. The classification of regions is selected with the choice of mb.
+    Visualizes the pollutant emission of regions with a color map. The classification of regions is selected with the choice of mb. If ReturnMarker is put on 1, the function returns a DataFrame with the plotted data. If ReturnMarker is put on 2, the function returns the DataFrame with Data that have no complementary NUTSID in the mapdata.
 
     Parameters
     ----------
@@ -374,6 +374,8 @@ def map_PollutantRegions(db, mb, *args, **kwargs):
         Pollution data that are plotted.
     mb : TYPE
         Map data for plotting. The region selection corresponds to the selection of mb.
+    ReturnMarker : int
+        If it has the value 0, the function returns the plot. If put on 1, the function returns a DataFrame with all data that are plotted. If put on 2, the function returns a DataFrame with all data that are not plotted, because their NUTS_ID is not present in the mapdata.
     *args : TYPE
         Geopandas.plot() input arguments.
     **kwargs : TYPE
@@ -383,13 +385,27 @@ def map_PollutantRegions(db, mb, *args, **kwargs):
     -------
     ax : Axes
         Axes with colormap of the pollution emission.
+    dbp : DataFrame
+        Data that are plotted
+    dbna : DataFrame
+        Data that are not plotted, because the NUTS_ID is not present in the mapdata.
 
     """
     db01 = get_PollutantVolume(db, FirstOrder='NUTSRegionGeoCode')
     db01 = db01.rename(columns={'NUTSRegionGeoCode': 'NUTS_ID'})
     db02 = pd.merge(mb, db01, how='left', on=['NUTS_ID'])
     ax = db02.plot(column='TotalQuantity', *args, **kwargs)
-    return(ax)
+
+    presentNUTS_IDs = mb.NUTS_ID.tolist()
+    dbna = db01[~db01.NUTS_ID.isin(presentNUTS_IDs)]
+    dbp = db01[db01.NUTS_ID.isin(presentNUTS_IDs)]
+
+    if ReturnMarker == 0:
+        return(ax)
+    elif ReturnMarker == 1:
+        return(dbp)
+    else:
+        return(dbna)
 
 
 def export_fig(fig, path=None, filename=None, **kwargs):
@@ -412,12 +428,12 @@ def export_fig(fig, path=None, filename=None, **kwargs):
     None.
 
     """
-    if (path==None and filename==None):
+    if (path == None and filename == None):
         print('A filename is required.')
         return None
-    elif path==None:
+    elif path == None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))       
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
     elif (path != None and filename != None):
