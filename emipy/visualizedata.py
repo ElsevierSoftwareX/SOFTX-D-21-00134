@@ -139,13 +139,14 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
     """
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
     if SecondOrder is None:
-        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', *args, **kwargs)
+        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar',
+                  *args, **kwargs)
     else:
         if stacked is True:
             ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
         else:
             ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
-    return(ax)
+    return ax
 
 
 def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
@@ -175,13 +176,14 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
     """
     data = get_PollutantVolumeChange(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
     if SecondOrder is None:
-        ax = data.plot(x=FirstOrder, y='TotalQuantityChange', kind='bar', *args, **kwargs)
+        ax = data.plot(x=FirstOrder, y='TotalQuantityChange', kind='bar', 
+                       *args, **kwargs)
     else:
         if stacked is True:
             ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
         else:
             ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
-    return(ax)
+    return ax
 
 
 def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=False, norm=None, *args, **kwargs):
@@ -213,12 +215,14 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
     """
     data = get_PollutantVolume_rel(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder, norm=norm)
     if SecondOrder is None:
-        data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', *args, **kwargs)
+        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar',
+                  *args, **kwargs)
     else:
         if stacked is True:
-            data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
+            ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
         else:
-            data.plot.bar(x=FirstOrder, *args, **kwargs)
+            ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
+    return ax
 
 
 def get_mb_borders(mb):
@@ -267,7 +271,7 @@ def excludeData_NotInBorders(borders, gdf):
         if (gdf.geometry.iloc[i].x < borders[0]) or (gdf.geometry.iloc[i].x > borders[2]) or (gdf.geometry.iloc[i].y < borders[1]) or (gdf.geometry.iloc[i].y > borders[3]):
             gdff = gdff.append(gdf.iloc[i])
             gdft = gdft.drop([i], axis=0)
-    return(gdft, gdff)
+    return gdft, gdff
 
 
 def add_markersize(gdf, maxmarker):
@@ -327,8 +331,8 @@ def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *ar
         GeoDataFrame with all sources that are outside geo borders and therefore dropped.
 
     """
-# color selecting is bad.
-# Calling gdfp, gdfd requires 2 times performing the function, perhaps better way.
+    # color selecting is bad.
+    # Calling gdfp, gdfd requires 2 times performing the function, perhaps better way.
     ax = mb.plot(zorder=1, *args, **kwargs)
     colorlist = ['r', 'y', 'g', 'c', 'm', 'b']
     borders = get_mb_borders(mb)
@@ -337,7 +341,8 @@ def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *ar
         gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
         gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
         gdfp = add_markersize(gdfp, maxmarker=markersize)
-        ax = gdfp.plot(color='r', zorder=1, markersize=gdfp['markersize'], *args, **kwargs)
+        ax = gdfp.plot(color='r', zorder=1, markersize=gdfp['markersize'],
+                  *args, **kwargs)
     else:
         for items in db[category].unique():
             if not colorlist:
@@ -351,17 +356,18 @@ def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *ar
             gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
             gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
             gdfp = add_markersize(gdfp, maxmarker=markersize)
-            ax = gdfp.plot(color=color, zorder=1, markersize=gdfp['markersize'], *args, **kwargs)
+            ax = gdfp.plot(color=color, zorder=1, markersize=gdfp['markersize'],
+                      *args, **kwargs)
     if gdfd.empty is False:
         print('Some data points are out of borders')
     else:
         print('All data points are within rectangular borders')
     if ReturnMarker == 0:
-        return(ax)
+        return ax
     elif ReturnMarker == 1:
-        return(gdfp)
+        return gdfp
     else:
-        return(gdfd)
+        return gdfd
 
 
 def map_PollutantRegions(db, mb, ReturnMarker=0, *args, **kwargs):
