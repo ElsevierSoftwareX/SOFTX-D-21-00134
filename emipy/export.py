@@ -11,6 +11,13 @@ import copy
 
 def get_default_config():
     """
+    Returns the default configuration 
+
+    Returns
+    -------
+    d : dict
+        dictionary with default configuration.
+
     """
     d = {'techs': {
         'amine_scrubbing': {
@@ -52,6 +59,22 @@ def get_default_config():
 
 def prepare_csv(data):
     """
+    Creates a DataFrame with the emission volume of the different facilitys distributed over a time series.
+
+    Parameters
+    ----------
+    data : DataFrame
+        Data from which a time series is to be generated.
+
+    Returns
+    -------
+    df : DataFrame
+        Time series of the pollutant emission for all present facility ID's.
+    coords : dict
+        Dictionary that stores the coordinates of each facility.
+    FacilityIDDict : dict
+        Dictionary that stores the facility names of each facility.
+
     """
     years = sorted(data.ReportingYear.unique())
     df = pd.DataFrame()
@@ -60,21 +83,35 @@ def prepare_csv(data):
                                           end=str(y)+'-12-31 23',
                                           freq='H'))
         df = pd.concat([df, df0])
-
+    FacilityIDDict = {}
     coords = {}
     for y in years:
+        df0 = pd.DataFrame(index=pd.date_range(start=str(y), end=str(y)+'-12-31 23', freq='H'))
         for i, row in data[data.ReportingYear == y].iterrows():
-            column_name = row.FacilityName.replace(' ', '_').replace('.', '_').replace(',', '_').replace('-', '_').replace('\&', '_').replace('ä', 'ae').replace('ö', 'oe').replace('ü', 'ue')
-            df.loc[str(y), column_name] = row.TotalQuantity/len(df)
+            FacilityIDDict[row.FacilityID] = row.FacilityName.replace(' ', '_').replace('.', '_').replace(',', '_').replace('-', '_').replace('\&', '_').replace('ä', 'ae').replace('ö', 'oe').replace('ü', 'ue')
+            column_name = row.FacilityID
             coords[column_name] = (row.Lat, row.Long)
-    return df, coords
+    return df, coords, FacilityIDDict
 
 
 def export_calliope(data, sc=0.07):
     """
+    Exports the data to a csv file readable by the calliope project.
+
+    Parameters
+    ----------
+    data : DataFrame
+        Data that are to be exported.
+    sc : int, optional
+        monetary cost factor. The default is 0.07.
+
+    Returns
+    -------
+    None.
+
     """
 
-    df, coords = prepare_csv(data)
+    df, coords, FacilityIDDict = prepare_csv(data)
     d = get_default_config()
     config = {}
     
