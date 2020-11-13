@@ -214,7 +214,7 @@ dependencies:
   - pip:
     - argon2-cffi==20.1.0
     - descartes==1.1.0
-    - emipy==0.0.59
+    - emipy==0.0.60
     - ipywidgets==7.5.1
     - jupyter==1.0.0
     - jupyter-console==6.2.0
