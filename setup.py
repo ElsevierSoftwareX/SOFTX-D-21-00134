@@ -16,7 +16,7 @@ setuptools.setup(
     name="emipy",
     version="0.0.58",
     author="Flow2theryan; s.morgenthaler",
-    author_email="f.overberg@web.de; s.morgenthaler@fz-juelich.de",
+    author_email="s.morgenthaler@fz-juelich.de",
     description="A small package for emission data analysis",
     long_description=long_description,
     long_description_content_type="text/markdown",
