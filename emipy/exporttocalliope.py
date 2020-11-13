@@ -5,7 +5,7 @@ Created on Thu Sep 17 09:17:58 2020
 @author: Morgenthaler
 """
 
-import yaml
+from ruamel.yaml import YAML
 import pandas as pd
 import copy
 
@@ -124,6 +124,7 @@ def export_calliope(data, sc=0.07):
         config[c]['techs']['co2_supply']['costs']['monetary']['om_prod'] = sc
 
     with open('emipy2calliope.yaml', 'w') as f:
+        yaml=YAML()
         yaml.dump(config, f, default_flow_style=False)
 
     df.to_csv('emipy.csv')
