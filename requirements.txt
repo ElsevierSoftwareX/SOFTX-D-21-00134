@@ -3,4 +3,4 @@ pandas
 matplotlib
 geopandas
 descartes
-yaml
+ruamel.yaml
