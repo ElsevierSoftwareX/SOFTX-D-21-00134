@@ -226,5 +226,6 @@ dependencies:
     - send2trash==1.5.0
     - terminado==0.8.3
     - widgetsnbextension==3.5.1
+    - ruamel.yaml==0.16.12
 prefix: C:\Users\
 
