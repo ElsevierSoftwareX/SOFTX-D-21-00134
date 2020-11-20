@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import geopandas as gpd
 import configparser
-from emipy import processdata
+import sys
 
 
 def get_PollutantVolume(db, FirstOrder=None, SecondOrder=None):
@@ -139,8 +139,7 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
     """
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
     if SecondOrder is None:
-        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar',
-                  *args, **kwargs)
+        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', *args, **kwargs)
     else:
         if stacked is True:
             ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
@@ -176,8 +175,7 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
     """
     data = get_PollutantVolumeChange(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
     if SecondOrder is None:
-        ax = data.plot(x=FirstOrder, y='TotalQuantityChange', kind='bar', 
-                       *args, **kwargs)
+        ax = data.plot(x=FirstOrder, y='TotalQuantityChange', kind='bar', *args, **kwargs)
     else:
         if stacked is True:
             ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
@@ -215,8 +213,7 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
     """
     data = get_PollutantVolume_rel(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder, norm=norm)
     if SecondOrder is None:
-        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar',
-                  *args, **kwargs)
+        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', *args, **kwargs)
     else:
         if stacked is True:
             ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
@@ -300,13 +297,67 @@ def add_markersize(gdf, maxmarker):
     return gdf
 
 
-def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *args, **kwargs):
+def CreateGDFWithRightProj(dfgdf, outproj=None):
+    """
+    Converts DataFrame into GeoDataFrame and changes the projection if new projection is given as input.
+
+    Parameters
+    ----------
+    dfgdf : DataFrame/GeoDataFrame
+        Data that is about to be converted into a GeoDataFrame and experience a projection change if wanted.
+    outproj : String, optional
+        Target projection of the geometry of the data. The default is None.
+
+    Returns
+    -------
+    gdf : GeoDataFrame
+        Data stored as GeoDataFrame and with eventually changed geometry CRS.
+
+    """
+    if isinstance(dfgdf, pd.DataFrame):
+        gdf = gpd.GeoDataFrame(dfgdf, geometry=gpd.points_from_xy(dfgdf.Long, dfgdf.Lat), crs='EPSG:4326').reset_index(drop=True)
+    elif isinstance(dfgdf, gpd.GeoDataFrame):
+        if dfgdf.crs is None:
+            gdf = gpd.GeoDataFrame(dfgdf, geometry=gpd.points_from_xy(dfgdf.Long, dfgdf.Lat), crs='EPSG:4326').reset_index(drop=True)
+    if outproj != None:
+        gdf = changeproj(gdf, outproj=outproj)
+    return(gdf)
+
+
+def changeproj(gdf, outproj=None):
+    """
+    Changes The projection of the input GeoDataFrame to the projection defined with outproj. If no CRS is given for the geometry, the function tries to recover information from gdf.
+
+    Parameters
+    ----------
+    gdf : GeoDataFrame
+        Data that CRS is to be changed.
+    outproj : Datatype, optional
+        Code for target output projection. See http://pyproj4.github.io/pyproj/stable/api/crs/crs.html#pyproj.crs.CRS.from_user_input for input possibilities. The default is None.
+
+    Returns
+    -------
+    gdf : GeoDataFrame
+        Data with new projection in the geometry.
+
+    """
+    if outproj == None:
+        sys.exit('InputError: For the change of projection is a target projection required.')
+    if gdf.crs == None:
+        if ('Long' not in gdf.columns or 'Lat' not in gdf.columns):
+            sys.exit('InputError: No information about projection of geometry. Define CRS or give coordinates as Long and Lat!')
+        gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(gdf.Long, gdf.Lat), crs='EPSG:4326').reset_index(drop=True)
+    gdf = gdf.to_crs(crs=outproj)
+    return(gdf)
+
+
+def map_PollutantSource(db, mb, category=None, markersize=0, outproj=None, ReturnMarker=0, *args, **kwargs):
     """
     maps pollutant sources given by db on map given by mb.
 
     Parameters
     ----------
-    db : DataFrame
+    db : DataFrame/GeoDataFrame
         Data table on pollutant sources.
     mb : DataFrame
         geo data table.
@@ -314,6 +365,8 @@ def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *ar
         The column name of db, which gets new colors for every unique entry.
     markersize : Int
         maximal size of the largest marker.
+    outproj : DataType
+        Code for targeted output projection. See http://pyproj4.github.io/pyproj/stable/api/crs/crs.html#pyproj.crs.CRS.from_user_input for input possibilities. The default is None.
     ReturnMarker : Int
         If put on 1, the function returns a DataFrame with all data that are plotted. If put on 2, the function returns a DataFrame with all data  that are not plotted, because their coordinates are outside the geo borders.
     *args : TYPE
@@ -337,12 +390,11 @@ def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *ar
     colorlist = ['r', 'y', 'g', 'c', 'm', 'b']
     borders = get_mb_borders(mb)
     if category is None:
-        gdf = gpd.GeoDataFrame(db, geometry=gpd.points_from_xy(db.Long, db.Lat)).reset_index(drop=True)
+        gdf = CreateGDFWithRightProj(db, outproj=outproj)
         gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
         gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
         gdfp = add_markersize(gdfp, maxmarker=markersize)
-        ax = gdfp.plot(color='r', zorder=1, markersize=gdfp['markersize'],
-                  *args, **kwargs)
+        ax = gdfp.plot(color='r', zorder=1, markersize=gdfp['markersize'], *args, **kwargs)
     else:
         for items in db[category].unique():
             if not colorlist:
@@ -352,12 +404,11 @@ def map_PollutantSource(db, mb, category=None, markersize=0, ReturnMarker=0, *ar
             colorlist.remove(color)
             itemdata = db[db[category] == items].reset_index()
 #            itemdata = filter.f_db(db, category=items)
-            gdf = gpd.GeoDataFrame(itemdata, geometry=gpd.points_from_xy(itemdata.Long, itemdata.Lat))
+            gdf = CreateGDFWithRightProj(itemdata, outproj=outproj)
             gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
             gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
             gdfp = add_markersize(gdfp, maxmarker=markersize)
-            ax = gdfp.plot(color=color, zorder=1, markersize=gdfp['markersize'],
-                      *args, **kwargs)
+            ax = gdfp.plot(color=color, zorder=1, markersize=gdfp['markersize'], *args, **kwargs)
     if gdfd.empty is False:
         print('Some data points are out of borders')
     else:
