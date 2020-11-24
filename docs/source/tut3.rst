@@ -7,7 +7,6 @@ Using map data
 
     import emipy as ep
     mb = ep.read_mb()
-    db = ep.read_db()
 
     mb.plot()
 
@@ -73,6 +72,8 @@ Using map data
 .. code-block:: python
 
     import matplotlib.pyplot as plt
+
+    db = ep.read_db()
 
     CountryName = ['Germany', 'Austria']
     ReportingYear = [2017]
