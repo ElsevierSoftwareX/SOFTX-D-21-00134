@@ -4,15 +4,15 @@ Tutorials
 Generating data sets
 --------------------
 
-| At first import the module processdata and read the data base.
+| At first import the package emipy and read the data base.
 | The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function `read_db()` the path in form of a String as an argument.
 
 
 .. code-block:: python
 
-    from emipy import processdata
+    import emipy as ep
 
-    db = processdata.read_db()
+    db = ep.read_db()
     db.head()
 
 | 
@@ -235,7 +235,7 @@ Generating data sets
 
 .. code-block:: python
 
-    processdata.get_Countrylist(db)
+    ep.get_Countrylist(db)
 
 | 
 
@@ -286,14 +286,14 @@ Generating data sets
 
 .. code-block:: python
 
-    data1 = processdata.f_db(db, CountryName='Germany')
+    data1 = ep.f_db(db, CountryName='Germany')
 
 | If you want to filter for multiple values in one column you have to insert a list.
 
 
 .. code-block:: python
 
-    data2 = processdata.f_db(db, CountryName=['Germany', 'Switzerland', 'Austria'])
+    data2 = ep.f_db(db, CountryName=['Germany', 'Switzerland', 'Austria'])
 
 | You can filter for multiple columns at the same time:
 
@@ -303,7 +303,7 @@ Generating data sets
     ReportingYear = [2014, 2015, 2016,2017]
     PollutantName = ['Carbon dioxide (CO2)', 'Methane (CH4)']
 
-    data3 = processdata.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
+    data3 = ep.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 
 .. note::
     Take into account that numbers are not from type string and therefore do not need quote markers around them.
@@ -315,13 +315,13 @@ Generating data sets
 
 .. code-block:: python
 
-    data4 = processdata.f_db(db, ExclaveExclude=True)
+    data4 = ep.f_db(db, ExclaveExclude=True)
 
 | If you put ReturnUnknown on True the function returns a data table, which contains all entries that would be sorted out in the filter process but just do not possess enough information to pass the filter. If this table is empty, then it is a good sign.
 
 .. code-block:: python
 
-    data5 = processdata.f_db(db, CountryName='Germany', ReturnUnknown=True,)
+    data5 = ep.f_db(db, CountryName='Germany', ReturnUnknown=True,)
 
 | Now you can generate your own data set of interest with a few lines of code. Since db is a DataFrame object, you can use all `pandas <https://pandas.pydata.org/docs/index.html>`_ functions as well, to personalize your data generation.
 | 
@@ -329,9 +329,9 @@ Generating data sets
 
 .. code-block:: python
 
-    processdata.export_db_topickle(data1, filename='Deutschland.pkl')
-    processdata.export_db_tocsv(data2, filename='Germanspeakingarea.csv')
-    processdata.export_db_toexcel(data3, filename='CO2andMethan.xlsx')
+    ep.export_db_topickle(data1, filename='Germany.pkl')
+    ep.export_db_tocsv(data2, filename='Germanspeakingarea.csv')
+    ep.export_db_toexcel(data3, filename='CO2andMethan.xlsx')
 
 
 Visualize data sets
@@ -341,22 +341,21 @@ Visualize data sets
 
 .. code-block:: python
 
-    from emipy import processdata
-    from emipy import visualizedata
+    import emipy as ep
 
-    db = processdata.read_db()
+    db = ep.read_db()
 
     CountryName = ['Germany', 'Austria', 'Switzerland']
     ReportingYear = [2014, 2015, 2016, 2017]
     PollutantName = ['Carbon dioxide (CO2)']
 
-    data1 = processdata.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
+    data1 = ep.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 
 | Now we can plot the CO2 volume against the reporting years:
 
 .. code-block:: python
 
-    visualizedata.plot_PollutantVolume(data1, FirstOrder='ReportingYear')
+    ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear')
 
 .. image:: ./pictures/Tut2pic1.svg
     :width: 80%
@@ -368,7 +367,7 @@ Visualize data sets
 
 .. code-block:: python
 
-    visualizedata.plot_PollutantVolume(data1, FirstOrder='ReportingYear', SecondOrder='CountryName')
+    ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', SecondOrder='CountryName')
 
 .. image:: ./pictures/Tut2pic2.svg
     :width: 80%
@@ -380,8 +379,8 @@ Visualize data sets
 
 .. code-block:: python
 
-    data2 = processdata.f_db(data1, CountryName='Austria')
-    visualizedata.plot_PollutantVolume(data2, FirstOrder='ReportingYear')
+    data2 = ep.f_db(data1, CountryName='Austria')
+    ep.plot_PollutantVolume(data2, FirstOrder='ReportingYear')
 
 .. image:: ./pictures/Tut2pic3.svg
     :width: 80%
@@ -393,7 +392,7 @@ Visualize data sets
 
 .. code-block:: python
 
-    visualizedata.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear', SecondOrder='CountryName')
+    ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear', SecondOrder='CountryName')
 
 .. image:: ./pictures/Tut2pic4.svg
     :width: 80%
@@ -401,7 +400,7 @@ Visualize data sets
     :height: 400px
     :alt: Tut2pic4
 
-| As a third option, you can plot normalised values. With the parameter norm, you can specify the First Order value, that the data is normed to. For e good example we create a new data table:
+| As a third option, you can plot normalised values. With the parameter norm, you can specify the First Order value, that the data is normed to. For a good example we create a new data table:
 
 .. code-block:: python
 
@@ -409,9 +408,9 @@ Visualize data sets
     ReportingYear = [2014, 2015, 2016, 2017]
     PollutantName=['Zinc and compounds (as Zn)', 'Nickel and compounds (as Ni)']
 
-    data2 = processdata.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
+    data3 = ep.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 
-    visualizedata.plot_PollutantVolume_rel(data2, FirstOrder='PollutantName', SecondOrder='ReportingYear')
+    ep.plot_PollutantVolume_rel(data3, FirstOrder='PollutantName', SecondOrder='ReportingYear')
 
 .. image:: ./pictures/Tut2pic5.svg
     :width: 80%
@@ -426,10 +425,10 @@ Visualize data sets
     import matplotlib.pyplot as plt
 
     fig1, fig1_axes = plt.subplots(2, 2)
-    fig1_axes[0,0] = visualizedata.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[0,0])
-    fig1_axes[1,0] = visualizedata.plot_PollutantVolume_rel(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,0])
-    fig1_axes[0,1] = visualizedata.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear', ax=fig1_axes[0,1])
-    fig1_axes[1,1] = visualizedata.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,1], color='r')
+    fig1_axes[0,0] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[0,0])
+    fig1_axes[1,0] = ep.plot_PollutantVolume_rel(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,0])
+    fig1_axes[0,1] = ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear', ax=fig1_axes[0,1])
+    fig1_axes[1,1] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,1], color='r')
     fig1_axes[0,0].set_xlabel('Year', fontsize=20)
     fig1.set_figheight(12)
     fig1.set_figwidth(15)
@@ -446,7 +445,7 @@ Visualize data sets
 
 .. code-block:: python
 
-    visualizedata.export_fig(fig1, filename='CO2_Daten.jpg', dpi=80, bbox_inches='tight')
+    ep.export_fig(fig1, filename='CO2_Daten.jpg', dpi=80, bbox_inches='tight')
 
 
 Using map data
@@ -456,10 +455,9 @@ Using map data
 
 .. code-block:: python
 
-    from emipy import processdata
-    from emipy import visualizedata
-    mb = processdata.read_mb()
-    db = processdata.read_db()
+    import emipy as ep
+    mb = ep.read_mb()
+    db = ep.read_db()
 
     mb.plot()
 
@@ -469,13 +467,13 @@ Using map data
 .. code-block:: python
 
     NUTS_LVL = '1'
-    Resolution = '01M'
+    Resolution = '10M'
     datatype = 'shp'
     projection = '4326'
     spatialtype = 'RG'
-    m_year = '2021'
+    m_year = '2013'
 
-    mb = processdata.read_mb(Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+    mb = ep.read_mb(Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
     mb.plot()
 
 .. image:: ./pictures/Tut3pic1.svg
@@ -487,7 +485,7 @@ Using map data
 
 .. code-block:: python
 
-    mapdata1 = processdata.f_mb(mb, ExclaveExclude=True)
+    mapdata1 = ep.f_mb(mb, ExclaveExclude=True)
     mapdata1.plot()
 
 .. image:: ./pictures/Tut3pic2.svg
@@ -499,7 +497,7 @@ Using map data
 
 .. code-block:: python
 
-    mapdata2 = processdata.f_mb(mb, CNTR_CODE='DE')
+    mapdata2 = ep.f_mb(mb, CNTR_CODE='DE')
     mapdata2.plot()
 
 .. image:: ./pictures/Tut3pic3.svg
@@ -511,7 +509,7 @@ Using map data
 
 .. code-block:: python
 
-    mapdata3 = processdata.f_mb(mb, NUTS_ID=['DEA'], CNTR_CODE='DE')
+    mapdata3 = ep.f_mb(mb, NUTS_ID=['DEA'], CNTR_CODE='DE')
     mapdata3.plot(aspect='equal')
 
 .. image:: ./pictures/Tut3pic4.svg
@@ -530,13 +528,13 @@ Using map data
     ReportingYear = [2017]
     PollutantName = ['Carbon dioxide (CO2)']
 
-    data4 = processdata.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
-    mapdata4 = processdata.f_mb(mb, CNTR_CODE=['DE','AT'])
+    data4 = ep.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
+    mapdata4 = ep.f_mb(mb, CNTR_CODE=['DE','AT'])
 
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(1, 1, 1)
     #ax1 = mapdata1.plot(ax=ax1, color='lightgrey')
-    ax1 = visualizedata.map_PollutantSource(data4, mapdata4, markersize=200, ax=ax1)
+    ax1 = ep.map_PollutantSource(data4, mapdata4, markersize=200, ax=ax1)
     fig1.set_figheight(10)
     fig1.set_figwidth(10)
 
@@ -557,12 +555,12 @@ Using map data
     ReportingYear = [2017]
     PollutantName = ['Carbon dioxide (CO2)', 'Nitrogen oxides (NOx/NO2)']
 
-    data5 = processdata.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
-    mapdata5 = processdata.f_mb(mb, CNTR_CODE=['DE','AT'])
+    data5 = ep.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
+    mapdata5 = ep.f_mb(mb, CNTR_CODE=['DE','AT'])
 
     fig2 = plt.figure()
     ax1 = fig2.add_subplot(1, 1, 1)
-    ax1 = visualizedata.map_PollutantSource(data5, mapdata5, markersize=200, category='PollutantName', ax=ax1)
+    ax1 = ep.map_PollutantSource(data5, mapdata5, markersize=200, category='PollutantName', ax=ax1)
     fig2.set_figheight(10)
     fig2.set_figwidth(10)
 
@@ -576,24 +574,24 @@ Using map data
 .. code-block:: python
 
     NUTS_LVL = '2'
-    Resolution = '01M'
+    Resolution = '10M'
     datatype = 'shp'
     projection = '4326'
     spatialtype = 'RG'
-    m_year = '2021'
+    m_year = '2013'
 
-    mb = processdata.read_mb(Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+    mb = ep.read_mb(Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
 
     CountryName = ['Austria']
     ReportingYear = [2017]
     PollutantName = ['Carbon dioxide (CO2)']
 
-    data6 = processdata.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
-    mapdata6 = processdata.f_mb(mb, CNTR_CODE='AT')
+    data6 = ep.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
+    mapdata6 = ep.f_mb(mb, CNTR_CODE='AT')
 
     fig3 = plt.figure()
     ax1 = fig3.add_subplot(1, 1, 1)
-    ax1 = visualizedata.map_PollutantRegions(data6, mapdata6, ax=ax1, legend=True)
+    ax1 = ep.map_PollutantRegions(data6, mapdata6, ax=ax1, legend=True)
     fig3.set_figheight(10)
     fig3.set_figwidth(10)
 
@@ -608,5 +606,5 @@ Using map data
 
 .. code-block:: python
 
-    visualizedata.export_fig(fig3, filename='Austria.jpg', dpi=80, bbox_inches='tight')
+    ep.export_fig(fig3, filename='Austria.jpg', dpi=80, bbox_inches='tight')
 

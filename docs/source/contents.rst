@@ -2,5 +2,5 @@
    :maxdepth: 2
 
    introduction
-   tutorial
+   tutorials
    modules

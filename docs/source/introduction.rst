@@ -42,7 +42,7 @@ For beginners of the Python world, we provide a step by step installation guide:
 	    | Make sure you have no blanks in your path!
 
     	``>conda env create -f C:\your\individual\path\environment.yml``
-    4. Enter 'y' when asked to install all required packages.
+    4. Enter 'y' if asked to install all required packages.
     5. Activate the environment with:
 	| ``>conda activate emipy``
 	| The environment is active when your active code line starts with "(emipy)" instead of "(base)".
@@ -76,12 +76,11 @@ Quick start
 
 1. Start the IDE of your preference. If you are new, just execute ``>jupyter notebook`` in the Anaconda Prompt console. This should open a window in your browser. Click on "New" and select Python3.
    (`Here <https://nbviewer.jupyter.org/github/jupyter/notebook/blob/master/docs/source/examples/Notebook/Running%20Code.ipynb>`_ is a short example for the Jupyter Notebook usage. You can also look at the `documentation <https://jupyter-notebook.readthedocs.io/en/latest/notebook.html>`_)
-2. Import the necessary modules:
-    | ``from emipy import processdata``
-    | ``from emipy import visualizedata``
+2. Import the emipy modules:
+    | ``import emipy as ep``
 3. Load the data into your current session with:
-    | ``db = processdata.read_db()``
-    | ``mb = processdata.read_mb()``
+    | ``db = ep.read_db()``
+    | ``mb = ep.read_mb()``
 4. and display it with:
     | ``db.head()``
     | ``mb.plot()``
