@@ -38,7 +38,7 @@ Export Data and Figures
     ep.export_db_toexcel(dataset1, filename='Benelux.xlsx')
 
 .. note::
-    | Pandas needs an additional Package for the export to a xlsx file. In consequence we do too. Execute `>pip install ` in the Anaconda Prompt console.
+    | Pandas needs an additional Package for the export to a xlsx file. In consequence we do too. Execute `>pip install openpyxl` in the Anaconda Prompt console.
 
 | Let's create a figure and use map data to visualize our data:
 
