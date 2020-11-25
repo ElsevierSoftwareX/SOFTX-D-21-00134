@@ -2,10 +2,6 @@ Tutorials
 =========
 
 | Here are a few tutorials for the start that explain the basic functions of emipy.
-| :download:`download Tutorial 1 Data Generation <../Tutorial1DataGeneration.ipynb>`
-| :download:`download Tutorial 2 Visualize Data <./notebooks/Tutorial2VisualizeData.ipynb>`
-| :download:`download Tutorial 3 Using Map Data <../notebooks/Tutorial 3 Using Map Data.ipynb>`
-| :download:`download Tutorial 4 Export Data <./Tutorial 4 Export Data.ipynb>`
 
 .. toctree::
    :maxdepth: 2
@@ -14,3 +10,10 @@ Tutorials
    tut2
    tut3
    tut4
+
+| These are the notebooks of the tutorials:
+|
+| :download:`download Tutorial 1 Data Generation <./notebooks/Tutorial_1_Data_Generation.ipynb>`
+| :download:`download Tutorial 2 Visualize Data <./notebooks/Tutorial_2_Visualize_Data.ipynb>`
+| :download:`download Tutorial 3 Using Map Data <./notebooks/Tutorial_3_Using_Map_Data.ipynb>`
+| :download:`download Tutorial 4 Export Data <./notebooks/Tutorial_4_Export_Data.ipynb>`
