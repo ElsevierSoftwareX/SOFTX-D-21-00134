@@ -10,7 +10,7 @@ Special Features
 
     import emipy as ep
 
-	ep.change_rootpath(r'Your\individual\path\to\your\project')
+    ep.change_rootpath(r'Your\individual\path\to\your\project')
 
 | During the initialization, emipy downloads `map data <https://ec.europa.eu/eurostat/de/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts#nuts21>`_ from Eurostat. There is not just one map, but a lot of different ways to visualize the countries.
 | Emipy downloads the predefined set with resolution factor 1:10 Million, but you can download additional map data if wanted. For the download you can choose from the resolution (1:1,3,10,20,60 Million) and emipy downloads the map data for all publication years, projections and NUTS-LVL into the projects MappingData folder. With read_mb() you can make further choices of the way, your map is diplayed.
