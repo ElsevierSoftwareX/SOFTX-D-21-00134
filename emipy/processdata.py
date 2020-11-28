@@ -427,7 +427,7 @@ def change_Unit(db, Unit=None):
         'megaton': 'MTN',
         'gigaton': 'GTN'}
 
-    data = copy.deepcopy(db)
+    data = copy.deepcopy(db).reset_index(drop=True)
     if len(data.UnitName.unique()) > 1:
         print('Warning: multiple units in DataFrame!')
 

@@ -10,6 +10,7 @@ Tutorials
    tut2
    tut3
    tut4
+   tut5
 
 | These are the notebooks of the tutorials:
 |
@@ -17,3 +18,4 @@ Tutorials
 | :download:`download Tutorial 2 Visualize Data <./notebooks/Tutorial_2_Visualize_Data.ipynb>`
 | :download:`download Tutorial 3 Using Map Data <./notebooks/Tutorial_3_Using_Map_Data.ipynb>`
 | :download:`download Tutorial 4 Export Data <./notebooks/Tutorial_4_Export_Data.ipynb>`
+| :download:`download Tutorial 4 Export Data <./notebooks/Tutorial_5_Special_Features.ipynb>`
