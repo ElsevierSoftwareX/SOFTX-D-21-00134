@@ -1,4 +1,4 @@
-.. facilityreportidlist:
+.. _facilityreportidlist:
 
 FacilityReportID
 ----------------

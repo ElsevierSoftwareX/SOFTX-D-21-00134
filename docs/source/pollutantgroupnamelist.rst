@@ -1,4 +1,4 @@
-.. pollutantgroupnamelist:
+.. _pollutantgroupnamelist:
 
 PollutantGroupName
 ------------------

@@ -1,4 +1,4 @@
-.. releasemediumnamelist:
+.. _releasemediumnamelist:
 
 ReleaseMediumName
 -----------------
