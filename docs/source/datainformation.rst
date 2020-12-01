@@ -15,40 +15,6 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 	:widths: 50, 50, 50, 50
 	
 	"CountryName", "String or List of Strings", ":ref:`countrynamelist`", "f_db(db, CountryName='Spain')"
-	"ReportingYear", "Integer or list of Integers", "test2", "data"
+	"ReportingYear", "Integer or list of Integers", ":ref:`reportingyearlist`", "f_db(db, ReportingYear=2015)"
 
 
-.. csv-table:: a title
-   :header: "column name", "input data type", "list of entries"
-   :widths: 20, 20, 10
-
-   "CountryName", "String or List of Strings", "test1"
-   "Smith", "John, Junior", 20
-
-
-| 
-| :ref:`tut5`
-
-
-.. csv-table:: a title
-   :header: "name", "firstname", "age"
-   :widths: 20, 20, 10
-
-   "Smith", "John", 40
-   "Smith", "John, Junior", 20
-   
-
-.. list-table::
-    :name: tab-beispieltabelle
-    :widths: 50 50 50
-    :header-rows: 0
-
-    * - Art der Einträge
-      - Eigenschaft 1
-      - Eigenschaft 2
-    * - Gegenstand 1
-      - eckig
-      - rot
-    * - Gegenstand 2
-      - rund
-      - blau
