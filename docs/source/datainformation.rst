@@ -14,7 +14,11 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 	:header: "column name", "input data type", "list of entries", "example"
 	:widths: 50, 50, 50, 50
 	
+	"FacilityReportID", "Integer or List of Integers", ":ref:`facilityreportidlist`", "f_db(db, FacilityReportID=1856)"
 	"CountryName", "String or List of Strings", ":ref:`countrynamelist`", "f_db(db, CountryName='Spain')"
-	"ReportingYear", "Integer or list of Integers", ":ref:`reportingyearlist`", "f_db(db, ReportingYear=2015)"
+	"ReportingYear", "Integer or List of Integers", ":ref:`reportingyearlist`", "f_db(db, ReportingYear=2015)"
+	"ReleaseMediumName", "String or List of Strings", ":ref:`releasemediumnamelist`", "f_db(db, ReleaseMediumName='Air')"
+	"PollutantName", "String or List of Strings", ":ref:`pollutantnamelist`", "f_db(db, PollutantName='Carbon dioxide (CO2)')"
+	"PollutantGroupName", "String or List of Strings", ":ref:`pollutantgroupnamelist`", "f_db(db, PollutantGroupName='Inorganic substances')"
 
 
