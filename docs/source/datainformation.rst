@@ -14,7 +14,7 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 	:header: "column name", "input data type", "list of entries", "example"
 	:widths: 50, 50, 50, 50
 	
-	"CountryName", "String or List of Strings", "test1", "testit"
+	"CountryName", "String or List of Strings", ":ref:`countrynamelist`", "testit"
 	"ReportingYear", "Integer or list of Integers", "test2", "data"
 
 
@@ -26,7 +26,7 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
    "Smith", "John, Junior", 20
 
 
-| :ref:`countrynamelist`
+| 
 | :ref:`tut5`
 
 
