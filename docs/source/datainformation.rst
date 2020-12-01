@@ -13,4 +13,6 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 	:widths: 50 50 50
 	
 	column name , input data type , list of entries , example
-	CountryName , String; List of Strings , :ref:`countrynamelist` , data = f_db(db, CountryName='Spain')
+	CountryName , String; List of Strings , test1 , data = f_db(db, CountryName='Spain')
+
+:ref:`countrynamelist`
