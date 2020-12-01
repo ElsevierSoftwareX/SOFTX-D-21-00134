@@ -1,7 +1,7 @@
+.. _countrynamelist:
+
 CountryName
 -----------
-
-.. _countrynamelist:
 
 'Austria',
 'Belgium',

@@ -1,7 +1,7 @@
+.. _tut5:
+
 Special Features
 ----------------
-
-.. _tut5:
 
 | There are several functions that enhance the usage of emipy. In this tutorial we take a look at these functions and work threw their use cases.
 |
