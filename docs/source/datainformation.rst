@@ -11,11 +11,19 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 
 
 .. csv-table::
-	:header: "column name" , "input data type" , "list of entries" , "example"
+	:header: "column name", "input data type", "list of entries", "example"
 	:widths: 50, 50, 50, 50
 	
-	"CountryName" , "String or List of Strings" , "test1" , "data = f_db(db, CountryName='Spain')"
-	"ReportingYear" , "Integer or list of Integers" , "test2" , "data"
+	"CountryName", "String or List of Strings", "test1", "testit"
+	"ReportingYear", "Integer or list of Integers", "test2", "data"
+
+
+.. csv-table:: a title
+   :header: "column name", "input data type", "list of entries"
+   :widths: 20, 20, 10
+
+   "CountryName", "String or List of Strings", "test1"
+   "Smith", "John, Junior", 20
 
 
 | :ref:`countrynamelist`
