@@ -2,5 +2,6 @@
    :maxdepth: 2
 
    introduction
+   datainformation
    tutorials
    modules
