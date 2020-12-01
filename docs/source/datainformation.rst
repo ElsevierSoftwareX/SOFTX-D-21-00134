@@ -10,11 +10,12 @@ But there are also very "specialized" ones like the facility report ID, or the N
 For more detailed information, take a look at the `EEA webpage <https://www.eea.europa.eu/>`_ or the `Eurostat webpage <https://ec.europa.eu/eurostat/de/home>`_ .
 
 
-.. csv-table:: 
+.. csv-table::
+	:header: "column name" , "input data type" , "list of entries" , "example"
 	:widths: 50 50 50 50
 	
-	column name , input data type , list of entries , example
-	CountryName , String or List of Strings , test1 , data = f_db(db, CountryName='Spain')
+	"CountryName" , "String or List of Strings" , "test1" , "data = f_db(db, CountryName='Spain')"
+	"ReportingYear" , "Integer or list of Integers" , "test2" , "data"
 
 
 | :ref:`countrynamelist`
