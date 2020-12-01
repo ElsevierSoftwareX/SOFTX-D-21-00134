@@ -1,0 +1,37 @@
+CountryName
+-----------
+
+.. _countrynamelist:
+
+'Austria',
+'Belgium',
+'Cyprus',
+'Czech Republic',
+'Germany',
+'Denmark',
+'Estonia',
+'Spain',
+'Finland',
+'France',
+'Greece',
+'Hungary',
+'Ireland',
+'Italy',
+'Lithuania',
+'Luxembourg',
+'Latvia',
+'Malta',
+'Netherlands',
+'Norway',
+'Poland',
+'Portugal',
+'Sweden',
+'Slovenia',
+'Slovakia',
+'United Kingdom',
+'Iceland',
+'Serbia',
+'Romania',
+'Bulgaria',
+'Switzerland',
+'Croatia'
