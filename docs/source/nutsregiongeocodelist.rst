@@ -1,4 +1,4 @@
-.. nutsregiongeocode`list:
+.. _nutsregiongeocodelist:
 
 NUTSRegionGeoCode
 -----------------

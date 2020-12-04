@@ -1,4 +1,4 @@
-.. nacemaineconomicactivitycodelist:
+.. _nacemaineconomicactivitycodelist:
 
 NACEMainEconomicActivityCode
 ----------------------------
