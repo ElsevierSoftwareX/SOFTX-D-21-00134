@@ -20,5 +20,7 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 	"ReleaseMediumName", "String or List of Strings", ":ref:`releasemediumnamelist`", "f_db(db, ReleaseMediumName='Air')"
 	"PollutantName", "String or List of Strings", ":ref:`pollutantnamelist`", "f_db(db, PollutantName='Carbon dioxide (CO2)')"
 	"PollutantGroupName", "String or List of Strings", ":ref:`pollutantgroupnamelist`", "f_db(db, PollutantGroupName='Inorganic substances')"
+	"NACEMainEconomicActivityCode", "String or List of Strings", ":ref:`nacemaineconomicactivitycodelist`", "f_db(db, NACEMainEconomicActivityCode='25.91')"
+	"NUTSRegionGeoCode", "String or List of Strings", ":ref:`nutsregiongeocodelist`", "f_db(db, NUTSRegionGeoCode='AT11')"
 
 
