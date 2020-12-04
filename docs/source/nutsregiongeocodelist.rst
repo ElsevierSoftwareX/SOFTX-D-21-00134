@@ -3,7 +3,7 @@
 NUTSRegionGeoCode
 -----------------
 
-|The NUTSRegionGeoCode Changes over time. Areas may be renamed or the regrouped. For more Information take a look over `here <https://ec.europa.eu/eurostat/de/web/nuts/history>`_ . 
+| The NUTSRegionGeoCode Changes over time. Areas may be renamed or the regrouped. For more Information take a look over `here <https://ec.europa.eu/eurostat/de/web/nuts/history>`_ . 
 
 | AT11
 | AT12
