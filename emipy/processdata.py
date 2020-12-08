@@ -38,7 +38,7 @@ def read_db(path=None):
     return db
 
 
-def read_mb(path=None, Resolution='10M', spatialtype='BN', NUTS_LVL=0, m_year=2016, projection=4326, subset=None):
+def read_mb(path=None, Resolution='10M', spatialtype='RG', NUTS_LVL=0, m_year=2016, projection=4326):
     """
     Reads the shp file with the specifications given in the input.
 
@@ -49,15 +49,13 @@ def read_mb(path=None, Resolution='10M', spatialtype='BN', NUTS_LVL=0, m_year=20
     Resolution : String
         Resolution of the map. The default is '10M'.
     spatialtype : String
-        Format of data presentation. The default is 'BN'.
+        Format of data presentation. The default is 'RG'.
     NUTS_LVL : Int, optional
         NUTS-classification level, defined by the eurostat. The default is 0.
     m_year : Int
         Year of publication of the geographical data. The default is 2016.
     projection : Int
         Projection on the globe. The default is 4326.
-    subset : String, optional
-        Specification of spatialtype. The default is None.
 
     Returns
     -------
@@ -65,18 +63,22 @@ def read_mb(path=None, Resolution='10M', spatialtype='BN', NUTS_LVL=0, m_year=20
         DataFrame with geometry data.
 
     """
-    m_year = str(m_year)
-    projection = str(projection)
+
     if path == None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
     path = os.path.join(path, 'MappingData')
     if NUTS_LVL is None:
-        foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + m_year + '_' + projection + '.shp'
+        if spatialtype == 'LB':
+            foo = 'NUTS_' + spatialtype + '_' + str(m_year) + '_' + str(projection) + '.shp'
+        else:
+            foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + str(m_year) + '_' + str(projection) + '.shp'
     else:
-        NUTS_LVL = str(NUTS_LVL)
-        foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + m_year + '_' + projection + '_LEVL_' + NUTS_LVL + '.shp'
+        if spatialtype == 'LB':
+            foo = 'NUTS_' + spatialtype + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
+        else:
+            foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
     path = os.path.join(path, foo)
     try:
         mb = geopandas.read_file(path)
