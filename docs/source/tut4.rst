@@ -46,7 +46,6 @@ Export Data and Figures
 
     NUTS_LVL = '2'
     Resolution = '10M'
-    datatype = 'shp'
     projection = '4326'
     spatialtype = 'RG'
     m_year = '2013'
