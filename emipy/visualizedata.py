@@ -448,14 +448,29 @@ def map_PollutantRegions(db, mb, ReturnMarker=0, *args, **kwargs):
         Data that are not plotted, because the NUTS_ID is not present in the mapdata.
 
     """
-    db01 = get_PollutantVolume(db, FirstOrder='NUTSRegionGeoCode')
-    db01 = db01.rename(columns={'NUTSRegionGeoCode': 'NUTS_ID'})
-    db02 = pd.merge(mb, db01, how='left', on=['NUTS_ID'])
+
+    NUTSlvl = mb.LEVL_CODE.unique()
+    if len(NUTSlvl) != 1:
+        print('There are multiple NUTS-Levels present in the map data input. This function can not seperate the data in the required way. No Output!')
+        return None
+    NUTSlvl = NUTSlvl[0]
+
+    dbpremerge = pd.DataFrame(columns=['NUTS_ID', 'TotalQuantity'])
+    if NUTSlvl <= 2:
+        db01 = get_PollutantVolume(db, FirstOrder='NUTSRegionGeoCode')
+        for item in mb.NUTS_ID.unique():
+            itemdata = db01[db01.NUTSRegionGeoCode.str.startswith(item)]
+            itemvalue = itemdata.TotalQuantity.sum()
+            dbpremerge = dbpremerge.append({'NUTS_ID': item, 'TotalQuantity': itemvalue}, ignore_index=True)
+    elif NUTSlvl == 3:
+        print('The NUTS-Level of the map data is to high. The geospatial resolution of the emission data is not high enough to differentiate on level 3 regions. Use NUTS-LVL smaller or equal to 2.')
+        return None
+    db02 = pd.merge(mb, dbpremerge, how='left', on=['NUTS_ID'])
     ax = db02.plot(column='TotalQuantity', *args, **kwargs)
 
-    presentNUTS_IDs = mb.NUTS_ID.tolist()
-    dbna = db01[~db01.NUTS_ID.isin(presentNUTS_IDs)]
-    dbp = db01[db01.NUTS_ID.isin(presentNUTS_IDs)]
+    presentNUTS_IDs = tuple(mb.NUTS_ID.tolist())
+    dbp = db01[db01.NUTSRegionGeoCode.str.startswith(presentNUTS_IDs)]
+    dbna = db01[~db01.NUTSRegionGeoCode.str.startswith(presentNUTS_IDs)]
 
     if ReturnMarker == 0:
         return(ax)
