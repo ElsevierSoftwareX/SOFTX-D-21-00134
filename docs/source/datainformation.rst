@@ -6,13 +6,13 @@ Pollution Data
 --------------
 
 The European Environmental Agency (EEA) provides a lot of information that are assigned to the pollution data. There are very intuitiv ones like the name of the country, in that the pollutants are emitted or the year of the emission. 
-But there are also very "specialized" ones like the facility report ID, or the NACE-main economic activity code (an economic classification, performed by Eurostat). Here we provide a short explanation of the most used parameters and how to access them in the f_db() function.
-For more detailed information, take a look at the `EEA webpage <https://www.eea.europa.eu/>`_ or the `Eurostat webpage <https://ec.europa.eu/eurostat/de/home>`_ .
+But there are also very "specialized" ones like the *facility report ID*, or the *NACE-main economic activity code* (an economic classification, performed by Eurostat). Here we provide a short explanation of the most used parameters and how to access them in the f_db() function.
+For more detailed information, take a look at the `EEA webpage <https://www.eea.europa.eu/>`_ or the `Eurostat webpage <https://ec.europa.eu/eurostat/de/home>`_.
 
 
 .. csv-table::
-	:header: "column name", "input data type", "list of entries", "example"
-	:widths: 50, 50, 50, 50
+	:header: "Column Name", "Input Data Type", "List Of Entries", "Example"
+	:widths: 10, 10, 10, 10
 	
 	"FacilityReportID", "Integer or List of Integers", ":ref:`facilityreportidlist`", "f_db(db, FacilityReportID=1856)"
 	"CountryName", "String or List of Strings", ":ref:`countrynamelist`", "f_db(db, CountryName='Spain')"
@@ -23,4 +23,174 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 	"NACEMainEconomicActivityCode", "String or List of Strings", ":ref:`nacemaineconomicactivitycodelist`", "f_db(db, NACEMainEconomicActivityCode='25.91')"
 	"NUTSRegionGeoCode", "String or List of Strings", ":ref:`nutsregiongeocodelist`", "f_db(db, NUTSRegionGeoCode='AT11')"
 
+
+Map Data
+--------
+
+| The map data are provided by `Eurostat <https://ec.europa.eu/eurostat/de/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts#nuts21>`_. The maps always show a complete view of Europe, but there are different parameters, that change the layout of the visualisation.
+| There are two levels where you can choose parameters. These are first the download of the map data and second the load procedure into your session.
+| During initialisation, emipy downloads, for every NUTS version, the map data with resolution 1:10 million. For storage size reasons, not all map files are downloaded. You can download additional map data with download_MapFiles(). See :ref:`tut5` for the correct usage.
+
++------------------------+------------------+-------------+
+| Statistical Unit       | Publication Date | Resolution  |
++========================+==================+=============+
+| NUTS 2021              | 01/02/2020       | 1:1 Million |
+|                        |                  +-------------+
+|                        |                  | 1:3 Million |
+|                        |                  +-------------+
+|                        |                  | 1:10 Million|
+|                        |                  +-------------+
+|                        |                  | 1:20 Million|
+|                        |                  +-------------+
+|                        |                  | 1:60 Million|
++------------------------+------------------+-------------+
+| NUTS 2016              | 14/03/2019       | 1:1 Million |
+|                        |                  +-------------+
+|                        |                  | 1:3 Million |
+|                        |                  +-------------+
+|                        |                  | 1:10 Million|
+|                        |                  +-------------+
+|                        |                  | 1:20 Million|
+|                        |                  +-------------+
+|                        |                  | 1:60 Milion |
++------------------------+------------------+-------------+
+| NUTS 2013              | 03/12/2015       | 1:1 Million |
+|                        |                  +-------------+
+|                        |                  | 1:3 Million |
+|                        |                  +-------------+
+|                        |                  | 1:10 Million|
+|                        |                  +-------------+
+|                        |                  | 1:20 Milion |
+|                        |                  +-------------+
+|                        |                  | 1:60 Milion |
++------------------------+------------------+-------------+
+| NUTS 2010              | 01/12/2012       | 1:1 Million |
+|                        |                  +-------------+
+|                        |                  | 1:3 Million |
+|                        |                  +-------------+
+|                        |                  | 1:10 Million|
+|                        |                  +-------------+
+|                        |                  | 1:20 Million|
+|                        |                  +-------------+
+|                        |                  | 1:60 Million|
++------------------------+------------------+-------------+
+| NUTS 2006              | 01/12/2008       | 1:1 Million |
+|                        |                  +-------------+
+|                        |                  | 1:3 Million |
+|                        |                  +-------------+
+|                        |                  | 1:10 Million|
+|                        |                  +-------------+
+|                        |                  | 1:20 Million|
+|                        |                  +-------------+
+|                        |                  | 1:60 Million|
++------------------------+------------------+-------------+
+| NUTS 2003              | 03/12/2005       | 1:1 Million |
+|                        |                  +-------------+
+|                        |                  | 1:3 Million |
+|                        |                  +-------------+
+|                        |                  | 1:10 Million|
+|                        |                  +-------------+
+|                        |                  | 1:20 Million|
++------------------------+------------------+-------------+
+
+| The following sub categories are downloaded for every publication year and resolution:
+
++------------------------+------------------+-------------+
+| Spatial Type           | NUTS_LVL         | Projection  |
++========================+==================+=============+
+| BN                     | None             | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 0          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 1          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 2          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 3          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
++------------------------+------------------+-------------+
+| LB                     | None             | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 0          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 1          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 2          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 3          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
++------------------------+------------------+-------------+
+| RG                     | None             | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 0          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 1          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 2          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
+|                        +------------------+-------------+
+|                        | Level 3          | 3035        |
+|                        |                  +-------------+
+|                        |                  | 3857        |
+|                        |                  +-------------+
+|                        |                  | 4326        |
++------------------------+------------------+-------------+
+
+| When loading the map data into your session, you can choose from the parameters *resolution*, *spatialtype*, *NUTS_LVL*, *m_year* and *projection*. *Resolution* and *m_year* do correspond to the above given resolutions and NUTS versions. 
+| *Spatialtype* has three different options: BD (boundary), RG (region) and LB. While the first two are very intuitiv, LB reduces the regions to points. 
+| *NUTS_LVL* is the Level of the NUTS-classification. You can choose from no level at all up to level 0, 1, 2 and 3.
+| *Projection* refers to the spatial projetion of the displayed map. You can choose from EPSG: 4326, 3035, 3857. When the data is loaded into the session you can also transfer the corresponding reference system (crs) with geopandas or emipy.
 

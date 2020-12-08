@@ -4,6 +4,7 @@ NACEMainEconomicActivityCode
 ----------------------------
 
 | For the NACEMainEconomicActivityCode you have to be aware that there has been an update for the NACE code in the year 2008. For more information take a look `here <https://ec.europa.eu/eurostat/documents/3859598/5902453/KS-RA-07-015-DE.PDF/680c5819-8a93-4c18-bea6-2e802379df86>`_ .
+|
 | 01.11
 | 01.12
 | 01.13

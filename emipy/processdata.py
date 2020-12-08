@@ -345,7 +345,7 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
 def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False):
     """
-    Filters the geomatry data of the DataFrame by the specifications of the input.
+    Filters the geometry data of the DataFrame by the specifications of the input.
 
     Parameters
     ----------
