@@ -1,3 +1,5 @@
+.. _datainformation:
+
 ---------------
 Data parameters
 ---------------

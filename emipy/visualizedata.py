@@ -98,7 +98,7 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     Returns
     -------
     data : DataFrame
-        The change of TotalQuantity  to the previous data entry
+        The change of TotalQuantity to the previous data entry
 
     """
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)

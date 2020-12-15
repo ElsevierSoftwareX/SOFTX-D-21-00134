@@ -1,5 +1,5 @@
 Generating data sets
---------------------
+====================
 
 | At first import the package emipy and read the data base.
 | The programm stored the path to the project initialisation and automatically searches for the data there and loads it. You can aswell read explicit databases. For this, give the function `read_db()` the path in form of a String as an argument.

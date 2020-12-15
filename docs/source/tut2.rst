@@ -1,5 +1,5 @@
 Visualize data sets
--------------------
+===================
 
 | Let's start with generating a filtered data set:
 

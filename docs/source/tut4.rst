@@ -1,5 +1,5 @@
 Export Data and Figures
------------------------
+=======================
 
 | You can export data tables and figures directly to the ExportData-folder of your project. Aditionally you can depleat unnecessary information and Configurate your data table before export.
 |
