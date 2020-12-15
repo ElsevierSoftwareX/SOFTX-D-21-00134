@@ -63,9 +63,9 @@ Export Data and Figures
     ep.map_PollutantRegions(dataset1, mapdata1, ax=ax[1,1], legend=True)
 
 .. image:: ./pictures/Tut4pic1.svg
-    :width: 80%
+    :width: 100%
     :align: center
-	:height: 400px
+	:height: 500px
     :alt: Tut4pic1
 
 | The export of the figures is based on `matplotlib.pyplot.savefig <https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.savefig.html>`_ and has the same features for the export, but automatically saves the figure to the ExportFolder, if not stated otherwise.
