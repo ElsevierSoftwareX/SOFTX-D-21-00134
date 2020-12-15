@@ -84,6 +84,13 @@ Visualize data sets
 
 | If you want to customize the layout of the graphs, you can enter the known arguments of the `PyPlot package <https://matplotlib.org/3.1.1/tutorials/index.html>`_ into the functions. Since the functions return a matplotlib.axes object, you can access and modify the individual elements of the plots like in PyPlot.
 | Tho code below returns you the basic plots. For the layout changes, take a look into the Tutorial 2 notebook.
+
+.. image:: ./pictures/Tut2pic6.svg
+    :width: 80%
+    :align: center
+    :height: 400px
+    :alt: Tut2pic6
+
 .. code-block:: python
 
     import matplotlib.pyplot as plt
