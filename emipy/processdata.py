@@ -319,9 +319,16 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         dbna = dbna.append(db[db.NACEMainEconomicActivityCode.isna()])
         dbna = dbna[dbna.NACEMainEconomicActivityCode.isna()]
         if isinstance(NACEMainEconomicActivityCode, list):
-            db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
+            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMainEconomicActivityCode).any(1).astype(int)
+            db = db.assign(foo=foo.values)
+            db = db[db.foo == 1].drop(['foo'], axis=1)
+            # The following does not work. Seems like pandas can not handle lists as values in the dataframe.
+            # db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
         else:
-            db = db[db.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
+            NACEMainEconomicActivityCode = [NACEMainEconomicActivityCode]
+            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMainEconomicActivityCode).any(1).astype(int)
+            db = db.assign(foo=foo.values)
+            db = db[db.foo == 1].drop(['foo'], axis=1)
 
     if NUTSRegionGeoCode is not None:
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
@@ -447,6 +454,206 @@ def change_Unit(db, Unit=None):
     return data
 
 
+def perform_NACETransition_tuple(db, newNACE=2, path=None):
+    """
+    Changes the NACE_1_1 Codes of the input DataFrame into NACE_2 Codes.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Input DataFrame with partly entries that are coded with NACE_1_1.
+    newNACE : Int, optional
+        The target NACE-code. The default is 2.
+    path : String, optional
+        Path to the root of your project. If None is given, emipy searches for the path, stored in the config file. The default is None.
+
+    Returns
+    -------
+    final : DataFrame
+        The input DataFrame with changed NACE-codes if necessary.
+
+    """
+    if path == None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        path = config['PATH']['path']
+
+    # The following lines are for loading the transition table into the session.
+    if newNACE == 2:
+        try:
+            tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
+        except FileNotFoundError:
+            print('File not found in the given path.')
+            return None
+    elif newNACE == 1:
+        try:
+            tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev2-NACERev1_1+table+format.xls'))
+        except FileNotFoundError:
+            print('File not found in the given path.')
+            return None
+
+    # The following lines are just for converting the columns NACE_1_1_CODE and NACE_2007_CODE to strings with the needed format (add 0)
+    tt = tt.astype({'NACE_1_1_CODE': str, 'NACE_2007_CODE': str})
+    foo1, foo2 = [], []
+    for i in range(len(tt)):
+        foo1.append(tt.NACE_1_1_CODE.iloc[i])
+        foo2.append(tt.NACE_2007_CODE.iloc[i])
+        if tt.NACE_1_1_CODE.iloc[i].find('.') != 2:
+            foo1[i] = '0' + foo1[i]
+        if tt.NACE_2007_CODE.iloc[i].find('.') != 2:
+            foo2[i] = '0' + foo2[i]
+        if tt.NACE_1_1_CODE.iloc[i].find('.') == len(tt.NACE_1_1_CODE.iloc[i]) - 2:
+            foo1[i] = foo1[i] + '0'
+        if tt.NACE_2007_CODE.iloc[i].find('.') == len(tt.NACE_2007_CODE.iloc[i]) - 2:
+            foo2[i] = foo2[i] + '0'
+    tt.drop('NACE_1_1_CODE', axis=1, inplace=True)
+    tt['NACE_1_1_CODE'] = pd.Series(foo1)
+    tt.drop('NACE_2007_CODE', axis=1, inplace=True)
+    tt['NACE_2007_CODE'] = pd.Series(foo2)
+
+    # The following lines are for seperating into NACE2 and NACE_1_1 entries.
+    post2007 = db[~db.NACEMainEconomicActivityCode.str.startswith('NACE')]
+    pre2007 = db[db.NACEMainEconomicActivityCode.str.startswith('NACE')]
+
+    # The following lines are just for slicing the string "NACE1_1" out of the column NACEMainEconomicActivityCode. Perhaps more easy way but pandas has problems with changing values dependend on these values.
+    foo = pre2007['NACEMainEconomicActivityCode'].str.slice(start=9)
+    pre2007 = pre2007.drop(columns=['NACEMainEconomicActivityCode'])
+    pre2007['NACEMainEconomicActivityCode'] = foo
+    cols = pre2007.columns.tolist()
+    a, b = cols.index('NACEMainEconomicActivityName'), cols.index('NACEMainEconomicActivityCode')
+    cols.insert(a, cols.pop(b))
+    pre2007 = pre2007[cols]
+
+    # The following lines are for creating the transition dict. This is partly direct the transition table but for some old codes there is no transition, so we have to search for the appropriate codes.
+    transitiondict = {}
+    for items in tt.NACE_1_1_CODE.unique():
+        foo3 = tuple(tt[tt.NACE_1_1_CODE == items].NACE_2007_CODE.unique())
+        transitiondict.update({items: foo3})
+
+    foo4 = pre2007[pre2007.NACEMainEconomicActivityCode.str.endswith('0')]
+    foo5 = tt[tt.NACE_1_1_CODE.str.endswith('0')]
+    for items in foo5.NACE_1_1_CODE.unique():
+        foo4 = foo4[foo4.NACEMainEconomicActivityCode != items]
+    for items in foo4.NACEMainEconomicActivityCode.unique():
+        if items[3] == '0':
+            foo6 = tuple(tt[tt.NACE_1_1_CODE.str.startswith(items[0:2])].NACE_2007_CODE.unique())
+            transitiondict.update({items: foo6})
+        else:
+            foo6 = tuple(tt[tt.NACE_1_1_CODE.str.startswith(items[0:3])].NACE_2007_CODE.unique())
+            transitiondict.update({items: foo6})
+
+    transitiondict.update({'74.84': tuple('37.00')})
+    transitiondict.update({'27.35': tuple('37.00')})
+
+    # The following lines are for performing the transition.
+    for i in range(len(pre2007)):
+        pre2007.at[i, 'NACEMainEconomicActivityCode'] = transitiondict[pre2007.loc[i, 'NACEMainEconomicActivityCode']]
+
+    # The following line is just for combining both DataFrames to receive the final DataFrame.
+    final = post2007.append(pre2007)
+    return(final)
+
+
+def perform_NACETransition_list(db, newNACE=2, path=None):
+    """
+    Changes the NACE_1_1 Codes of the input DataFrame into NACE_2 Codes.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Input DataFrame with partly entries that are coded with NACE_1_1.
+    newNACE : Int, optional
+        The target NACE-code. The default is 2.
+    path : String, optional
+        Path to the root of your project. If None is given, emipy searches for the path, stored in the config file. The default is None.
+
+    Returns
+    -------
+    final : DataFrame
+        The input DataFrame with changed NACE-codes if necessary.
+
+    """
+    if path == None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        path = config['PATH']['path']
+
+    # The following lines are for loading the transition table into the session.
+    if newNACE == 2:
+        try:
+            tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
+        except FileNotFoundError:
+            print('File not found in the given path.')
+            return None
+    elif newNACE == 1:
+        try:
+            tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev2-NACERev1_1+table+format.xls'))
+        except FileNotFoundError:
+            print('File not found in the given path.')
+            return None
+
+    # The following lines are just for converting the columns NACE_1_1_CODE and NACE_2007_CODE to strings with the needed format (add 0)
+    tt = tt.astype({'NACE_1_1_CODE': str, 'NACE_2007_CODE': str})
+    foo1, foo2 = [], []
+    for i in range(len(tt)):
+        foo1.append(tt.NACE_1_1_CODE.iloc[i])
+        foo2.append(tt.NACE_2007_CODE.iloc[i])
+        if tt.NACE_1_1_CODE.iloc[i].find('.') != 2:
+            foo1[i] = '0' + foo1[i]
+        if tt.NACE_2007_CODE.iloc[i].find('.') != 2:
+            foo2[i] = '0' + foo2[i]
+        if tt.NACE_1_1_CODE.iloc[i].find('.') == len(tt.NACE_1_1_CODE.iloc[i]) - 2:
+            foo1[i] = foo1[i] + '0'
+        if tt.NACE_2007_CODE.iloc[i].find('.') == len(tt.NACE_2007_CODE.iloc[i]) - 2:
+            foo2[i] = foo2[i] + '0'
+    tt.drop('NACE_1_1_CODE', axis=1, inplace=True)
+    tt['NACE_1_1_CODE'] = pd.Series(foo1)
+    tt.drop('NACE_2007_CODE', axis=1, inplace=True)
+    tt['NACE_2007_CODE'] = pd.Series(foo2)
+
+    # The following lines are for seperating into NACE2 and NACE_1_1 entries.
+    post2007 = db[~db.NACEMainEconomicActivityCode.str.startswith('NACE')]
+    pre2007 = db[db.NACEMainEconomicActivityCode.str.startswith('NACE')]
+
+    # The following lines are just for slicing the string "NACE1_1" out of the column NACEMainEconomicActivityCode. Perhaps more easy way but pandas has problems with changing values dependend on these values.
+    foo = pre2007['NACEMainEconomicActivityCode'].str.slice(start=9)
+    pre2007 = pre2007.drop(columns=['NACEMainEconomicActivityCode'])
+    pre2007['NACEMainEconomicActivityCode'] = foo
+    cols = pre2007.columns.tolist()
+    a, b = cols.index('NACEMainEconomicActivityName'), cols.index('NACEMainEconomicActivityCode')
+    cols.insert(a, cols.pop(b))
+    pre2007 = pre2007[cols]
+
+    # The following lines are for creating the transition dict. This is partly direct the transition table but for some old codes there is no transition, so we have to search for the appropriate codes.
+    transitiondict = {}
+    for items in tt.NACE_1_1_CODE.unique():
+        foo3 = list(tt[tt.NACE_1_1_CODE == items].NACE_2007_CODE.unique())
+        transitiondict.update({items: foo3})
+
+    foo4 = pre2007[pre2007.NACEMainEconomicActivityCode.str.endswith('0')]
+    foo5 = tt[tt.NACE_1_1_CODE.str.endswith('0')]
+    for items in foo5.NACE_1_1_CODE.unique():
+        foo4 = foo4[foo4.NACEMainEconomicActivityCode != items]
+    for items in foo4.NACEMainEconomicActivityCode.unique():
+        if items[3] == '0':
+            foo6 = list(tt[tt.NACE_1_1_CODE.str.startswith(items[0:2])].NACE_2007_CODE.unique())
+            transitiondict.update({items: foo6})
+        else:
+            foo6 = list(tt[tt.NACE_1_1_CODE.str.startswith(items[0:3])].NACE_2007_CODE.unique())
+            transitiondict.update({items: foo6})
+    # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?) They need a seperate value we have to look it up which are best for this!!!!
+    transitiondict.update({'74.84': list('37.00')})
+    transitiondict.update({'27.35': list('37.00')})
+
+    # The following lines are for performing the transition.
+    for i in range(len(pre2007)):
+        pre2007.at[i, 'NACEMainEconomicActivityCode'] = transitiondict[pre2007.loc[i, 'NACEMainEconomicActivityCode']]
+
+    # The following line is just for combining both DataFrames to receive the final DataFrame.
+    final = post2007.append(pre2007)
+    return(final)
+
+
 def change_RenameDict(total=None, add=None, sub=None, reset=False):
     """
     Changes the column name dict in the config file and returns the actual column names dict.
@@ -564,7 +771,7 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
 
 def row_reduction(db):
     """
-    Reduces DataFrame to columns specified in the conifg file.
+    Reduces DataFrame to columns specified in the config file.
 
     Parameters
     ----------

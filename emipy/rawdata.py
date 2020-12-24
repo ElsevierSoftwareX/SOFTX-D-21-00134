@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import requests, zipfile, io
 import csv
 import configparser
+import urllib.request
 
 
 def download_PollutionData(path, chunk_size=128):
@@ -143,6 +144,31 @@ def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
                 os.remove(file_name)
 
 
+def download_NACE_TransitionTables(path):
+    """
+    Creates, if necessary, the folder TransitionData in the given path and downloads NACE transition tables from Eurostat to save them in the folder TransitionData.
+
+    Parameters
+    ----------
+    path : String
+        Path to the root of the project.
+
+    Returns
+    -------
+    None.
+
+    """
+    directory = 'TransitionData'
+    path = os.path.join(path, directory)
+    if os.path.isdir(path) is False:
+        os.mkdir(path)
+    if not os.listdir(path):
+        url1 = r'https://ec.europa.eu/eurostat/documents/1965800/1978760/52249E90762B69F8E0440003BA9322F9.xls/2314229f-7606-4230-96d4-da18f045b692'
+        url2 = r'https://ec.europa.eu/eurostat/documents/1965800/1978760/Copy+of+5225C5EEBF016050E0440003BA9322F9.xls/6e1aec88-f15b-4d0f-bccc-4ee505c7f810'
+        urllib.request.urlretrieve(url1, os.path.join(path, 'Correspondance+table+NACERev2-NACERev1_1+table+format.xls'))
+        urllib.request.urlretrieve(url2, os.path.join(path, 'Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
+
+
 def pickle_rawdata(path, force_rerun=False):
     """
     loads files of interest, converts them into .pkl file and saves them in the same path.
@@ -254,6 +280,7 @@ def init_emipy_project(path, Resolution=10, force_rerun=False):
     change_rootpath(path)
     download_PollutionData(path=path)
     download_MapFiles(path=path, Resolution=Resolution)
+    download_NACE_TransitionTables(path)
     pickle_rawdata(path=path, force_rerun=force_rerun)
     merge_frompickle(path=path, force_rerun=force_rerun)
     directory = 'ExportData'
