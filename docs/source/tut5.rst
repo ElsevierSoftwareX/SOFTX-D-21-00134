@@ -73,7 +73,7 @@ Emission information
 
 | So far you have produced a filtered data base and plots of these data base. But perhaps you want to get the information of your plot in form of a data table. 
 
-.. code-block: python
+.. code-block :: python
 
 	data10 = get_PollutantVolume(data2, FirstOrder='ReportingYear')
 	data11 = get_PollutantVolume_rel(data2, FirstOrder='ReportingYear')
