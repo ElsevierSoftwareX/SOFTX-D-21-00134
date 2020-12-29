@@ -75,12 +75,41 @@ Emission information
 
 .. code-block :: python
 
-	data10 = get_PollutantVolume(data2, FirstOrder='ReportingYear')
-	data11 = get_PollutantVolume_rel(data2, FirstOrder='ReportingYear')
-	data12 = get_PollutantVolumeChange(data2, FirstOrder='ReportingYear')
+	data10 = ep.get_PollutantVolume(data2, FirstOrder='ReportingYear')
+	data11 = ep.get_PollutantVolume_rel(data2, FirstOrder='ReportingYear')
+	data12 = ep.get_PollutantVolumeChange(data2, FirstOrder='ReportingYear')
 
 | In comparison to your data base, this table has summed up all emissions for your order parameter. The usage of the order parameter is the same as in the plot functions.
 
+NACE-Code selection
+-------------------
 
+| The economical classification of the entries with the NACE-Code is not consistent over time. The European Union performed a revision of the NACE-Classification NACE 1.1 to NACE 2. In consequence, the entries for the years 2001 and 2004 are encoded in the old classification, while the newer entries are encoded by NACE 2.
+| Emipy provides a function that performes an transition of the old codes to the new, based on the `transition tables <https://ec.europa.eu/eurostat/de/web/nace-rev2/correspondence_tables>`_, provided by Eurostat.
 
+.. code-block :: python
+
+	db = ep.perform_NACETransition(db)
+
+| The transition does not allow an unique assignment of new codes, which is why the new codes may be stored as list of multiple codes. In a consequence, entries might pass your filter, but are not truly part of your requested data. You might want to check for these entries, if they really are part of your economic field.
+| You can finde the NACE-Codes in the `NACE Rev.2 <https://ec.europa.eu/eurostat/documents/portlet_file_entry/3859598/KS-RA-07-015-EN.PDF.pdf/dd5443f5-b886-40e4-920d-9df03590ff91>`_ starting at page 63. Choosing the right code enables you to filter for your request. NACEMainEconomicActivityCode needs a string with the complete NACE Code like '01.46' or list of these Codes.
+
+.. code-block :: python
+
+	data13 = ep.f_db(db, NACEMainEconomicActivityCode='35.11')
+
+| Some groups of NACE codes are stored in the config file. You can access them with get_NACECode_filter(). If the parameter specify is None, which it is by default, you receive a list of dictionaries which have the NACE Codes as list corresponding to the key name. You can put specify to on of the keys to receive the value, the list of NACE Codes.
+
+.. code-block :: python
+
+	print(ep.get_NACECode_filter())
+	NACECode = ep.get_NACECode_filter(specify = 'Animal production')
+	data14 = ep.f_db(db, NACEMainEconomicActivityCode=NACECode)
+
+| You can create your own NACE-Code lists with change_NACECode_filter(). This works very much like change_RenameDict(). You can add and subtract single key/value pairs, or replace the complete dictionary. For the right syntax, make sure your codes are 5 characters long and seperated by a comma.
+
+.. code-block :: python
+
+	ep.change_NACECode_filter(add={'metalmanufaction':'24.51,24.52,24.53,24.54'})
+	ep.change_NACECode_filter(sub={'metalmanufaction':'24.51,24.52,24.53,24.54'})
 
