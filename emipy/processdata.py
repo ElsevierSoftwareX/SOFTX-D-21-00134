@@ -89,7 +89,7 @@ def read_mb(path=None, Resolution='10M', spatialtype='RG', NUTS_LVL=0, m_year=20
 
 def get_NACECode_filter(specify=None):
     """
-    If not specified, this function returns a dict with all stored NACECODE dictionaries. IF specified, it returns the corresponding NACECODES as a list.
+    If not specified, this function returns a dict with all stored NACECODE dictionaries. If specified, it returns the corresponding NACECODES as a list.
 
     Parameters
     ----------
@@ -738,7 +738,8 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
 
     Returns
     -------
-    None.
+    config['COLUMNSOFINTEREST'] : dict
+        Updated list of columnsofinterest.
 
     """
     config = configparser.ConfigParser()
@@ -773,6 +774,7 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
             config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
         config.write(configfile)
+    return config['COLUMNSOFINTEREST']
 
 
 def row_reduction(db):
