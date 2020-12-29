@@ -233,7 +233,7 @@ def get_CNTR_CODE_list(mb):
     return CNTR_CODE_list
 
 
-def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ExclaveExclude=False, ReturnUnknown=False):
+def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ParentCompanyName=None, FacilityName=None, City=None, PostalCode=None, CountryCode=None, RBDGeoCode=None, RBDGeoName=None, NUTSRegionGeoName=None, NACEMainEconomicActivityName=None, MainIASectorCode=None, MainIASectorName=None, MainIAActivityCode=None, MainIAActivityName=None, PollutantReleaseID=None, ReleaseMediumCode=None, PollutantCode=None, PollutantGroupCode=None, ExclaveExclude=False, ReturnUnknown=False):
     """
     Takes DataFrame and filters out data, according to input parameters.
 
@@ -257,6 +257,40 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         List of NACE main economic activity codes to be maintained. The default is None.
     NUTSRegionGeoCode : String/List, optional
         List of NUTS region geocodes to be maintained. The default is None.
+    ParentCompanyName : String/List, optional
+        List of Parent company names to be maintained. The default is None.
+    FacilityName : String/List, optional
+        List of facility names to be maintained. The default is None.
+    City : String/list, optional
+        List of cities to be maintained. The default is None.
+    PostalCode : String/List, optional
+        List of postal codes to be a´maintained. The default is None.
+    CountryCode : String/List, optional
+        List of country codes to be maintained. The default is None.
+    RBDGeoCode : String/List, optional
+        List of River Basin District geo codes to be maintained. The default is None.
+    RBDGeoName : String/List, optional
+        List of River Basin District geo names to be maintained. The default is None.
+    NUTSRegionGeoName : String/List, optional
+        List of NUTS  region geo names to be maintained. The default is None.
+    NACEMainEconomicActivityName : String/List, optional
+        List of NACE main economic activity names to be maintained. The default is None.
+    MainIASectorCode : String/List, optional
+        List of Investment Association sector codes to be maintained. The default is None.
+    MainIASectorName : String/List, optional
+        List of Investmend Association sector names to be maintained. The default is None.
+    MainIAActivityCode : String/List, optional
+        List of Investmend Association activity codes to be maintained. The default is None.
+    MainIAActivityName : String/List, optional
+        List of Investmend Association activity names to be maintained. The default is None.
+    PollutantReleaseID : Int/List, optional
+        List of pollutant release IDs to be maintained. The default is None.
+    ReleaseMediumCode : String/List, optional
+        List of realease medium codes to be maintained. The default is None.
+    PollutantCode : String/List, optional
+        List of pollutant codes to be maintained. The default is None.
+    PollutantGroupCode : String/List, optional
+        List of pollutant group codes to be maintained. The default is None.
     ExclaveExclude : Boolean, optional
         If True, exclaves that are unique NUTS-LVL1 regions are excluded. The default is False.
     ReturnUnknown : Boolean, optional
@@ -343,6 +377,142 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
             db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) is True]
         else:
             db = db[db.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) is True]
+
+    if ParentCompanyName is not None:
+        dbna = dbna.append(db[db.ParentCompanyName.isna()])
+        dbna = dbna[dbna.ParentCompanyName.isna()]
+        if isinstance(ParentCompanyName, list):
+            db = db[db.ParentCompanyName.isin(ParentCompanyName)]
+        else:
+            db = db[db.ParentCompanyName == ParentCompanyName]
+
+    if FacilityName is not None:
+        dbna = dbna.append(db[db.FacilityName.isna()])
+        dbna = dbna[dbna.FacilityName.isna()]
+        if isinstance(FacilityName, list):
+            db = db[db.FacilityName.isin(FacilityName)]
+        else:
+            db = db[db.FacilityName == FacilityName]
+
+    if City is not None:
+        dbna = dbna.append(db[db.City.isna()])
+        dbna = dbna[dbna.City.isna()]
+        if isinstance(City, list):
+            db = db[db.City.isin(City)]
+        else:
+            db = db[db.City == City]
+
+    if PostalCode is not None:
+        dbna = dbna.append(db[db.PostalCode.isna()])
+        dbna = dbna[dbna.PostalCode.isna()]
+        if isinstance(PostalCode, list):
+            db = db[db.PostalCode.isin(PostalCode)]
+        else:
+            db = db[db.PostalCode == PostalCode]
+
+    if CountryCode is not None:
+        dbna = dbna.append(db[db.CountryCode.isna()])
+        dbna = dbna[dbna.CountryCode.isna()]
+        if isinstance(CountryCode, list):
+            db = db[db.CountryCode.isin(CountryCode)]
+        else:
+            db = db[db.PostalCode == PostalCode]
+
+    if RBDGeoCode is not None:
+        dbna = dbna.append(db[db.RBDGeoCode.isna()])
+        dbna = dbna[dbna.RBDGeoCode.isna()]
+        if isinstance(RBDGeoCode, list):
+            db = db[db.RBDGeoCode.isin(RBDGeoCode)]
+        else:
+            db = db[db.RBDGeoCode == RBDGeoCode]
+
+    if RBDGeoName is not None:
+        dbna = dbna.append(db[db.RBDGeoName.isna()])
+        dbna = dbna[dbna.RBDGeoName.isna()]
+        if isinstance(RBDGeoName, list):
+            db = db[db.RBDGeoName.isin(RBDGeoName)]
+        else:
+            db = db[db.RBDGeoName == RBDGeoName]
+
+    if NUTSRegionGeoName is not None:
+        dbna = dbna.append(db[db.NUTSRegionGeoName.isna()])
+        dbna = dbna[dbna.NUTSRegionGeoName.isna()]
+        if isinstance(NUTSRegionGeoName, list):
+            db = db[db.NUTSRegionGeoName.isin(NUTSRegionGeoName)]
+        else:
+            db = db[db.NUTSRegionGeoName == NUTSRegionGeoName]
+
+    if NACEMainEconomicActivityName is not None:
+        dbna = dbna.append(db[db.NACEMainEconomicActivityName.isna()])
+        dbna = dbna[dbna.NACEMainEconomicActivityName.isna()]
+        if isinstance(NACEMainEconomicActivityName, list):
+            db = db[db.NACEMainEconomicActivityName.isin(NACEMainEconomicActivityName)]
+        else:
+            db = db[db.NACEMainEconomicActivityName == NACEMainEconomicActivityName]
+
+    if MainIASectorCode is not None:
+        dbna = dbna.append(db[db.MainIASectorCode.isna()])
+        dbna = dbna[dbna.MainIASectorCode.isna()]
+        if isinstance(MainIASectorCode, list):
+            db = db[db.MainIASectorCode.isin(MainIASectorCode)]
+        else:
+            db = db[db.MainIASectorCode == MainIASectorCode]
+
+    if MainIASectorName is not None:
+        dbna = dbna.append(db[db.MainIASectorName.isna()])
+        dbna = dbna[dbna.MainIASectorName.isna()]
+        if isinstance(MainIASectorName, list):
+            db = db[db.MainIASectorName.isin(MainIASectorName)]
+        else:
+            db = db[db.MainIASectorName == MainIASectorName]
+
+    if MainIAActivityCode is not None:
+        dbna = dbna.append(db[db.MainIAActivityCode.isna()])
+        dbna = dbna[dbna.MainIAActivityCode.isna()]
+        if isinstance(MainIAActivityCode, list):
+            db = db[db.MainIAActivityCode.isin(MainIAActivityCode)]
+        else:
+            db = db[db.MainIAActivityCode == MainIAActivityCode]
+
+    if MainIAActivityName is not None:
+        dbna = dbna.append(db[db.MainIAActivityName.isna()])
+        dbna = dbna[dbna.MainIAActivityName.isna()]
+        if isinstance(MainIAActivityName, list):
+            db = db[db.MainIAActivityName.isin(MainIAActivityName)]
+        else:
+            db = db[db.MainIAActivityName == MainIAActivityName]
+
+    if PollutantReleaseID is not None:
+        dbna = dbna.append(db[db.PollutantReleaseID.isna()])
+        dbna = dbna[dbna.PollutantReleaseID.isna()]
+        if isinstance(PollutantReleaseID, list):
+            db = db[db.PollutantReleaseID.isin(PollutantReleaseID)]
+        else:
+            db = db[db.PollutantReleaseID == PollutantReleaseID]
+
+    if ReleaseMediumCode is not None:
+        dbna = dbna.append(db[db.ReleaseMediumCode.isna()])
+        dbna = dbna[dbna.ReleaseMediumCode.isna()]
+        if isinstance(ReleaseMediumCode, list):
+            db = db[db.ReleaseMediumCode.isin(ReleaseMediumCode)]
+        else:
+            db = db[db.ReleaseMediumCode == ReleaseMediumCode]
+
+    if PollutantCode is not None:
+        dbna = dbna.append(db[db.PollutantCode.isna()])
+        dbna = dbna[dbna.PollutantCode.isna()]
+        if isinstance(PollutantCode, list):
+            db = db[db.PollutantCode.isin(PollutantCode)]
+        else:
+            db = db[db.PollutantCode == PollutantCode]
+
+    if PollutantGroupCode is not None:
+        dbna = dbna.append(db[db.PollutantGroupCode.isna()])
+        dbna = dbna[dbna.PollutantGroupCode.isna()]
+        if isinstance(PollutantGroupCode, list):
+            db = db[db.PollutantGroupCode.isin(PollutantGroupCode)]
+        else:
+            db = db[db.PollutantGroupCode == PollutantGroupCode]
 
     ExclaveList = ('ES7', 'FRY', 'FRA', 'FR9', 'PT2', 'PT3')
     if ExclaveExclude is True:
