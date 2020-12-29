@@ -87,60 +87,66 @@ def read_mb(path=None, Resolution='10M', spatialtype='RG', NUTS_LVL=0, m_year=20
     return mb
 
 
-def get_NACECode_filter_list():
+def get_NACECode_filter(specify=None):
     """
-    Displays a list of predefined industry sectors.
-
-    Returns
-    -------
-    NACElist : list
-        list of predefined industry sectors.
-
-    """
-    NACElist = []
-    NACElist.append(' Cement & Chalk: cem')
-    NACElist.append(' Iron & Steel: is')
-    NACElist.append(' Paper & Wood: pap')
-    NACElist.append(' Chemistry: chem')
-    NACElist.append(' Aluminium: alu')
-    NACElist.append(' Refinery: ref')
-    NACElist.append(' Glas: gla')
-    NACElist.append(' Waste: wa')
-    return NACElist
-
-
-def get_NACECode_filter(group=None):
-    """
-    Creates a list of NACE codes corresponding to the selected industry sectors.
+    If not specified, this function returns a dict with all stored NACECODE dictionaries. IF specified, it returns the corresponding NACECODES as a list.
 
     Parameters
     ----------
-    group : String, optional
-        industry sector. The default is None.
+    specify : String/List of Strings, optional
+        Specify for wich economical categories you want to have the NACECODES. You can get a list of all selection options, with executing this function with specify=None.  The default is None.
 
     Returns
     -------
-    NACECode : List
-        list of NACE codes corresponding to the specified industry sectors.
+    NACElist : Dict/List
+        If specify is None it returns a Dict with all stored NACECODE dictionarys. If specify is not None it returns the according NACECODES in a list.
 
     """
-    if group == 'cem':
-        NACECode = ['23.51', '23.52']
-    elif group == 'is':
-        NACECode = ['19.10', '24.10', '24.20', '24.51', '24.52', '24.53', '24.54']
-    elif group == 'pap':
-        NACECode = ['16.21', '16.22', '16.23', '16.24', '16.29', '17.11', '17.12', '17.21', '17.22', '17.23', '17.24', '17.29']
-    elif group == 'chem':
-        NACECode = ['20.11', '20.12', '20.13', '20.14', '20.15', '20.16', '20.17', '20.20', '20.30', '20.41', '20.42', '20.51', '20.52', '20.53', '20.59', '21.10', '10.20', '22.11', '22.19', '22.21', '22.22', '22.23', '22.29']
-    elif group == 'alu':
-        NACECode = ['24.42']
-    elif group == 'ref':
-        NACECode = ['19.20']
-    elif group == 'gla':
-        NACECode = ['23.11', '23.12', '23.13', '23.14', '23.19']
-    elif group == 'wa':
-        NACECode = ['38.11', '38.12', '38.21', '38.22', '38.31', '38.32']
-    return NACECode
+    config = configparser.ConfigParser()
+    config.optionxform = str
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    if specify == None:
+        NACElist = dict(config.items('NACECODES'))
+    elif isinstance(specify, list):
+        NACElist = []
+        for items in specify:
+            NACElist = NACElist + config['NACECODES'][items].split(',')
+    else:
+        NACElist = config['NACECODES'][specify].split(',')
+    return NACElist
+
+
+def change_NACECode_filter(total=None, add=None, sub=None):
+    """
+    Changes the NACE code dict in the config file and returns the actual NACE code dict.
+
+    Parameters
+    ----------
+    total : Dict, optional
+        Replacement dictionary that replaces the complete NACE code dict. The default is None.
+    add : Dict, optional
+        Dictionary that gets added to the NACE code dict. The default is None.
+    sub : Dict, optional
+        Dictionary that is substracted from the NACE code dict. The default is None.
+
+    Returns
+    -------
+    config['NACECODES'] : dict
+        actualised NACECODE dictionary.
+
+    """
+    config = configparser.ConfigParser()
+    config.optionxform = str
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    if total != None:
+        config['NACECODES'] = total
+    if add != None:
+        config['NACECODES'].update(add)
+    if sub != None:
+        all(map(config['NACECODES'].pop, sub))
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+        config.write(configfile)
+    return config['NACECODES']
 
 
 def get_Countrylist(db):
