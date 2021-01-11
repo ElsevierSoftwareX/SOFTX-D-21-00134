@@ -264,5 +264,5 @@ def init_emipy_project(path, Resolution=10, force_rerun=False):
     path = os.path.join(path, directory)
     if os.path.isdir(path) is False:
         os.mkdir(path)
-    print('The Initialisation process is completed.')   
+    print('The initialisation process is completed.')   
     return None
