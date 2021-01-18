@@ -127,9 +127,9 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
     stacked : Boolean, optional
         Stacks the bars for second order. The default is False.
     *args : TYPE
-        Geopandas.plot() input variables.
+        pandas.plot() input variables.
     **kwargs : TYPE
-        Geopandas.plot() input variables.
+        pandas.plot() input variables.
 
     Returns
     -------
@@ -163,9 +163,9 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
     stacked : Boolean, optional
         Stacks the bars for second order. The default is False.
     *args : TYPE
-        Geopandas.plot() input variables.
+        pandas.plot() input variables.
     **kwargs : TYPE
-        Geopandas.plot() input variables.
+        pandas.plot() input variables.
 
     Returns
     -------
@@ -201,9 +201,9 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
     norm : variable, optional
         specific first order value, the data is normed to. The default is None. For None it searches the overall maximum.
     *args : TYPE
-        Geopandas.plot() input variables.
+        pandas.plot() input variables.
     **kwargs : TYPE
-        Geopandas.plot() input variables.
+        pandas.plot() input variables.
 
     Returns
     -------

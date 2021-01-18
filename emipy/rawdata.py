@@ -127,7 +127,7 @@ def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
             urllist.append(urldict.get(urlkey))
 
     for items in urllist:
-        print(items)
+        #print(items)
         if items == None:
             continue
         r = requests.get(items, stream=True)
@@ -278,14 +278,17 @@ def init_emipy_project(path, Resolution=10, force_rerun=False):
         print('A path to the root of the project is needed to initialize the project.')
         return None
     change_rootpath(path)
+    print('Rootpath successfully changed.')
     download_PollutionData(path=path)
+    print('Pollution data successfully downloaded and extracted.')
     download_MapFiles(path=path, Resolution=Resolution)
     download_NACE_TransitionTables(path)
     pickle_rawdata(path=path, force_rerun=force_rerun)
     merge_frompickle(path=path, force_rerun=force_rerun)
+    print('Data merged and pickled.')
     directory = 'ExportData'
     path = os.path.join(path, directory)
     if os.path.isdir(path) is False:
         os.mkdir(path)
-    print('The Initialisation process is completed.')   
+    print('The initialisation process is completed.')   
     return None

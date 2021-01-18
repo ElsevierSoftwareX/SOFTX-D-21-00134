@@ -14,10 +14,10 @@ with open ("README.md", "r") as fh:
 
 setuptools.setup(
     name="emipy",
-    version="0.0.58",
-    author="Flow2theryan; s.morgenthaler",
+    version="0.0.63",
+    author="Florian Overberg; Simon Morgenthaler",
     author_email="s.morgenthaler@fz-juelich.de",
-    description="A small package for emission data analysis",
+    description="Python package for emission data analysis based on the E-PRTR database",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy",
