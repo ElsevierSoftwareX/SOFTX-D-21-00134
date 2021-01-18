@@ -87,60 +87,66 @@ def read_mb(path=None, Resolution='10M', spatialtype='RG', NUTS_LVL=0, m_year=20
     return mb
 
 
-def get_NACECode_filter_list():
+def get_NACECode_filter(specify=None):
     """
-    Displays a list of predefined industry sectors.
-
-    Returns
-    -------
-    NACElist : list
-        list of predefined industry sectors.
-
-    """
-    NACElist = []
-    NACElist.append(' Cement & Chalk: cem')
-    NACElist.append(' Iron & Steel: is')
-    NACElist.append(' Paper & Wood: pap')
-    NACElist.append(' Chemistry: chem')
-    NACElist.append(' Aluminium: alu')
-    NACElist.append(' Refinery: ref')
-    NACElist.append(' Glas: gla')
-    NACElist.append(' Waste: wa')
-    return NACElist
-
-
-def get_NACECode_filter(group=None):
-    """
-    Creates a list of NACE codes corresponding to the selected industry sectors.
+    If not specified, this function returns a dict with all stored NACECODE dictionaries. If specified, it returns the corresponding NACECODES as a list.
 
     Parameters
     ----------
-    group : String, optional
-        industry sector. The default is None.
+    specify : String/List of Strings, optional
+        Specify for wich economical categories you want to have the NACECODES. You can get a list of all selection options, with executing this function with specify=None.  The default is None.
 
     Returns
     -------
-    NACECode : List
-        list of NACE codes corresponding to the specified industry sectors.
+    NACElist : Dict/List
+        If specify is None it returns a Dict with all stored NACECODE dictionarys. If specify is not None it returns the according NACECODES in a list.
 
     """
-    if group == 'cem':
-        NACECode = ['23.51', '23.52']
-    elif group == 'is':
-        NACECode = ['19.10', '24.10', '24.20', '24.51', '24.52', '24.53', '24.54']
-    elif group == 'pap':
-        NACECode = ['16.21', '16.22', '16.23', '16.24', '16.29', '17.11', '17.12', '17.21', '17.22', '17.23', '17.24', '17.29']
-    elif group == 'chem':
-        NACECode = ['20.11', '20.12', '20.13', '20.14', '20.15', '20.16', '20.17', '20.20', '20.30', '20.41', '20.42', '20.51', '20.52', '20.53', '20.59', '21.10', '10.20', '22.11', '22.19', '22.21', '22.22', '22.23', '22.29']
-    elif group == 'alu':
-        NACECode = ['24.42']
-    elif group == 'ref':
-        NACECode = ['19.20']
-    elif group == 'gla':
-        NACECode = ['23.11', '23.12', '23.13', '23.14', '23.19']
-    elif group == 'wa':
-        NACECode = ['38.11', '38.12', '38.21', '38.22', '38.31', '38.32']
-    return NACECode
+    config = configparser.ConfigParser()
+    config.optionxform = str
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    if specify == None:
+        NACElist = dict(config.items('NACECODES'))
+    elif isinstance(specify, list):
+        NACElist = []
+        for items in specify:
+            NACElist = NACElist + config['NACECODES'][items].split(',')
+    else:
+        NACElist = config['NACECODES'][specify].split(',')
+    return NACElist
+
+
+def change_NACECode_filter(total=None, add=None, sub=None):
+    """
+    Changes the NACE code dict in the config file and returns the actual NACE code dict.
+
+    Parameters
+    ----------
+    total : Dict, optional
+        Replacement dictionary that replaces the complete NACE code dict. The default is None.
+    add : Dict, optional
+        Dictionary that gets added to the NACE code dict. The default is None.
+    sub : Dict, optional
+        Dictionary that is substracted from the NACE code dict. The default is None.
+
+    Returns
+    -------
+    config['NACECODES'] : dict
+        actualised NACECODE dictionary.
+
+    """
+    config = configparser.ConfigParser()
+    config.optionxform = str
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    if total != None:
+        config['NACECODES'] = total
+    if add != None:
+        config['NACECODES'].update(add)
+    if sub != None:
+        all(map(config['NACECODES'].pop, sub))
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+        config.write(configfile)
+    return config['NACECODES']
 
 
 def get_Countrylist(db):
@@ -227,7 +233,7 @@ def get_CNTR_CODE_list(mb):
     return CNTR_CODE_list
 
 
-def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ExclaveExclude=False, ReturnUnknown=False):
+def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ParentCompanyName=None, FacilityName=None, City=None, PostalCode=None, CountryCode=None, RBDGeoCode=None, RBDGeoName=None, NUTSRegionGeoName=None, NACEMainEconomicActivityName=None, MainIASectorCode=None, MainIASectorName=None, MainIAActivityCode=None, MainIAActivityName=None, PollutantReleaseID=None, ReleaseMediumCode=None, PollutantCode=None, PollutantGroupCode=None, ExclaveExclude=False, ReturnUnknown=False):
     """
     Takes DataFrame and filters out data, according to input parameters.
 
@@ -251,6 +257,40 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         List of NACE main economic activity codes to be maintained. The default is None.
     NUTSRegionGeoCode : String/List, optional
         List of NUTS region geocodes to be maintained. The default is None.
+    ParentCompanyName : String/List, optional
+        List of Parent company names to be maintained. The default is None.
+    FacilityName : String/List, optional
+        List of facility names to be maintained. The default is None.
+    City : String/list, optional
+        List of cities to be maintained. The default is None.
+    PostalCode : String/List, optional
+        List of postal codes to be a´maintained. The default is None.
+    CountryCode : String/List, optional
+        List of country codes to be maintained. The default is None.
+    RBDGeoCode : String/List, optional
+        List of River Basin District geo codes to be maintained. The default is None.
+    RBDGeoName : String/List, optional
+        List of River Basin District geo names to be maintained. The default is None.
+    NUTSRegionGeoName : String/List, optional
+        List of NUTS  region geo names to be maintained. The default is None.
+    NACEMainEconomicActivityName : String/List, optional
+        List of NACE main economic activity names to be maintained. The default is None.
+    MainIASectorCode : String/List, optional
+        List of Investment Association sector codes to be maintained. The default is None.
+    MainIASectorName : String/List, optional
+        List of Investmend Association sector names to be maintained. The default is None.
+    MainIAActivityCode : String/List, optional
+        List of Investmend Association activity codes to be maintained. The default is None.
+    MainIAActivityName : String/List, optional
+        List of Investmend Association activity names to be maintained. The default is None.
+    PollutantReleaseID : Int/List, optional
+        List of pollutant release IDs to be maintained. The default is None.
+    ReleaseMediumCode : String/List, optional
+        List of realease medium codes to be maintained. The default is None.
+    PollutantCode : String/List, optional
+        List of pollutant codes to be maintained. The default is None.
+    PollutantGroupCode : String/List, optional
+        List of pollutant group codes to be maintained. The default is None.
     ExclaveExclude : Boolean, optional
         If True, exclaves that are unique NUTS-LVL1 regions are excluded. The default is False.
     ReturnUnknown : Boolean, optional
@@ -319,9 +359,16 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         dbna = dbna.append(db[db.NACEMainEconomicActivityCode.isna()])
         dbna = dbna[dbna.NACEMainEconomicActivityCode.isna()]
         if isinstance(NACEMainEconomicActivityCode, list):
-            db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
+            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMainEconomicActivityCode).any(1).astype(int)
+            db = db.assign(foo=foo.values)
+            db = db[db.foo == 1].drop(['foo'], axis=1)
+            # The following does not work. Seems like pandas can not handle lists as values in the dataframe.
+            # db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
         else:
-            db = db[db.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
+            NACEMainEconomicActivityCode = [NACEMainEconomicActivityCode]
+            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMainEconomicActivityCode).any(1).astype(int)
+            db = db.assign(foo=foo.values)
+            db = db[db.foo == 1].drop(['foo'], axis=1)
 
     if NUTSRegionGeoCode is not None:
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
@@ -330,6 +377,142 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
             db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) is True]
         else:
             db = db[db.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) is True]
+
+    if ParentCompanyName is not None:
+        dbna = dbna.append(db[db.ParentCompanyName.isna()])
+        dbna = dbna[dbna.ParentCompanyName.isna()]
+        if isinstance(ParentCompanyName, list):
+            db = db[db.ParentCompanyName.isin(ParentCompanyName)]
+        else:
+            db = db[db.ParentCompanyName == ParentCompanyName]
+
+    if FacilityName is not None:
+        dbna = dbna.append(db[db.FacilityName.isna()])
+        dbna = dbna[dbna.FacilityName.isna()]
+        if isinstance(FacilityName, list):
+            db = db[db.FacilityName.isin(FacilityName)]
+        else:
+            db = db[db.FacilityName == FacilityName]
+
+    if City is not None:
+        dbna = dbna.append(db[db.City.isna()])
+        dbna = dbna[dbna.City.isna()]
+        if isinstance(City, list):
+            db = db[db.City.isin(City)]
+        else:
+            db = db[db.City == City]
+
+    if PostalCode is not None:
+        dbna = dbna.append(db[db.PostalCode.isna()])
+        dbna = dbna[dbna.PostalCode.isna()]
+        if isinstance(PostalCode, list):
+            db = db[db.PostalCode.isin(PostalCode)]
+        else:
+            db = db[db.PostalCode == PostalCode]
+
+    if CountryCode is not None:
+        dbna = dbna.append(db[db.CountryCode.isna()])
+        dbna = dbna[dbna.CountryCode.isna()]
+        if isinstance(CountryCode, list):
+            db = db[db.CountryCode.isin(CountryCode)]
+        else:
+            db = db[db.PostalCode == PostalCode]
+
+    if RBDGeoCode is not None:
+        dbna = dbna.append(db[db.RBDGeoCode.isna()])
+        dbna = dbna[dbna.RBDGeoCode.isna()]
+        if isinstance(RBDGeoCode, list):
+            db = db[db.RBDGeoCode.isin(RBDGeoCode)]
+        else:
+            db = db[db.RBDGeoCode == RBDGeoCode]
+
+    if RBDGeoName is not None:
+        dbna = dbna.append(db[db.RBDGeoName.isna()])
+        dbna = dbna[dbna.RBDGeoName.isna()]
+        if isinstance(RBDGeoName, list):
+            db = db[db.RBDGeoName.isin(RBDGeoName)]
+        else:
+            db = db[db.RBDGeoName == RBDGeoName]
+
+    if NUTSRegionGeoName is not None:
+        dbna = dbna.append(db[db.NUTSRegionGeoName.isna()])
+        dbna = dbna[dbna.NUTSRegionGeoName.isna()]
+        if isinstance(NUTSRegionGeoName, list):
+            db = db[db.NUTSRegionGeoName.isin(NUTSRegionGeoName)]
+        else:
+            db = db[db.NUTSRegionGeoName == NUTSRegionGeoName]
+
+    if NACEMainEconomicActivityName is not None:
+        dbna = dbna.append(db[db.NACEMainEconomicActivityName.isna()])
+        dbna = dbna[dbna.NACEMainEconomicActivityName.isna()]
+        if isinstance(NACEMainEconomicActivityName, list):
+            db = db[db.NACEMainEconomicActivityName.isin(NACEMainEconomicActivityName)]
+        else:
+            db = db[db.NACEMainEconomicActivityName == NACEMainEconomicActivityName]
+
+    if MainIASectorCode is not None:
+        dbna = dbna.append(db[db.MainIASectorCode.isna()])
+        dbna = dbna[dbna.MainIASectorCode.isna()]
+        if isinstance(MainIASectorCode, list):
+            db = db[db.MainIASectorCode.isin(MainIASectorCode)]
+        else:
+            db = db[db.MainIASectorCode == MainIASectorCode]
+
+    if MainIASectorName is not None:
+        dbna = dbna.append(db[db.MainIASectorName.isna()])
+        dbna = dbna[dbna.MainIASectorName.isna()]
+        if isinstance(MainIASectorName, list):
+            db = db[db.MainIASectorName.isin(MainIASectorName)]
+        else:
+            db = db[db.MainIASectorName == MainIASectorName]
+
+    if MainIAActivityCode is not None:
+        dbna = dbna.append(db[db.MainIAActivityCode.isna()])
+        dbna = dbna[dbna.MainIAActivityCode.isna()]
+        if isinstance(MainIAActivityCode, list):
+            db = db[db.MainIAActivityCode.isin(MainIAActivityCode)]
+        else:
+            db = db[db.MainIAActivityCode == MainIAActivityCode]
+
+    if MainIAActivityName is not None:
+        dbna = dbna.append(db[db.MainIAActivityName.isna()])
+        dbna = dbna[dbna.MainIAActivityName.isna()]
+        if isinstance(MainIAActivityName, list):
+            db = db[db.MainIAActivityName.isin(MainIAActivityName)]
+        else:
+            db = db[db.MainIAActivityName == MainIAActivityName]
+
+    if PollutantReleaseID is not None:
+        dbna = dbna.append(db[db.PollutantReleaseID.isna()])
+        dbna = dbna[dbna.PollutantReleaseID.isna()]
+        if isinstance(PollutantReleaseID, list):
+            db = db[db.PollutantReleaseID.isin(PollutantReleaseID)]
+        else:
+            db = db[db.PollutantReleaseID == PollutantReleaseID]
+
+    if ReleaseMediumCode is not None:
+        dbna = dbna.append(db[db.ReleaseMediumCode.isna()])
+        dbna = dbna[dbna.ReleaseMediumCode.isna()]
+        if isinstance(ReleaseMediumCode, list):
+            db = db[db.ReleaseMediumCode.isin(ReleaseMediumCode)]
+        else:
+            db = db[db.ReleaseMediumCode == ReleaseMediumCode]
+
+    if PollutantCode is not None:
+        dbna = dbna.append(db[db.PollutantCode.isna()])
+        dbna = dbna[dbna.PollutantCode.isna()]
+        if isinstance(PollutantCode, list):
+            db = db[db.PollutantCode.isin(PollutantCode)]
+        else:
+            db = db[db.PollutantCode == PollutantCode]
+
+    if PollutantGroupCode is not None:
+        dbna = dbna.append(db[db.PollutantGroupCode.isna()])
+        dbna = dbna[dbna.PollutantGroupCode.isna()]
+        if isinstance(PollutantGroupCode, list):
+            db = db[db.PollutantGroupCode.isin(PollutantGroupCode)]
+        else:
+            db = db[db.PollutantGroupCode == PollutantGroupCode]
 
     ExclaveList = ('ES7', 'FRY', 'FRA', 'FR9', 'PT2', 'PT3')
     if ExclaveExclude is True:
@@ -447,6 +630,106 @@ def change_Unit(db, Unit=None):
     return data
 
 
+def perform_NACETransition(db, newNACE=2, path=None):
+    """
+    Changes the NACE_1_1 Codes of the input DataFrame into NACE_2 Codes.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Input DataFrame with partly entries that are coded with NACE_1_1.
+    newNACE : Int, optional
+        The target NACE-code. The default is 2.
+    path : String, optional
+        Path to the root of your project. If None is given, emipy searches for the path, stored in the config file. The default is None.
+
+    Returns
+    -------
+    final : DataFrame
+        The input DataFrame with changed NACE-codes if necessary.
+
+    """
+    if path == None:
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        path = config['PATH']['path']
+
+    # The following lines are for loading the transition table into the session.
+    if newNACE == 2:
+        try:
+            tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
+        except FileNotFoundError:
+            print('File not found in the given path.')
+            return None
+    elif newNACE == 1:
+        try:
+            tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev2-NACERev1_1+table+format.xls'))
+        except FileNotFoundError:
+            print('File not found in the given path.')
+            return None
+
+    # The following lines are just for converting the columns NACE_1_1_CODE and NACE_2007_CODE to strings with the needed format (add 0)
+    tt = tt.astype({'NACE_1_1_CODE': str, 'NACE_2007_CODE': str})
+    foo1, foo2 = [], []
+    for i in range(len(tt)):
+        foo1.append(tt.NACE_1_1_CODE.iloc[i])
+        foo2.append(tt.NACE_2007_CODE.iloc[i])
+        if tt.NACE_1_1_CODE.iloc[i].find('.') != 2:
+            foo1[i] = '0' + foo1[i]
+        if tt.NACE_2007_CODE.iloc[i].find('.') != 2:
+            foo2[i] = '0' + foo2[i]
+        if tt.NACE_1_1_CODE.iloc[i].find('.') == len(tt.NACE_1_1_CODE.iloc[i]) - 2:
+            foo1[i] = foo1[i] + '0'
+        if tt.NACE_2007_CODE.iloc[i].find('.') == len(tt.NACE_2007_CODE.iloc[i]) - 2:
+            foo2[i] = foo2[i] + '0'
+    tt.drop('NACE_1_1_CODE', axis=1, inplace=True)
+    tt['NACE_1_1_CODE'] = pd.Series(foo1)
+    tt.drop('NACE_2007_CODE', axis=1, inplace=True)
+    tt['NACE_2007_CODE'] = pd.Series(foo2)
+
+    # The following lines are for seperating into NACE2 and NACE_1_1 entries.
+    post2007 = db[~db.NACEMainEconomicActivityCode.str.startswith('NACE')]
+    pre2007 = db[db.NACEMainEconomicActivityCode.str.startswith('NACE')]
+
+    # The following lines are just for slicing the string "NACE1_1" out of the column NACEMainEconomicActivityCode. Perhaps more easy way but pandas has problems with changing values dependend on these values.
+    foo = pre2007['NACEMainEconomicActivityCode'].str.slice(start=9)
+    pre2007 = pre2007.drop(columns=['NACEMainEconomicActivityCode'])
+    pre2007['NACEMainEconomicActivityCode'] = foo
+    cols = pre2007.columns.tolist()
+    a, b = cols.index('NACEMainEconomicActivityName'), cols.index('NACEMainEconomicActivityCode')
+    cols.insert(a, cols.pop(b))
+    pre2007 = pre2007[cols]
+
+    # The following lines are for creating the transition dict. This is partly direct the transition table but for some old codes there is no transition, so we have to search for the appropriate codes.
+    transitiondict = {}
+    for items in tt.NACE_1_1_CODE.unique():
+        foo3 = list(tt[tt.NACE_1_1_CODE == items].NACE_2007_CODE.unique())
+        transitiondict.update({items: foo3})
+
+    foo4 = pre2007[pre2007.NACEMainEconomicActivityCode.str.endswith('0')]
+    foo5 = tt[tt.NACE_1_1_CODE.str.endswith('0')]
+    for items in foo5.NACE_1_1_CODE.unique():
+        foo4 = foo4[foo4.NACEMainEconomicActivityCode != items]
+    for items in foo4.NACEMainEconomicActivityCode.unique():
+        if items[3] == '0':
+            foo6 = list(tt[tt.NACE_1_1_CODE.str.startswith(items[0:2])].NACE_2007_CODE.unique())
+            transitiondict.update({items: foo6})
+        else:
+            foo6 = list(tt[tt.NACE_1_1_CODE.str.startswith(items[0:3])].NACE_2007_CODE.unique())
+            transitiondict.update({items: foo6})
+    # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?) They need a seperate value we have to look it up which are best for this!!!!
+    transitiondict.update({'74.84': list('37.00')})
+    transitiondict.update({'27.35': list('37.00')})
+
+    # The following lines are for performing the transition.
+    for i in range(len(pre2007)):
+        pre2007.at[i, 'NACEMainEconomicActivityCode'] = transitiondict[pre2007.loc[i, 'NACEMainEconomicActivityCode']]
+
+    # The following line is just for combining both DataFrames to receive the final DataFrame.
+    final = post2007.append(pre2007)
+    return(final)
+
+
 def change_RenameDict(total=None, add=None, sub=None, reset=False):
     """
     Changes the column name dict in the config file and returns the actual column names dict.
@@ -525,7 +808,8 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
 
     Returns
     -------
-    None.
+    config['COLUMNSOFINTEREST'] : dict
+        Updated list of columnsofinterest.
 
     """
     config = configparser.ConfigParser()
@@ -560,11 +844,12 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
             config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
         config.write(configfile)
+    return config['COLUMNSOFINTEREST']
 
 
 def row_reduction(db):
     """
-    Reduces DataFrame to columns specified in the conifg file.
+    Reduces DataFrame to columns specified in the config file.
 
     Parameters
     ----------
