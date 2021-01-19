@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Sep 17 09:17:58 2020
 
-@author: Morgenthaler
-"""
-
-from ruamel.yaml import YAML
+import ruamel.yaml
+import yaml
 import pandas as pd
 import copy
 
@@ -89,7 +85,12 @@ def prepare_csv(data):
         df0 = pd.DataFrame(index=pd.date_range(start=str(y), end=str(y)+'-12-31 23', freq='H'))
         for i, row in data[data.ReportingYear == y].iterrows():
             FacilityIDDict[row.FacilityID] = row.FacilityName.replace(' ', '_').replace('.', '_').replace(',', '_').replace('-', '_').replace('\&', '_').replace('ä', 'ae').replace('ö', 'oe').replace('ü', 'ue')
-            column_name = row.FacilityID
+            column_name = row.FacilityReportID
+            # Warum FacilityID, ist ja genausowenig unique
+            # Wäre FacilityReportID nicht eindeutig?
+            # GEGENCHECKEN !!!!
+            df.loc[str(y), column_name] = row.TotalQuantity/len(df0)
+            # NEU EINGEFÜGT BZW ALTEN CODE GENOMMEN
             coords[column_name] = (row.Lat, row.Long)
     return df, coords, FacilityIDDict
 
@@ -117,15 +118,17 @@ def export_calliope(data, sc=0.07):
     
     for c in df.columns:
         config[c] = copy.deepcopy(d)
-        s = 'emipy.csv:' + str(c)
+        s = 'file=emipy.csv:' + str(c)
+        config[c]['coordinates'] = {'lat': coords.get(c)[0], 'lon': coords.get(c)[1]}
         config[c]['techs']['co2_supply']['constraints']['resource'] = s
         config[c]['techs']['co2_supply']['constraints']['energy_cap_max'] = float(df.loc[:, c].max())
-        config[c]['coordinates'] = {'lat': coords.get(c)[0], 'lon': coords.get(c)[1]}
         config[c]['techs']['co2_supply']['costs']['monetary']['om_prod'] = sc
 
+    yaml = ruamel.yaml.YAML()
+    yaml.indent(mapping=4, sequence=4, offset=2)
+
     with open('emipy2calliope.yaml', 'w') as f:
-        yaml=YAML()
-        yaml.dump(config, f, default_flow_style=False)
+        yaml.dump(config, f)
 
     df.to_csv('emipy.csv')
 
