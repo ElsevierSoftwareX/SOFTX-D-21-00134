@@ -4,6 +4,8 @@ import ruamel.yaml
 import yaml
 import pandas as pd
 import copy
+import configparser
+import os
 
 def get_default_config():
     """
@@ -89,13 +91,13 @@ def prepare_csv(data):
             # Warum FacilityID, ist ja genausowenig unique
             # Wäre FacilityReportID nicht eindeutig?
             # GEGENCHECKEN !!!!
-            df.loc[str(y), column_name] = row.TotalQuantity/len(df0)
+            df.loc[str(y), column_name] = row.TotalQuantity / len(df0)
             # NEU EINGEFÜGT BZW ALTEN CODE GENOMMEN
             coords[column_name] = (row.Lat, row.Long)
     return df, coords, FacilityIDDict
 
 
-def export_calliope(data, sc=0.07):
+def export_calliope(data, path=None, yamlfilename='emipy2calliope.yaml', csvfilename='emipy2calliope.csv', sc=0.07):
     """
     Exports the data to a csv file readable by the calliope project.
 
@@ -103,6 +105,12 @@ def export_calliope(data, sc=0.07):
     ----------
     data : DataFrame
         Data that are to be exported.
+    path : String, optional
+        Path to the storage place. If None is given, emipy uses the path, stored in the config file. The default ist None.
+    yamlfilename : String, optional
+        filename for the yaml file. The default is emipy2calliope.yaml.
+    csvfilename : String, optional
+        filename for the csv file. The default is emipy2calliope.csv.
     sc : int, optional
         monetary cost factor. The default is 0.07.
 
@@ -115,7 +123,7 @@ def export_calliope(data, sc=0.07):
     df, coords, FacilityIDDict = prepare_csv(data)
     d = get_default_config()
     config = {}
-    
+
     for c in df.columns:
         config[c] = copy.deepcopy(d)
         s = 'file=emipy.csv:' + str(c)
@@ -127,12 +135,15 @@ def export_calliope(data, sc=0.07):
     yaml = ruamel.yaml.YAML()
     yaml.indent(mapping=4, sequence=4, offset=2)
 
-    with open('emipy2calliope.yaml', 'w') as f:
+    if path == None:
+        configuration = configparser.ConfigParser()
+        configuration.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        path = configuration['PATH']['path']
+        path = os.path.join(path, 'ExportData')
+
+    with open(os.path.join(path, yamlfilename), 'w') as f:
         yaml.dump(config, f)
 
-    df.to_csv('emipy.csv')
+    df.to_csv(os.path.join(path, csvfilename))
 
     return None
-
-
-    
