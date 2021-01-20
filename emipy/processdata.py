@@ -116,6 +116,40 @@ def get_NACECode_filter(specify=None):
     return NACElist
 
 
+def get_NACECode_filter_industry(group=None):
+    """
+    Creates a list of NACE codes corresponding to the selected industry sectors.
+
+    Parameters
+    ----------
+    group : String, optional
+        industry sector. The default is None.
+
+    Returns
+    -------
+    NACECode : List
+        list of NACE codes corresponding to the specified industry sectors.
+
+    """
+    if group == 'cem':
+        NACECode = ['23.51', '23.52']
+    elif group == 'is':
+        NACECode = ['19.10', '24.10', '24.20', '24.51', '24.52', '24.53', '24.54']
+    elif group == 'pap':
+        NACECode = ['16.21', '16.22', '16.23', '16.24', '16.29', '17.11', '17.12', '17.21', '17.22', '17.23', '17.24', '17.29']
+    elif group == 'chem':
+        NACECode = ['20.11', '20.12', '20.13', '20.14', '20.15', '20.16', '20.17', '20.20', '20.30', '20.41', '20.42', '20.51', '20.52', '20.53', '20.59', '21.10', '10.20', '22.11', '22.19', '22.21', '22.22', '22.23', '22.29']
+    elif group == 'alu':
+        NACECode = ['24.42']
+    elif group == 'ref':
+        NACECode = ['19.20']
+    elif group == 'gla':
+        NACECode = ['23.11', '23.12', '23.13', '23.14', '23.19']
+    elif group == 'wa':
+        NACECode = ['38.11', '38.12', '38.21', '38.22', '38.31', '38.32']
+    return NACECode
+
+
 def change_NACECode_filter(total=None, add=None, sub=None):
     """
     Changes the NACE code dict in the config file and returns the actual NACE code dict.
