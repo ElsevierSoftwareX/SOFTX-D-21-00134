@@ -111,6 +111,57 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     return data
 
 
+def get_ImpurityVolume(db, Target, FirstOrder='FacilityReportID', ReleaseMediumName='Air', absolute=False, FacilityFocus=True, Impurity=None):
+    """
+    Creates a table with the impurities of the target pollutant, sorted by the FirstOrder parameter. Putting the absolute parameter to True, gives absolute values instead of relative.
+
+    Parameters
+    ----------
+    db : DataFrame
+        Data to look for impurities.
+    Target : String
+        Pollutant name of the pollutant, which is not seen as impurity.
+    FirstOrder : String, optional
+        Order to sort the impurities by. E.g. NACERegionGeoCode, FacilityReportID, NACEMainEconomicActivityCode. The default is 'FacilityReportID'.
+    ReleaseMediumName : String, optional
+        The release medium name in which the target is emitted and in which can be impurities. The default is 'Air'.
+    absolute : Boolean, optional
+        If this parameter is set on False, this function returns the impurity relative to the target pollutant emission. If it is set on True, the absolute emission value is returned. The default is False.
+    FacilityFocus : Boolean, optional
+        If this parameter is true, only the impurities in the facilities in which the target is emittet is taken in to consideration. If it is false, all data are taken into consideration. The default is True.
+    Impurity : String, optional
+        With this parameter, you can specify the impurity pollutant you want to return. Otherwise, all present impurities are shown. The default is None.
+
+    Returns
+    -------
+    d2 : DataFrame
+        Data table with the rows beeing the different present order values, and in the columns their respective emission of the target pollutant and the absolute emission of the impurities.
+    d3 : DataFrame
+        Data table with the rows beeing the different present order values, and in the columns their respective emission of the target pollutant and the relative emission of the impurities.
+
+    """
+    db = db[db.ReleaseMediumName == ReleaseMediumName]
+    d1 = db[db.PollutantName == Target]
+    d2 = get_PollutantVolume(d1, FirstOrder=FirstOrder)
+    d3 = get_PollutantVolume(d1, FirstOrder=FirstOrder)
+    if FacilityFocus == True:
+        ff = get_PollutantVolume(d1, FirstOrder='FacilityReportID').FacilityReportID.unique()
+        db = db[db.FacilityReportID.isin(ff)]
+    for items in np.delete(db.PollutantName.unique(), np.argwhere(db.PollutantName.unique() == Target)):
+        item = db[db.PollutantName == items].groupby([FirstOrder]).TotalQuantity.sum().reset_index()
+        item = item[[FirstOrder, 'TotalQuantity']].rename(columns={'TotalQuantity': items})
+        d2 = d2.merge(item, how='left', on=FirstOrder)
+        d3[items] = d2.loc[:, items] / d2.loc[:, 'TotalQuantity']
+
+    if Impurity != None:
+        d2 = d2[[FirstOrder, 'TotalQuantity', Impurity]]
+        d3 = d3[[FirstOrder, 'TotalQuantity', Impurity]]
+    if absolute == True:
+        return d2
+    else:
+        return d3
+
+
 def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
     """
 
