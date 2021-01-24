@@ -162,44 +162,6 @@ def get_ImpurityVolume(db, Target, FirstOrder='FacilityReportID', ReleaseMediumN
         return d3
 
 
-def plot_ImpurityVolume(db, Target, Impurity, FirstOrder='FacilityReportID', ReleaseMediumName='Air', Statistics=True, *args, **kwargs):
-    """
-    Plots the impurities for the different FirstOrder values or the statistics of the entries.
-
-    Parameters
-    ----------
-    db : DataFrame
-        The data to be plotted.
-    Target : String
-        The target pollutant which is impured.
-    Impurity : String
-        The impurity which is to be analyzed.
-    FirstOrder : String, optional
-        Name of column, the data are sorted in the first order. The default is 'FacilityReportID'.
-    ReleaseMediumName : TYPE, optional
-        The release medium name in which the target is emitted and in which can be impurities. The default is 'Air'.
-    Statistics : Boolean, optional
-        If this parameter is True, the statistics of the data are plotted. If it is False, the actual values are plotted. The default is True.
-    *args : TYPE
-        pandas.plot() input variables.
-    **kwargs : TYPE
-        pandas.plot() input variables.
-
-    Returns
-    -------
-    ax : Axes
-        Plot of the impurities in db, or the statistics of these impurities.
-
-    """
-    if Statistics is True:
-        data = get_ImpurityVolume(db=db, Target=Target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, Impurity=Impurity).describe()
-        ax = data.drop('count').plot(kind='bar', y=Impurity, *args, **kwargs)
-    else:
-        data = get_ImpurityVolume(db=db, Target=Target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, Impurity=Impurity)
-        ax = data.drop('TotalQuantity', axis=1).plot(x=FirstOrder, y=Impurity, kind='bar', *args, **kwargs)
-    return ax
-
-
 def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
     """
 
@@ -308,6 +270,44 @@ def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=Fals
             ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
         else:
             ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
+    return ax
+
+
+def plot_ImpurityVolume(db, Target, Impurity, FirstOrder='FacilityReportID', ReleaseMediumName='Air', Statistics=True, *args, **kwargs):
+    """
+    Plots the impurities for the different FirstOrder values or the statistics of the entries.
+
+    Parameters
+    ----------
+    db : DataFrame
+        The data to be plotted.
+    Target : String
+        The target pollutant which is impured.
+    Impurity : String
+        The impurity which is to be analyzed.
+    FirstOrder : String, optional
+        Name of column, the data are sorted in the first order. The default is 'FacilityReportID'.
+    ReleaseMediumName : TYPE, optional
+        The release medium name in which the target is emitted and in which can be impurities. The default is 'Air'.
+    Statistics : Boolean, optional
+        If this parameter is True, the statistics of the data are plotted. If it is False, the actual values are plotted. The default is True.
+    *args : TYPE
+        pandas.plot() input variables.
+    **kwargs : TYPE
+        pandas.plot() input variables.
+
+    Returns
+    -------
+    ax : Axes
+        Plot of the impurities in db, or the statistics of these impurities.
+
+    """
+    if Statistics is True:
+        data = get_ImpurityVolume(db=db, Target=Target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, Impurity=Impurity).describe()
+        ax = data.drop('count').plot(kind='bar', y=Impurity, *args, **kwargs)
+    else:
+        data = get_ImpurityVolume(db=db, Target=Target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, Impurity=Impurity)
+        ax = data.drop('TotalQuantity', axis=1).plot(x=FirstOrder, y=Impurity, kind='bar', *args, **kwargs)
     return ax
 
 
