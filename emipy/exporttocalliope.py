@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import ruamel.yaml
-import yaml
 import pandas as pd
 import copy
 import configparser
