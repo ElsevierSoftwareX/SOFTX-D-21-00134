@@ -98,7 +98,7 @@ NACE-Code selection
 
 	data13 = ep.f_db(db, NACEMainEconomicActivityCode='35.11')
 
-| Some groups of NACE codes are stored in the config file. You can access them with get_NACECode_filter(). If the parameter specify is None, which it is by default, you receive a list of dictionaries which have the NACE Codes as list corresponding to the key name. You can put specify to on of the keys to receive the value, the list of NACE Codes.
+| Some groups of NACE codes are stored in the config file. You can access them with *get_NACECode_filter()*. If the parameter specify is None, which it is by default, you receive a list of dictionaries which have the NACE Codes as list corresponding to the key name. You can put specify to on of the keys to receive the value, the list of NACE Codes.
 
 .. code-block :: python
 
@@ -106,10 +106,26 @@ NACE-Code selection
 	NACECode = ep.get_NACECode_filter(specify = 'Animal production')
 	data14 = ep.f_db(db, NACEMainEconomicActivityCode=NACECode)
 
-| You can create your own NACE-Code lists with change_NACECode_filter(). This works very much like change_RenameDict(). You can add and subtract single key/value pairs, or replace the complete dictionary. For the right syntax, make sure your codes are 5 characters long and seperated by a comma.
+| You can create your own NACE-Code lists with *change_NACECode_filter()*. This works very much like *change_RenameDict()*. You can add and subtract single key/value pairs, or replace the complete dictionary. For the right syntax, make sure your codes are 5 characters long and seperated by a comma.
 
 .. code-block :: python
 
 	ep.change_NACECode_filter(add={'metalmanufaction':'24.51,24.52,24.53,24.54'})
 	ep.change_NACECode_filter(sub={'metalmanufaction':'24.51,24.52,24.53,24.54'})
 
+Impurity analysis
+-----------------
+
+| The emission of specific pollutants comes with emission of other pollutants. In consequence you do not have pure emissions, but impurities to your target pollutant. To analyse these, emmipy provides the functions *get_ImpurityVolume()* and *plot_ImpurityVolume()*.
+
+.. code-block :: python
+
+	data15 = ep.get_ImpurityVolume(db=data, Target='Carbon dioxide (CO2)')
+	ep.plot_ImpurityVolume(db=data, Target='Carbon dioxide (CO2)', Impurity='Carbon monoxide (CO)')
+
+| You can specify your analysis with a few parameters. At first you sepcify your data that is to analyse with calling db. Then you name the target pollutant, which is the impured one. For the plot function you also have to specify the impurity molecule that you are looking for.
+| Additional paramters for the get_ function are *FirstOrder*, *ReleaseMediumName*, *absolute*, *FacilityFocus* and *Impurity*. With *FirstOrder*, you specify the column at which your data is sorted. The default is FacilityReportID, since it is very intuitiv to look for the impurities of specific facilities. Nontheless, you could also choose for example NUTSRegionGeoCode, to make a region analysis, rather than a facility analysis.
+| You can change the *ReleaseMediumName* to Water or Soil, if your target pollutant is emitted in another medium than air. The function returns the emission value of your impurity in relation to the emission of your target. If you want to get the absolute value, you can change the *absolute* parameter to True.
+| If your *FirstOrder* is something else than FacilityReportID, the *FacilityFocus* parameter becomes interesting. If this parameter is True, only impurities emitted in facilities that aswell emit your target pollutant are considered. You can put the parameter to False, to turn this feature off and analyse the impurities of all facilities in your Order parameter.
+| If you have not specified the impurity, you will get a table with all present impurities. You can specify your impurity, to receive only your impurity of interest.
+| In the function *plot_ImpurityVolume()* you can also set the parameter *Statistics* to False or True to either simply plot your impurity values or to plot the statistics of these. The default is True.
