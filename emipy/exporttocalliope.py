@@ -125,7 +125,7 @@ def export_calliope(data, path=None, yamlfilename='emipy2calliope.yaml', csvfile
 
     for c in df.columns:
         config[c] = copy.deepcopy(d)
-        s = 'file=emipy.csv:' + str(c)
+        s = 'file=' + csvfilename + ':' + str(c)
         config[c]['coordinates'] = {'lat': coords.get(c)[0], 'lon': coords.get(c)[1]}
         config[c]['techs']['co2_supply']['constraints']['resource'] = s
         config[c]['techs']['co2_supply']['constraints']['energy_cap_max'] = float(df.loc[:, c].max())
