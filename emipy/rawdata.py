@@ -60,6 +60,7 @@ def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
     None.
 
     """
+    oldcwd = os.getcwd()
     directory = 'MappingData'
     path = os.path.join(path, directory)
 
@@ -127,7 +128,6 @@ def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
             urllist.append(urldict.get(urlkey))
 
     for items in urllist:
-        #print(items)
         if items == None:
             continue
         r = requests.get(items, stream=True)
@@ -142,6 +142,7 @@ def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
                 zip_ref.extractall(path)
                 zip_ref.close()
                 os.remove(file_name)
+    os.chdir(oldcwd)
 
 
 def download_NACE_TransitionTables(path):
@@ -235,9 +236,25 @@ def merge_frompickle(path, force_rerun=False):
     return None
 
 
+def get_rootpath():
+    """
+    Returns the current rootpath, stored in the config file.
+
+    Returns
+    -------
+    path : String
+        Current path to the root of the project, stored in the config file.
+
+    """
+    config = configparser.ConfigParser()
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    path = config['PATH']['path']
+    return path
+
+
 def change_rootpath(path):
     """
-    changes the Path of the root to the project in the configuration.ini file
+    Changes the path of the root to the project in the configuration.ini file.
 
     Parameters
     ----------
@@ -258,7 +275,7 @@ def change_rootpath(path):
 
 def init_emipy_project(path, Resolution=10, force_rerun=False):
     """
-    Executes the initiation of a new project. Downloads all needed data and to the given path and merges data of interest.
+    Executes the initiation of a new project. Downloads all needed data to the given path and merges data of interest.
 
     Parameters
     ----------
