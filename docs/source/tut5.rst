@@ -103,7 +103,7 @@ NACE-Code selection
 .. code-block :: python
 
 	print(ep.get_NACECode_filter())
-	NACECode = ep.get_NACECode_filter(specify = 'Animal production')
+	NACECode = ep.get_NACECode_filter(specify = 'animal production')
 	data14 = ep.f_db(db, NACEMainEconomicActivityCode=NACECode)
 
 | You can create your own NACE-Code lists with *change_NACECode_filter()*. This works very much like *change_RenameDict()*. You can add and subtract single key/value pairs, or replace the complete dictionary. For the right syntax, make sure your codes are 5 characters long and seperated by a comma.

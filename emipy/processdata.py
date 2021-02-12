@@ -83,7 +83,7 @@ def read_mb(path=None, Resolution='10M', spatialtype='RG', NUTS_LVL=0, m_year=20
     try:
         mb = geopandas.read_file(path)
     except FileNotFoundError:
-        print('file not found in the given path')
+        print('File not found in the given path.')
     return mb
 
 
@@ -152,7 +152,7 @@ def get_NACECode_filter_industry(group=None):
 
 def change_NACECode_filter(total=None, add=None, sub=None):
     """
-    Changes the NACE code dict in the config file and returns the actual NACE code dict.
+    Changes the NACE code dict in the config file.
 
     Parameters
     ----------
@@ -165,8 +165,7 @@ def change_NACECode_filter(total=None, add=None, sub=None):
 
     Returns
     -------
-    config['NACECODES'] : dict
-        actualised NACECODE dictionary.
+    None
 
     """
     config = configparser.ConfigParser()
@@ -180,7 +179,7 @@ def change_NACECode_filter(total=None, add=None, sub=None):
         all(map(config['NACECODES'].pop, sub))
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
         config.write(configfile)
-    return config['NACECODES']
+    return None
 
 
 def get_Countrylist(db):
