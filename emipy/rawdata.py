@@ -64,85 +64,87 @@ def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
     directory = 'MappingData'
     path = os.path.join(path, directory)
 
-    if os.path.isdir(path) is False:
-        os.mkdir(path)
+    try:
+        if os.path.isdir(path) is False:
+            os.mkdir(path)
 
-    if clear == True:
-       os.chdir(path)
-       for item in os.listdir(path):
-           file_name = os.path.abspath(item)
-           os.remove(file_name)
-
-    urldict = {
-        202101: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-01m.shp.zip',
-        202103: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-03m.shp.zip',
-        202110: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-10m.shp.zip',
-        202120: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-20m.shp.zip',
-        202160: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-60m.shp.zip',
-
-        201601: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-01m.shp.zip',
-        201603: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-03m.shp.zip',
-        201610: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-10m.shp.zip',
-        201620: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-20m.shp.zip',
-        201660: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-60m.shp.zip',
-
-        201301: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-01m.shp.zip',
-        201303: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-03m.shp.zip',
-        201310: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-10m.shp.zip',
-        201320: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-20m.shp.zip',
-        201360: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-60m.shp.zip',
-
-        201001: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-01m.shp.zip',
-        201003: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-03m.shp.zip',
-        201010: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-10m.shp.zip',
-        201020: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-20m.shp.zip',
-        201060: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-60m.shp.zip',
-
-        200601: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-01m.shp.zip',
-        200603: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-03m.shp.zip',
-        200610: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-10m.shp.zip',
-        200620: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-20m.shp.zip',
-        200660: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-60m.shp.zip',
-
-        200301: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-01m.shp.zip',
-        200303: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-03m.shp.zip',
-        200310: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-10m.shp.zip',
-        200320: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-20m.shp.zip',
-    }
-
-    publist = [2021, 2016, 2013, 2010, 2006, 2003]
-    urllist = []
-    for items in publist:
-        if isinstance(Resolution, list):
-            for res in Resolution:
-                if len(str(res)) == 1:
-                    urlkey = int(str(items) + str(0) + str(res))
-                else:
-                    urlkey = int(str(items) + str(res))
-                urllist.append(urldict.get(urlkey))
-        else:
-            if len(str(Resolution)) == 1:
-                urlkey = int(str(items) + str(0) + str(Resolution))
-            else:
-                urlkey = int(str(items) + str(Resolution))
-            urllist.append(urldict.get(urlkey))
-
-    for items in urllist:
-        if items == None:
-            continue
-        r = requests.get(items, stream=True)
-        z = zipfile.ZipFile(io.BytesIO(r.content))
-        z.extractall(path)
-        extension = '.zip'
-        os.chdir(path)
-        for item in os.listdir(path):
-            if item.endswith(extension):
+        if clear == True:
+            os.chdir(path)
+            for item in os.listdir(path):
                 file_name = os.path.abspath(item)
-                zip_ref = zipfile.ZipFile(file_name)
-                zip_ref.extractall(path)
-                zip_ref.close()
                 os.remove(file_name)
-    os.chdir(oldcwd)
+
+        urldict = {
+            202101: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-01m.shp.zip',
+            202103: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-03m.shp.zip',
+            202110: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-10m.shp.zip',
+            202120: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-20m.shp.zip',
+            202160: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2021-60m.shp.zip',
+
+            201601: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-01m.shp.zip',
+            201603: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-03m.shp.zip',
+            201610: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-10m.shp.zip',
+            201620: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-20m.shp.zip',
+            201660: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2016-60m.shp.zip',
+
+            201301: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-01m.shp.zip',
+            201303: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-03m.shp.zip',
+            201310: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-10m.shp.zip',
+            201320: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-20m.shp.zip',
+            201360: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2013-60m.shp.zip',
+
+            201001: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-01m.shp.zip',
+            201003: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-03m.shp.zip',
+            201010: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-10m.shp.zip',
+            201020: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-20m.shp.zip',
+            201060: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2010-60m.shp.zip',
+
+            200601: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-01m.shp.zip',
+            200603: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-03m.shp.zip',
+            200610: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-10m.shp.zip',
+            200620: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-20m.shp.zip',
+            200660: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2006-60m.shp.zip',
+
+            200301: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-01m.shp.zip',
+            200303: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-03m.shp.zip',
+            200310: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-10m.shp.zip',
+            200320: 'http://gisco-services.ec.europa.eu/distribution/v2/nuts/download/ref-nuts-2003-20m.shp.zip',
+        }
+
+        publist = [2021, 2016, 2013, 2010, 2006, 2003]
+        urllist = []
+        for items in publist:
+            if isinstance(Resolution, list):
+                for res in Resolution:
+                    if len(str(res)) == 1:
+                        urlkey = int(str(items) + str(0) + str(res))
+                    else:
+                        urlkey = int(str(items) + str(res))
+                    urllist.append(urldict.get(urlkey))
+            else:
+                if len(str(Resolution)) == 1:
+                    urlkey = int(str(items) + str(0) + str(Resolution))
+                else:
+                    urlkey = int(str(items) + str(Resolution))
+                urllist.append(urldict.get(urlkey))
+
+        for items in urllist:
+            if items == None:
+                continue
+            r = requests.get(items, stream=True)
+            z = zipfile.ZipFile(io.BytesIO(r.content))
+            z.extractall(path)
+            extension = '.zip'
+            os.chdir(path)
+            for item in os.listdir(path):
+                if item.endswith(extension):
+                    file_name = os.path.abspath(item)
+                    zip_ref = zipfile.ZipFile(file_name)
+                    zip_ref.extractall(path)
+                    zip_ref.close()
+                    os.remove(file_name)
+    finally:
+        os.chdir(oldcwd)
 
 
 def download_NACE_TransitionTables(path):
