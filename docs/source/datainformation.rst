@@ -24,6 +24,23 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 	"PollutantGroupName", "String or List of Strings", ":ref:`pollutantgroupnamelist`", "f_db(db, PollutantGroupName='Inorganic substances')"
 	"NACEMainEconomicActivityCode", "String or List of Strings", ":ref:`nacemaineconomicactivitycodelist`", "f_db(db, NACEMainEconomicActivityCode='25.91')"
 	"NUTSRegionGeoCode", "String or List of Strings", ":ref:`nutsregiongeocodelist`", "f_db(db, NUTSRegionGeoCode='AT11')"
+	"ParentCompanyName", "String or List of Strings", ":ref:`parentcompanynamelist`","f_db(db, ParentCompanyName='Lenzing AG')"
+	"FacilityName", "String or List of Strings", ":ref:`facilitynamelist`","f_db(db, FacilityName='Lenzing AG')"
+	"City", "String or List of Strings", ":ref:`citylist`","f_db(db, City='Lenzing')"
+	"PostalCode", "String or List of Strings", ":ref:`postalcodelist`","f_db(db, PostalCode='4860')"
+	"CountryCode", "String or List of Strings", ":ref:`countrycodelist`","f_db(db, CountryCode='AT')"
+	"RBDGeoCode", "String or List of Strings", ":ref:`rbdgeocode`","f_db(db, RBDGeoCode='')"
+	"RBDGeoName", "String or List of Strings", ":ref:`rbdgeoname`","f_db(db, RBDGeoName='')"
+	"NUTSRegionGeoName", "String or List of Strings", ":ref:`nutsregiongeoname`","f_db(db, NUTSRegionGeoName='')"
+	"NACEMainEconomicActivityName", "String or List of Strings", ":ref:`nacemaineconomicactivityname`","f_db(db, NACEMainEconomicActivityName='')"
+	"MainIASectorCode", "String or List of Strings", ":ref:`mainiasectorcode`","f_db(db, MainIASectorCode='')"
+	"MainIASectorName", "String or List of Strings", ":ref:`mainiasectorname`","f_db(db, MainIASectorName='')"
+	"MainIAActivityCode", "String or List of Strings", ":ref:`mainiaactivitycode`","f_db(db, MainIAActivityCode='')"
+	"MainIAActivityName", "String or List of Strings", ":ref:`mainiaactivityname`","f_db(db, MainIAActivityName='')"
+	"PollutantReleaseID", "String or List of Strings", ":ref:`pollutantreleaseid`","f_db(db, PollutantReleaseID='')"
+	"ReleaseMediumCode", "String or List of Strings", ":ref:`releasemediumcode`","f_db(db, ReleaseMediumCode='')"
+	"PollutantCode", "String or List of Strings", ":ref:`pollutantcode`","f_db(db, PollutantCode='')"
+	"PollutantGroupCode", "String or List of Strings", ":ref:`pollutantgroupcode`","f_db(db, PollutantGroupCode='')"
 
 
 Map Data

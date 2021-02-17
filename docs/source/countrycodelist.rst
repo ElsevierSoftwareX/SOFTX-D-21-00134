@@ -1,0 +1,37 @@
+.. countrycodelist:
+
+CountryCode
+-----------
+
+| 'AT',
+| 'BE',
+| 'CY',
+| 'CZ',
+| 'DE',
+| 'DK',
+| 'EE',
+| 'ES',
+| 'FI',
+| 'FR',
+| 'EL',
+| 'HU',
+| 'IE',
+| 'IT',
+| 'LT',
+| 'LU',
+| 'LV',
+| 'MT',
+| 'NL',
+| 'NO',
+| 'PL',
+| 'PT',
+| 'SE',
+| 'SI',
+| 'SK',
+| 'UK',
+| 'IS',
+| 'RS',
+| 'RO',
+| 'BG',
+| 'CH',
+| 'HR'
