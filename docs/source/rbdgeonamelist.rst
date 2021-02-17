@@ -44,7 +44,7 @@ RBDGeoName
 | Tenerife,
 | Lanzarote,
 | Basque County Internal Basins,
-| Kokem‰enjoki-Archipelago Sea-Bothnian Sea,
+| Kokem√§enjoki-Archipelago Sea-Bothnian Sea,
 | Vuoksi,
 | Kymijoki-Gulf of Finland,
 | Oulujoki-Iijoki,

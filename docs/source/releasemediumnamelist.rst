@@ -1,8 +1,8 @@
-.. _releasemediumnamelist:
+.. _releasemediumname:
 
 ReleaseMediumName
 -----------------
 
-| 'Air',
-| 'Water',
-| 'Soil'
+| Air,
+| Water,
+| Soil
