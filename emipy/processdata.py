@@ -407,9 +407,9 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
         dbna = dbna[dbna.NUTSRegionGeoCode.isna()]
         if isinstance(NUTSRegionGeoCode, list):
-            db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) is True]
+            db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) == True]
         else:
-            db = db[db.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) is True]
+            db = db[db.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) == True]
 
     if ParentCompanyName is not None:
         dbna = dbna.append(db[db.ParentCompanyName.isna()])
@@ -449,7 +449,7 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         if isinstance(CountryCode, list):
             db = db[db.CountryCode.isin(CountryCode)]
         else:
-            db = db[db.PostalCode == PostalCode]
+            db = db[db.CountryCode == CountryCode]
 
     if RBDGeoCode is not None:
         dbna = dbna.append(db[db.RBDGeoCode.isna()])
@@ -561,7 +561,7 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         return db
 
 
-def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False):
+def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATN=None, ExclaveExclude=False):
     """
     Filters the geometry data of the DataFrame by the specifications of the input.
 
@@ -573,7 +573,7 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
         NUTS:ID assigned from eurostat. The default is None.
     CNTR_CODE : String/List, optional
         Country code. The default is None.
-    NAME_LATIN : String/List, optional
+    NAME_LATN : String/List, optional
         Name of Region, classified by eurostat. The default is None.
 
     Returns
@@ -594,11 +594,11 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATIN=None, ExclaveExclude=False
         else:
             mb = mb[mb.NUTS_ID.str.startswith(NUTS_ID) == True]
 
-    if NAME_LATIN is not None:
-        if isinstance(NAME_LATIN, list):
-            mb = mb[mb.NAME_LATIN.isin(NAME_LATIN)]
+    if NAME_LATN is not None:
+        if isinstance(NAME_LATN, list):
+            mb = mb[mb.NAME_LATN.isin(NAME_LATN)]
         else:
-            mb = mb[mb.NAME_LATIN == NAME_LATIN]
+            mb = mb[mb.NAME_LATN == NAME_LATN]
     # ExclaveList has to be a tuple. invert does not work with list
     ExclaveList = ('ES7', 'FRY', 'FRA', 'FR9', 'PT2', 'PT3')
     if ExclaveExclude is True:
@@ -629,7 +629,7 @@ def change_Unit(db, Unit=None):
     """
     if Unit == None:
         print('New Unit is needed. No changes applied.')
-        return None
+        return db
     UnitNumberDict = {
         'gram': 1,
         'kilogram': 10**3,
