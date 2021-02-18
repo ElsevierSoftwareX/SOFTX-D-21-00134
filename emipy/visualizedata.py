@@ -47,7 +47,7 @@ def get_PollutantVolume(db, FirstOrder=None, SecondOrder=None):
                 data = data.rename(columns={'TotalQuantity': items})
             else:
                 itemdata = db[db[SecondOrder] == items].groupby([FirstOrder]).TotalQuantity.sum().reset_index()
-                data = pd.merge(data, itemdata, on=[FirstOrder])
+                data = pd.merge(data, itemdata, on=[FirstOrder], how='outer')
                 data = data.rename(columns={'TotalQuantity': items})
     return data
 
