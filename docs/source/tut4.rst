@@ -1,7 +1,7 @@
 Export Data and Figures
 =======================
 
-| You can export data tables and figures directly to the ExportData-folder of your project. Aditionally you can depleat unnecessary information and Configurate your data table before export.
+| You can export data tables and figures directly to the ExportData-folder of your project. Aditionally you can depleat unnecessary information and configurate your data table before export.
 |
 | Let's start with creating the data of the Benelux states for the pollution of C02 and CH4 (Methane) in the time period 2010-2013.
 
