@@ -21,21 +21,21 @@ Export Data and Figures
 
 .. code-block:: python
 
-   ep.export_db_tocsv(dataset1, filename='Benelux.csv')
+   ep.export_db_to_csv(dataset1, filename='Benelux.csv')
 
 | emipy searches for the ExportData folder in the path given during the initiation process and stores the file with the described filename over there.
 | If you want to export the file to a different path, you can use the argument path to name the corresponding path. 
 
 .. code-block:: python
-    ep.export_db_tocsv(dataset1, path=r'C:User\User1\testpath', filename='Benelux2.csv')
-    ep.export_db_tocsv(dataset1, path=r'C:User\User1\testpath\Benelux3.csv')
+    ep.export_db_to_csv(dataset1, path=r'C:User\User1\testpath', filename='Benelux2.csv')
+    ep.export_db_to_csv(dataset1, path=r'C:User\User1\testpath\Benelux3.csv')
 
 | You can aswell export to other file types. The emipy export functions are based on the `pandas <https://pandas.pydata.org/docs/index.html>`_ export functions and imply their features:
 
 .. code-block:: python
 
-    ep.export_db_topickle(dataset1, filename='Benelux.pkl', compression='zip')
-    ep.export_db_toexcel(dataset1, filename='Benelux.xlsx')
+    ep.export_db_to_pickle(dataset1, filename='Benelux.pkl', compression='zip')
+    ep.export_db_to_excel(dataset1, filename='Benelux.xlsx')
 
 .. note::
     | Pandas needs an additional Package for the export to a xlsx file. In consequence we do too. Execute `>pip install openpyxl` in the Anaconda Prompt console.
@@ -45,12 +45,12 @@ Export Data and Figures
 .. code-block:: python
 
     NUTS_LVL = '2'
-    Resolution = '10M'
+    resoution = '10M'
     projection = '4326'
-    spatialtype = 'RG'
+    SpatialType = 'RG'
     m_year = '2013'
 
-    mb = ep.read_mb(Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+    mb = ep.read_mb(resoution=resoution, SpatialType=SpatialType, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
 
     mapdata1 = ep.f_mb(mb, CNTR_CODE=['BE', 'LU', 'NL'])
 
@@ -59,7 +59,7 @@ Export Data and Figures
     fig1, ax = plt.subplots(2, 2, figsize=(8.27, (1.5/3)*11.69))
     ep.plot_PollutantVolume(dataset1, ax=ax[0,0], FirstOrder='ReportingYear', SecondOrder='CountryName')
     ep.plot_PollutantVolumeChange(dataset1, ax=ax[0,1], FirstOrder='ReportingYear', SecondOrder='CountryName')
-    ep.map_PollutantSource(dataset1,mapdata1, ax=ax[1,0], markersize=100)
+    ep.map_PollutantSource(dataset1,mapdata1, ax=ax[1,0], MarkerSize=100)
     ep.map_PollutantRegions(dataset1, mapdata1, ax=ax[1,1], legend=True)
 
 .. image:: ./pictures/Tut4pic1.svg

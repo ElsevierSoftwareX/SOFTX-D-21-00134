@@ -74,7 +74,7 @@ Visualize data sets
 
     data3 = ep.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 
-    ep.plot_PollutantVolume_rel(data3, FirstOrder='PollutantName', SecondOrder='ReportingYear')
+    ep.plot_PollutantVolumeRel(data3, FirstOrder='PollutantName', SecondOrder='ReportingYear')
 
 .. image:: ./pictures/Tut2pic5.svg
     :width: 80%
@@ -83,7 +83,7 @@ Visualize data sets
     :alt: Tut2pic5
 
 | If you want to customize the layout of the graphs, you can enter the known arguments of the `PyPlot package <https://matplotlib.org/3.1.1/tutorials/index.html>`_ into the functions. Since the functions return a matplotlib.axes object, you can access and modify the individual elements of the plots like in PyPlot.
-| Tho code below returns you the basic plots. For the layout changes, take a look into the Tutorial 2 notebook.
+| The code below returns you the basic plots. For the layout changes, take a look into the Tutorial 2 notebook.
 
 .. code-block:: python
 
@@ -91,7 +91,7 @@ Visualize data sets
 
     fig1, fig1_axes = plt.subplots(2, 2)
     fig1_axes[0,0] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[0,0])
-    fig1_axes[1,0] = ep.plot_PollutantVolume_rel(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,0])
+    fig1_axes[1,0] = ep.plot_PollutantVolumeRel(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,0])
     fig1_axes[0,1] = ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear', ax=fig1_axes[0,1])
     fig1_axes[1,1] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,1], color='r')
 

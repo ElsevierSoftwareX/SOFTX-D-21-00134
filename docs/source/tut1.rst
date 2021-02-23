@@ -227,12 +227,12 @@ Generating data sets
           dtype='object')
 
 
-| If you are interested in e.g. the countries that occur in your database you can receive a list with the `get_columnname()` functions. For more information take a look at the :ref:`processdata module description <moduleprocessdata>`.
+| If you are interested in e.g. the countries that occur in your database you can receive a list with the `get_Countrylist()` function. There are more `get_xy()` functions to access the information in your data base. For more information take a look at the :ref:`processdata module description <moduleprocessdata>`.
 
 
 .. code-block:: python
 
-    ep.get_Countrylist(db)
+    ep.get_CountryList(db)
 
 | 
 
@@ -277,7 +277,7 @@ Generating data sets
 .. note::
 
     | The following lines only create the DataFrame and do not display it. To display the data table, execute e.g. `data1.head()`.
-    | For a better overview, you can use `db = processdata.row_reduction(db)`. The new DataFrame is reduced to a list of columns. This list can be adjusted.
+    | For a better overview, you can use `data = ep.row_reduction(db)`. The new DataFrame is reduced to a list of columns. This list can be adjusted.
 
 | Let's filter for pollution in Germany:
 
@@ -305,7 +305,8 @@ Generating data sets
 .. note::
     Take into account that numbers are not from type string and therefore do not need quote markers around them.
 
-| For the precise values use the `get_xy()` function. You can also filter step by step. For this you would have to insert the filtered database into the filter function.
+| For the precise values use the `get_xy()` function or alternativley, you can take a look at the :ref:`parameter table <datainformation>`.
+| You can also filter step by step. For this you would have to insert the filtered database into the filter function.
 | 
 | You can adjust two more arguments in `f_db()`.
 | If you want to take a look at the continent Europe, you have to exclude Exclaves that belong to European countries, like French Guiana.
@@ -314,7 +315,7 @@ Generating data sets
 
     data4 = ep.f_db(db, ExclaveExclude=True)
 
-| If you put ReturnUnknown on True the function returns a data table, which contains all entries that would be sorted out in the filter process but just do not possess enough information to pass the filter. If this table is empty, then it is a good sign.
+| If you put *ReturnUnknown* on True the function returns a data table, which contains all entries that would be sorted out in the filter process but just do not possess enough information to pass the filter. If this table is empty, then it is a good sign.
 
 .. code-block:: python
 

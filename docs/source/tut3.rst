@@ -10,18 +10,18 @@ Using map data
 
     mb.plot()
 
-| Of special interest is the parameter "NUTS_LVL", which is the level of the NUTS-ID's which are the codes for categorized regions. See the `Eurostat <https://ec.europa.eu/eurostat/de/web/nuts/nuts-maps>`_ page for more information.  
+| Of special interest is the parameter *NUTS_LVL*, which is the level of the NUTS-ID's which are the codes for categorized regions. See the `Eurostat <https://ec.europa.eu/eurostat/de/web/nuts/nuts-maps>`_ page for more information.  
 | We start with the following set up:
 
 .. code-block:: python
 
     NUTS_LVL = '1'
-    Resolution = '10M'
+    resolution = '10M'
     projection = '4326'
-    spatialtype = 'RG'
+    SpatialType = 'RG'
     m_year = '2013'
 
-    mb = ep.read_mb(Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+    mb = ep.read_mb(resolution=resolution, SpatialType=SpatialType, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
     mb.plot()
 
 .. image:: ./pictures/Tut3pic1.svg
@@ -29,7 +29,7 @@ Using map data
     :align: center
     :alt: Tut3pic1
 
-| The filtering happens with the function f_mb(). Depending on the NUTS level, you can filter for countries or the corresponding NUTS-ID. Additionally, there is the argument ExclaveExclude which you can put on true to exclude the exclaves and map continental europe.  
+| The filtering happens with the function f_mb(). Depending on the NUTS level, you can filter for countries or the corresponding NUTS-ID. Additionally, there is the argument *ExclaveExclude* which you can put on True to exclude the exclaves and map continental europe.  
 
 .. code-block:: python
 
@@ -84,7 +84,7 @@ Using map data
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(1, 1, 1)
     #ax1 = mapdata1.plot(ax=ax1, color='lightgrey')
-    ax1 = ep.map_PollutantSource(data4, mapdata4, markersize=200, ax=ax1)
+    ax1 = ep.map_PollutantSource(data4, mapdata4, MarkerSize=200, ax=ax1)
     fig1.set_figheight(10)
     fig1.set_figwidth(10)
 
@@ -94,10 +94,10 @@ Using map data
     :alt: Tut3pic5
 
 | If you uncomment everything, you'll get a complete map of Europe in light grey without emission sources, while Germany and Austria are highlighted and show their sources.
-| For the `map_PollutantSource()` you have to insert the data and map set. You can choose the markersize, which is the size of the maximal output. The other sources are normalized to this value. If markersize is put on zero or is not given at all, all marker have the same size.  
+| For the `map_PollutantSource()` you have to insert the data and map set. You can choose the MarkerSize, which is the size of the maximal output. The other sources are normalized to this value. If MarkerSize is put on zero or is not given at all, all marker have the same size.  
 | 
-| `map_PollutantSource()` can return three different objects. The return is specified by the argument ReturnMarker which is [0] by default. If not choosen differently the function returns the axes-object, or the plot. ReturnMarker=1 returns the DataFrame with all data that are plotted. ReturnMarker=2 returns the DataFrame with all data that is not plotted. This might happen, when the coordinates of the data is bad and not inside the regions or not given at all.  
-| You can also plot different pollutants and color them differently with the parameter 'category'.
+| `map_PollutantSource()` can return three different objects. The return is specified by the argument *ReturnMarker* which is [0] by default. If not choosen differently the function returns the axes-object, or the plot. ReturnMarker=1 returns the DataFrame with all data that are plotted. ReturnMarker=2 returns the DataFrame with all data that is not plotted. This might happen, when the coordinates of the data is bad and not inside the regions or not given at all.  
+| You can also plot different pollutants and color them differently with the parameter *category*.
 
 .. code-block:: python
 
@@ -110,7 +110,7 @@ Using map data
 
     fig2 = plt.figure()
     ax1 = fig2.add_subplot(1, 1, 1)
-    ax1 = ep.map_PollutantSource(data5, mapdata5, markersize=200, category='PollutantName', ax=ax1)
+    ax1 = ep.map_PollutantSource(data5, mapdata5, MarkerSize=200, category='PollutantName', ax=ax1)
     fig2.set_figheight(10)
     fig2.set_figwidth(10)
 
@@ -124,12 +124,12 @@ Using map data
 .. code-block:: python
 
     NUTS_LVL = '2'
-    Resolution = '10M'
+    resolution = '10M'
     projection = '4326'
-    spatialtype = 'RG'
+    SpatialType = 'RG'
     m_year = '2013'
 
-    mb = ep.read_mb(Resolution=Resolution, spatialtype=spatialtype, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+    mb = ep.read_mb(resolution=resolution, SpatialType=SpatialType, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
 
     CountryName = ['Austria']
     ReportingYear = [2017]

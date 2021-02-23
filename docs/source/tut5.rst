@@ -9,40 +9,40 @@ Change root path
 ----------------
 
 | At first let's take a look at the configuration options of emipy. When initialise an emipy project, we defined a path to the root of the project. This path is stored in a config file and is used when the data is loaded in a session or auto exported to the export folder.
-| When you use emipy in another environment than the one in which you initialised emipy, your root path is not set to the projects folder. If you want to continue your work in this project, or simply dont want to download all data again, you can adapt this path.
+| When you use emipy in another environment than the one in which you initialised emipy, your root path is not set to the projects folder. If you want to continue your work in this project, or simply don't want to download all data again, you can adapt this path.
 
 .. code-block:: python
 
     import emipy as ep
 
-    ep.change_rootpath(r'Your\individual\path\to\your\project')
+    ep.change_RootPath(r'Your\individual\path\to\your\project')
 
 Downloading additional map data
 -------------------------------
 
 | During the initialization, emipy downloads `map data <https://ec.europa.eu/eurostat/de/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts#nuts21>`_ from Eurostat. There is not just one map, but a lot of different ways to visualize the countries.
-| Emipy downloads the predefined set with resolution factor 1:10 Million, but you can download additional map data if wanted. For the download you can choose from the resolution (1:1,3,10,20,60 Million) and emipy downloads the map data for all publication years, projections and NUTS-LVL into the projects MappingData folder. With read_mb() you can make further choices of the way, your map is diplayed. For more details see :ref:`datainformation`.
-| The Resolution can be an Integer or a list of Integers which values has to be the resolution factor. You can put the parameter clear to True, to clear the MappingData folder before downloading. This prevents doublication of data and reduces the memory size.
+| Emipy downloads the predefined set with resolution factor 1:10 Million, but you can download additional map data if wanted. For the download you can choose from the resolution (1:1,3,10,20,60 Million) and emipy downloads the map data for all publication years, projections and NUTS-LVL into the projects MappingData folder. With *read_mb()* you can make further choices of the way, your map is diplayed. For more details see :ref:`datainformation`.
+| The *resolution* can be an Integer or a list of Integers which values has to be the resolution factor. You can put the parameter *clear* to True, to clear the MappingData folder before downloading. This prevents doublication of data and reduces the memory size.
 	
 .. code-block:: python
 
 	example_res =[3,60]
-	ep.download_MapFiles(r'The\path\to\the\root\of\your\project', Resolution=example_res, clear=True)
+	ep.download_MapData(r'The\path\to\the\root\of\your\project', resolution=example_res, clear=True)
 
 Change Units
 ------------
 
-| When working with the pollution data, you might want to change the unit of the emission. The function *change_Unit()* reads the current unit for all entries and recalculates the emission value to the new unit and stores the new unit code in the DataFrame.
+| When working with the pollution data, you might want to change the unit of the emission. The function *change_unit()* reads the current unit for all entries and recalculates the emission value to the new unit and stores the new unit code in the DataFrame.
 
 .. code-block:: python
 
-	data2 = ep.change_Unit(data1, Unit='megaton')
+	data2 = ep.change_unit(data1, unit='megaton')
 
 Data Table Adaption
 -------------------
 
 | For the export you might not need all of the 73 columns and want to increase your overview. You can exclude columns and reduce the columns to those which you are interested in.
-| The function *row_reduction()* uses information from the config file to determine which columns are defined as columns of interest. You can change these configuration with *change_ColumnsOfInterest(). You can use the paramter "total" to change the complete list, "add" to add column names or "sub" to substract from present column names. If you put the parameter reset on True, you reset the list of column names to the initial state.
+| The function *row_reduction()* uses information from the config file to determine which columns are defined as columns of interest. You can change these configuration with *change_ColumnsOfInterest()*. You can use the paramter *total* to change the complete list, *add* to add column names or *sub* to substract from present column names. If you put the parameter *reset* on True, you reset the list of column names to the initial state.
 
 .. code-block:: python
 
@@ -71,12 +71,12 @@ Data Table Adaption
 Emission information
 --------------------
 
-| So far you have produced a filtered data base and plots of these data base. But perhaps you want to get the information of your plot in form of a data table. 
+| So far you have produced filtered data bases and plots of these data bases. But perhaps you want to get the information of your plot in form of a data table. 
 
 .. code-block :: python
 
 	data10 = ep.get_PollutantVolume(data2, FirstOrder='ReportingYear')
-	data11 = ep.get_PollutantVolume_rel(data2, FirstOrder='ReportingYear')
+	data11 = ep.get_PollutantVolumeRel(data2, FirstOrder='ReportingYear')
 	data12 = ep.get_PollutantVolumeChange(data2, FirstOrder='ReportingYear')
 
 | In comparison to your data base, this table has summed up all emissions for your order parameter. The usage of the order parameter is the same as in the plot functions.
@@ -92,13 +92,13 @@ NACE-Code selection
 	db = ep.perform_NACETransition(db)
 
 | The transition does not allow an unique assignment of new codes, which is why the new codes may be stored as list of multiple codes. In a consequence, entries might pass your filter, but are not truly part of your requested data. You might want to check for these entries, if they really are part of your economic field.
-| You can finde the NACE-Codes in the `NACE Rev.2 <https://ec.europa.eu/eurostat/documents/portlet_file_entry/3859598/KS-RA-07-015-EN.PDF.pdf/dd5443f5-b886-40e4-920d-9df03590ff91>`_ starting at page 63. Choosing the right code enables you to filter for your request. NACEMainEconomicActivityCode needs a string with the complete NACE Code like '01.46' or list of these Codes.
+| You can finde the NACE-Codes in the `NACE Rev.2 <https://ec.europa.eu/eurostat/documents/portlet_file_entry/3859598/KS-RA-07-015-EN.PDF.pdf/dd5443f5-b886-40e4-920d-9df03590ff91>`_ starting at page 63. Choosing the right code enables you to filter for your request. *NACEMainEconomicActivityCode* needs a string with the complete NACE Code like '01.46' or a list of these Codes.
 
 .. code-block :: python
 
 	data13 = ep.f_db(db, NACEMainEconomicActivityCode='35.11')
 
-| Some groups of NACE codes are stored in the config file. You can access them with *get_NACECode_filter()*. If the parameter specify is None, which it is by default, you receive a list of dictionaries which have the NACE Codes as list corresponding to the key name. You can put specify to on of the keys to receive the value, the list of NACE Codes.
+| Some groups of NACE codes are stored in the config file. You can access them with *get_NACECode_filter()*. If the parameter *specify* is None, which it is by default, you receive a list of dictionaries which have the NACE Codes as list corresponding to the key name. You can put *specify* to on of the keys to receive the value, the list of NACE Codes.
 
 .. code-block :: python
 
@@ -116,16 +116,16 @@ NACE-Code selection
 Impurity analysis
 -----------------
 
-| The emission of specific pollutants comes with emission of other pollutants. In consequence you do not have pure emissions, but impurities to your target pollutant. To analyse these, emmipy provides the functions *get_ImpurityVolume()* and *plot_ImpurityVolume()*.
+| The emission of specific pollutants comes with emission of other pollutants. In consequence you do not have pure emissions, but impurities to your target pollutant. To analyse these, emipy provides the functions *get_ImpurityVolume()* and *plot_ImpurityVolume()*.
 
 .. code-block :: python
 
-	data15 = ep.get_ImpurityVolume(db=data, Target='Carbon dioxide (CO2)')
-	ep.plot_ImpurityVolume(db=data, Target='Carbon dioxide (CO2)', Impurity='Carbon monoxide (CO)')
+	data15 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)')
+	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
 
 | You can specify your analysis with a few parameters. At first you sepcify your data that is to analyse with calling db. Then you name the target pollutant, which is the impured one. For the plot function you also have to specify the impurity molecule that you are looking for.
-| Additional paramters for the get_ function are *FirstOrder*, *ReleaseMediumName*, *absolute*, *FacilityFocus* and *Impurity*. With *FirstOrder*, you specify the column at which your data is sorted. The default is FacilityReportID, since it is very intuitiv to look for the impurities of specific facilities. Nontheless, you could also choose for example NUTSRegionGeoCode, to make a region analysis, rather than a facility analysis.
+| Additional paramters for the get_ function are *FirstOrder*, *ReleaseMediumName*, *absolute*, *FacilityFocus* and *impurity*. With *FirstOrder*, you specify the column at which your data is sorted. The default is FacilityReportID, since it is very intuitiv to look for the impurities of specific facilities. Nontheless, you could also choose for example NUTSRegionGeoCode, to make a region analysis, rather than a facility analysis.
 | You can change the *ReleaseMediumName* to Water or Soil, if your target pollutant is emitted in another medium than air. The function returns the emission value of your impurity in relation to the emission of your target. If you want to get the absolute value, you can change the *absolute* parameter to True.
 | If your *FirstOrder* is something else than FacilityReportID, the *FacilityFocus* parameter becomes interesting. If this parameter is True, only impurities emitted in facilities that aswell emit your target pollutant are considered. You can put the parameter to False, to turn this feature off and analyse the impurities of all facilities in your Order parameter.
 | If you have not specified the impurity, you will get a table with all present impurities. You can specify your impurity, to receive only your impurity of interest.
-| In the function *plot_ImpurityVolume()* you can also set the parameter *Statistics* to False or True to either simply plot your impurity values or to plot the statistics of these. The default is True.
+| In the function *plot_ImpurityVolume()* you can also set the parameter *statistics* to False or True to either simply plot your impurity values or to plot the statistics of these. The default is True.
