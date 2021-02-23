@@ -52,7 +52,7 @@ def get_PollutantVolume(db, FirstOrder=None, SecondOrder=None):
     return data
 
 
-def get_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, normtop=None, normtov=None):
+def get_PollutantVolumeRel(db, FirstOrder=None, SecondOrder=None, normtop=None, normtov=None):
     """
     Normalises the volume values to one specific value. This value is either the present max value of the returned data table or is specifed by normtop(osition) or normtov(alue).
 
@@ -125,7 +125,7 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     return data
 
 
-def get_ImpurityVolume(db, Target, FirstOrder='FacilityReportID', ReleaseMediumName='Air', absolute=False, FacilityFocus=True, Impurity=None):
+def get_ImpurityVolume(db, target, FirstOrder='FacilityReportID', ReleaseMediumName='Air', absolute=False, FacilityFocus=True, impurity=None):
     """
     Creates a table with the impurities of the target pollutant, sorted by the FirstOrder parameter. Putting the absolute parameter to True, gives absolute values instead of relative.
 
@@ -133,7 +133,7 @@ def get_ImpurityVolume(db, Target, FirstOrder='FacilityReportID', ReleaseMediumN
     ----------
     db : DataFrame
         Data to look for impurities.
-    Target : String
+    target : String
         Pollutant name of the pollutant, which is not seen as impurity.
     FirstOrder : String, optional
         Order to sort the impurities by. E.g. NACERegionGeoCode, FacilityReportID, NACEMainEconomicActivityCode. The default is 'FacilityReportID'.
@@ -143,7 +143,7 @@ def get_ImpurityVolume(db, Target, FirstOrder='FacilityReportID', ReleaseMediumN
         If this parameter is set on False, this function returns the impurity relative to the target pollutant emission. If it is set on True, the absolute emission value is returned. The default is False.
     FacilityFocus : Boolean, optional
         If this parameter is true, only the impurities in the facilities in which the target is emittet is taken in to consideration. If it is false, all data are taken into consideration. The default is True.
-    Impurity : String, optional
+    impurity : String, optional
         With this parameter, you can specify the impurity pollutant you want to return. Otherwise, all present impurities are shown. The default is None.
 
     Returns
@@ -155,21 +155,21 @@ def get_ImpurityVolume(db, Target, FirstOrder='FacilityReportID', ReleaseMediumN
 
     """
     db = db[db.ReleaseMediumName == ReleaseMediumName]
-    d1 = db[db.PollutantName == Target]
+    d1 = db[db.PollutantName == target]
     d2 = get_PollutantVolume(d1, FirstOrder=FirstOrder)
     d3 = get_PollutantVolume(d1, FirstOrder=FirstOrder)
     if FacilityFocus == True:
         ff = get_PollutantVolume(d1, FirstOrder='FacilityReportID').FacilityReportID.unique()
         db = db[db.FacilityReportID.isin(ff)]
-    for items in np.delete(db.PollutantName.unique(), np.argwhere(db.PollutantName.unique() == Target)):
+    for items in np.delete(db.PollutantName.unique(), np.argwhere(db.PollutantName.unique() == target)):
         item = db[db.PollutantName == items].groupby([FirstOrder]).TotalQuantity.sum().reset_index()
         item = item[[FirstOrder, 'TotalQuantity']].rename(columns={'TotalQuantity': items})
         d2 = d2.merge(item, how='left', on=FirstOrder)
         d3[items] = d2.loc[:, items] / d2.loc[:, 'TotalQuantity']
 
-    if Impurity != None:
-        d2 = d2[[FirstOrder, 'TotalQuantity', Impurity]]
-        d3 = d3[[FirstOrder, 'TotalQuantity', Impurity]]
+    if impurity != None:
+        d2 = d2[[FirstOrder, 'TotalQuantity', impurity]]
+        d3 = d3[[FirstOrder, 'TotalQuantity', impurity]]
     if absolute == True:
         return d2
     else:
@@ -203,6 +203,44 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
 
     """
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
+    if SecondOrder is None:
+        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', *args, **kwargs)
+    else:
+        if stacked is True:
+            ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
+        else:
+            ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
+    return ax
+
+
+def plot_PollutantVolumeRel(db, FirstOrder=None, SecondOrder=None, stacked=False, norm=None, *args, **kwargs):
+    """
+    Plots the normed pollutant volume of the data set, The first order is the x-axis, the second order is a differentiation of the y-values.
+
+    Parameters
+    ----------
+    db : DataFrame
+        The data to be plotted.
+    FirstOrder : String, optional
+        Name of column, the data are sorted in the first order. The default is None.
+    SecondOrder : String, optional
+        Name of column, the data are sorted in the second order.. The default is None.
+    stacked : Boolean, optional
+        Stacks the bars for second order. The default is False.
+    norm : variable, optional
+        specific first order value, the data is normed to. The default is None. For None it searches the overall maximum.
+    *args : TYPE
+        pandas.plot() input variables.
+    **kwargs : TYPE
+        pandas.plot() input variables.
+
+    Returns
+    -------
+    ax : Axes
+        Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
+
+    """
+    data = get_PollutantVolumeRel(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder, norm=norm)
     if SecondOrder is None:
         ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', *args, **kwargs)
     else:
@@ -249,45 +287,7 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
     return ax
 
 
-def plot_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, stacked=False, norm=None, *args, **kwargs):
-    """
-    Plots the normed pollutant volume of the data set, The first order is the x-axis, the second order is a differentiation of the y-values.
-
-    Parameters
-    ----------
-    db : DataFrame
-        The data to be plotted.
-    FirstOrder : String, optional
-        Name of column, the data are sorted in the first order. The default is None.
-    SecondOrder : String, optional
-        Name of column, the data are sorted in the second order.. The default is None.
-    stacked : Boolean, optional
-        Stacks the bars for second order. The default is False.
-    norm : variable, optional
-        specific first order value, the data is normed to. The default is None. For None it searches the overall maximum.
-    *args : TYPE
-        pandas.plot() input variables.
-    **kwargs : TYPE
-        pandas.plot() input variables.
-
-    Returns
-    -------
-    ax : Axes
-        Plot of the data in db, sorted by FirstOrder and SecondOrder if given.
-
-    """
-    data = get_PollutantVolume_rel(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder, norm=norm)
-    if SecondOrder is None:
-        ax = data.plot(x=FirstOrder, y='TotalQuantity', kind='bar', *args, **kwargs)
-    else:
-        if stacked is True:
-            ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
-        else:
-            ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
-    return ax
-
-
-def plot_ImpurityVolume(db, Target, Impurity, FirstOrder='FacilityReportID', ReleaseMediumName='Air', Statistics=True, *args, **kwargs):
+def plot_ImpurityVolume(db, target, impurity, FirstOrder='FacilityReportID', ReleaseMediumName='Air', statistics=True, *args, **kwargs):
     """
     Plots the impurities for the different FirstOrder values or the statistics of the entries.
 
@@ -295,15 +295,15 @@ def plot_ImpurityVolume(db, Target, Impurity, FirstOrder='FacilityReportID', Rel
     ----------
     db : DataFrame
         The data to be plotted.
-    Target : String
+    target : String
         The target pollutant which is impured.
-    Impurity : String
+    impurity : String
         The impurity which is to be analyzed.
     FirstOrder : String, optional
         Name of column, the data are sorted in the first order. The default is 'FacilityReportID'.
     ReleaseMediumName : TYPE, optional
         The release medium name in which the target is emitted and in which can be impurities. The default is 'Air'.
-    Statistics : Boolean, optional
+    statistics : Boolean, optional
         If this parameter is True, the statistics of the data are plotted. If it is False, the actual values are plotted. The default is True.
     *args : TYPE
         pandas.plot() input variables.
@@ -316,12 +316,12 @@ def plot_ImpurityVolume(db, Target, Impurity, FirstOrder='FacilityReportID', Rel
         Plot of the impurities in db, or the statistics of these impurities.
 
     """
-    if Statistics is True:
-        data = get_ImpurityVolume(db=db, Target=Target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, Impurity=Impurity).describe()
-        ax = data.drop('count').plot(kind='bar', y=Impurity, *args, **kwargs)
+    if statistics is True:
+        data = get_ImpurityVolume(db=db, target=target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, impurity=impurity).describe()
+        ax = data.drop('count').plot(kind='bar', y=impurity, *args, **kwargs)
     else:
-        data = get_ImpurityVolume(db=db, Target=Target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, Impurity=Impurity)
-        ax = data.drop('TotalQuantity', axis=1).plot(x=FirstOrder, y=Impurity, kind='bar', *args, **kwargs)
+        data = get_ImpurityVolume(db=db, target=target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, impurity=impurity)
+        ax = data.drop('TotalQuantity', axis=1).plot(x=FirstOrder, y=impurity, kind='bar', *args, **kwargs)
     return ax
 
 
@@ -345,7 +345,7 @@ def get_mb_borders(mb):
     return list(borders)
 
 
-def excludeData_NotInBorders(borders, gdf):
+def exclude_DataOutsideBorders(borders, gdf):
     """
     seperates data, that are inside and outside given borders
 
@@ -374,33 +374,33 @@ def excludeData_NotInBorders(borders, gdf):
     return gdft, gdff
 
 
-def add_markersize(gdf, maxmarker):
+def add_MarkerSize(gdf, MaxMarker):
     """
-    adds column markersize to GeoDataFrame. If maxmarker=0, all markers have size 1. Else, they are normalized to max value and multiplied by value of maxmarker.
+    adds column MarkerSize to GeoDataFrame. If MaxMarker=0, all markers have size 1. Else, they are normalized to max value and multiplied by value of MaxMarker.
 
     Parameters
     ----------
     gdf : GeoDataFrame
         GeoDataFrame, which gets additional column.
-    maxmarker : Int
-        defines the markersize of the biggest marker. If 0, all markers have same size.
+    MaxMarker : Int
+        defines the marker size of the biggest marker. If 0, all markers have same size.
 
     Returns
     -------
     gdf : GeoDataFrame
-        GeoDataFrame with added column 'markersize'.
+        GeoDataFrame with added column 'MarkerSize'.
 
     """
-    gdf['markersize'] = ""
+    gdf['MarkerSize'] = ""
     markernorm = gdf.TotalQuantity.max()
-    if maxmarker == 0:
-        gdf['markersize'] = 1
+    if MaxMarker == 0:
+        gdf['MarkerSize'] = 1
     else:
-        gdf['markersize'] = gdf['TotalQuantity'] / markernorm * maxmarker
+        gdf['MarkerSize'] = gdf['TotalQuantity'] / markernorm * MaxMarker
     return gdf
 
 
-def CreateGDFWithRightProj(dfgdf, outproj=None):
+def create_GDFWithRightProj(dfgdf, OutProj=None):
     """
     Converts DataFrame into GeoDataFrame and changes the projection if new projection is given as input.
 
@@ -408,7 +408,7 @@ def CreateGDFWithRightProj(dfgdf, outproj=None):
     ----------
     dfgdf : DataFrame/GeoDataFrame
         Data that is about to be converted into a GeoDataFrame and experience a projection change if wanted.
-    outproj : String, optional
+    OutProj : String, optional
         Target projection of the geometry of the data. The default is None.
 
     Returns
@@ -422,20 +422,20 @@ def CreateGDFWithRightProj(dfgdf, outproj=None):
     elif isinstance(dfgdf, gpd.GeoDataFrame):
         if dfgdf.crs is None:
             gdf = gpd.GeoDataFrame(dfgdf, geometry=gpd.points_from_xy(dfgdf.Long, dfgdf.Lat), crs='EPSG:4326').reset_index(drop=True)
-    if outproj != None:
-        gdf = changeproj(gdf, outproj=outproj)
+    if OutProj != None:
+        gdf = change_proj(gdf, OutProj=OutProj)
     return(gdf)
 
 
-def changeproj(gdf, outproj=None):
+def change_proj(gdf, OutProj=None):
     """
-    Changes The projection of the input GeoDataFrame to the projection defined with outproj. If no CRS is given for the geometry, the function tries to recover information from gdf.
+    Changes The projection of the input GeoDataFrame to the projection defined with OutProj. If no CRS is given for the geometry, the function tries to recover information from gdf.
 
     Parameters
     ----------
     gdf : GeoDataFrame
         Data that CRS is to be changed.
-    outproj : Datatype, optional
+    OutProj : Datatype, optional
         Code for target output projection. See http://pyproj4.github.io/pyproj/stable/api/crs/crs.html#pyproj.crs.CRS.from_user_input for input possibilities. The default is None.
 
     Returns
@@ -444,17 +444,17 @@ def changeproj(gdf, outproj=None):
         Data with new projection in the geometry.
 
     """
-    if outproj == None:
+    if OutProj == None:
         sys.exit('InputError: For the change of projection is a target projection required.')
     if gdf.crs == None:
         if ('Long' not in gdf.columns or 'Lat' not in gdf.columns):
             sys.exit('InputError: No information about projection of geometry. Define CRS or give coordinates as Long and Lat!')
         gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(gdf.Long, gdf.Lat), crs='EPSG:4326').reset_index(drop=True)
-    gdf = gdf.to_crs(crs=outproj)
+    gdf = gdf.to_crs(crs=OutProj)
     return(gdf)
 
 
-def map_PollutantSource(db, mb, category=None, markersize=0, outproj=None, ReturnMarker=0, *args, **kwargs):
+def map_PollutantSource(db, mb, category=None, MarkerSize=0, OutProj=None, ReturnMarker=0, *args, **kwargs):
     """
     maps pollutant sources given by db on map given by mb.
 
@@ -466,9 +466,9 @@ def map_PollutantSource(db, mb, category=None, markersize=0, outproj=None, Retur
         geo data table.
     category : String
         The column name of db, which gets new colors for every unique entry.
-    markersize : Int
+    MarkerSize : Int
         maximal size of the largest marker.
-    outproj : DataType
+    OutProj : DataType
         Code for targeted output projection. See http://pyproj4.github.io/pyproj/stable/api/crs/crs.html#pyproj.crs.CRS.from_user_input for input possibilities. The default is None.
     ReturnMarker : Int
         If put on 1, the function returns a DataFrame with all data that are plotted. If put on 2, the function returns a DataFrame with all data  that are not plotted, because their coordinates are outside the geo borders.
@@ -493,11 +493,11 @@ def map_PollutantSource(db, mb, category=None, markersize=0, outproj=None, Retur
     colorlist = ['r', 'y', 'g', 'c', 'm', 'b']
     borders = get_mb_borders(mb)
     if category is None:
-        gdf = CreateGDFWithRightProj(db, outproj=outproj)
-        gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
-        gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
-        gdfp = add_markersize(gdfp, maxmarker=markersize)
-        ax = gdfp.plot(color='r', zorder=1, markersize=gdfp['markersize'], *args, **kwargs)
+        gdf = create_GDFWithRightProj(db, OutProj=OutProj)
+        gdfp = exclude_DataOutsideBorders(borders=borders, gdf=gdf)[0]
+        gdfd = exclude_DataOutsideBorders(borders=borders, gdf=gdf)[1]
+        gdfp = add_MarkerSize(gdfp, MaxMarker=MarkerSize)
+        ax = gdfp.plot(color='r', zorder=1, MarkerSize=gdfp['MarkerSize'], *args, **kwargs)
     else:
         for items in db[category].unique():
             if not colorlist:
@@ -507,11 +507,11 @@ def map_PollutantSource(db, mb, category=None, markersize=0, outproj=None, Retur
             colorlist.remove(color)
             itemdata = db[db[category] == items].reset_index()
 #            itemdata = filter.f_db(db, category=items)
-            gdf = CreateGDFWithRightProj(itemdata, outproj=outproj)
-            gdfp = excludeData_NotInBorders(borders=borders, gdf=gdf)[0]
-            gdfd = excludeData_NotInBorders(borders=borders, gdf=gdf)[1]
-            gdfp = add_markersize(gdfp, maxmarker=markersize)
-            ax = gdfp.plot(color=color, zorder=1, markersize=gdfp['markersize'], *args, **kwargs)
+            gdf = create_GDFWithRightProj(itemdata, OutProj=OutProj)
+            gdfp = exclude_DataOutsideBorders(borders=borders, gdf=gdf)[0]
+            gdfd = exclude_DataOutsideBorders(borders=borders, gdf=gdf)[1]
+            gdfp = add_MarkerSize(gdfp, MaxMarker=MarkerSize)
+            ax = gdfp.plot(color=color, zorder=1, MarkerSize=gdfp['MarkerSize'], *args, **kwargs)
     if gdfd.empty is False:
         print('Some data points are out of borders')
     else:

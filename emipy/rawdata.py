@@ -40,7 +40,7 @@ def download_PollutionData(path, chunk_size=128):
         z.extractall(path)
 
 
-def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
+def download_MapData(path, resolution=10, clear=False, chunk_size=128):
     """
     Download shp files to given path
 
@@ -48,7 +48,7 @@ def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
     ----------
     path : String
         Path to the root of the project.
-    Resolution : int/list, optional
+    resolution : int/list, optional
         Defines the resolution, that the downloaded maps have. Selectable are 1,3,10,20,60. The default is 10.
     clear : Boolean
         If put on True, the function clears the MappingData Directory, before downloading the data., The default is False.
@@ -114,18 +114,18 @@ def download_MapFiles(path, Resolution=10, clear=False, chunk_size=128):
         publist = [2021, 2016, 2013, 2010, 2006, 2003]
         urllist = []
         for items in publist:
-            if isinstance(Resolution, list):
-                for res in Resolution:
+            if isinstance(resolution, list):
+                for res in resolution:
                     if len(str(res)) == 1:
                         urlkey = int(str(items) + str(0) + str(res))
                     else:
                         urlkey = int(str(items) + str(res))
                     urllist.append(urldict.get(urlkey))
             else:
-                if len(str(Resolution)) == 1:
-                    urlkey = int(str(items) + str(0) + str(Resolution))
+                if len(str(resolution)) == 1:
+                    urlkey = int(str(items) + str(0) + str(resolution))
                 else:
-                    urlkey = int(str(items) + str(Resolution))
+                    urlkey = int(str(items) + str(resolution))
                 urllist.append(urldict.get(urlkey))
 
         for items in urllist:
@@ -172,7 +172,7 @@ def download_NACE_TransitionTables(path):
         urllib.request.urlretrieve(url2, os.path.join(path, 'Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
 
 
-def pickle_rawdata(path, force_rerun=False):
+def pickle_RawData(path, force_rerun=False):
     """
     loads files of interest, converts them into .pkl file and saves them in the same path.
 
@@ -206,7 +206,7 @@ def pickle_rawdata(path, force_rerun=False):
     return None
 
 
-def merge_frompickle(path, force_rerun=False):
+def merge_PollutionData(path, force_rerun=False):
     """
     Inserts tables with different data into each other.
 
@@ -228,7 +228,7 @@ def merge_frompickle(path, force_rerun=False):
             pr = pd.read_pickle(os.path.join(path, 'PollutionData\\pr.pkl'))
             pratr = pd.read_pickle(os.path.join(path, 'PollutionData\\pratr.pkl'))
         except FileNotFoundError:
-            print('Error. Run function pickle_rawdata')
+            print('Error. Run function pickle_RawData')
         # speed difference for variing merge-order?? Table length differs, merge smart enough to add multiple one row to multiple?
         # problematic to merge by multiple coloum names?
         # Some data have no PostalCode, wrong fomrated postal code or not actual PostalCode
@@ -238,9 +238,9 @@ def merge_frompickle(path, force_rerun=False):
     return None
 
 
-def get_rootpath():
+def get_RootPath():
     """
-    Returns the current rootpath, stored in the config file.
+    Returns the current root path, stored in the config file.
 
     Returns
     -------
@@ -254,7 +254,7 @@ def get_rootpath():
     return path
 
 
-def change_rootpath(path):
+def change_RootPath(path):
     """
     Changes the path of the root to the project in the configuration.ini file.
 
@@ -275,7 +275,7 @@ def change_rootpath(path):
         config.write(configfile)
 
 
-def init_emipy_project(path, Resolution=10, force_rerun=False):
+def init_emipy_project(path, resolution=10, force_rerun=False):
     """
     Executes the initiation of a new project. Downloads all needed data to the given path and merges data of interest.
 
@@ -285,7 +285,7 @@ def init_emipy_project(path, Resolution=10, force_rerun=False):
         Path to root of project.
     force_rerun : Boolean, optional
         Forces the programm to rerun the merging routine, if True. The default is False.
-    Resolution : int/list, optional
+    resolution : int/list, optional
         Defines the resolution, that the downloaded maps have. Selectable are 1,3,10,20,60. The default is 10.
 
     Returns
@@ -296,16 +296,16 @@ def init_emipy_project(path, Resolution=10, force_rerun=False):
     if path is None:
         print('A path to the root of the project is needed to initialize the project.')
         return None
-    change_rootpath(path)
-    print('Rootpath successfully changed.')
+    change_RootPath(path)
+    print('Root path successfully changed.')
     download_PollutionData(path=path)
     print('Pollution data successfully downloaded and extracted.')
-    download_MapFiles(path=path, Resolution=Resolution)
+    download_MapData(path=path, resolution=resolution)
     print('Map data successfully downloaded and extractet.')
     download_NACE_TransitionTables(path)
     print('Transition tables succesfully downloaded.')
-    pickle_rawdata(path=path, force_rerun=force_rerun)
-    merge_frompickle(path=path, force_rerun=force_rerun)
+    pickle_RawData(path=path, force_rerun=force_rerun)
+    merge_PollutionData(path=path, force_rerun=force_rerun)
     print('Data merged and pickled.')
     directory = 'ExportData'
     path = os.path.join(path, directory)

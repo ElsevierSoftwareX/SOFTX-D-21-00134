@@ -38,7 +38,7 @@ def read_db(path=None):
     return db
 
 
-def read_mb(path=None, Resolution='10M', spatialtype='RG', NUTS_LVL=0, m_year=2016, projection=4326):
+def read_mb(path=None, resolution='10M', SpatialType='RG', NUTS_LVL=0, m_year=2016, projection=4326):
     """
     Reads the shp file with the specifications given in the input.
 
@@ -46,9 +46,9 @@ def read_mb(path=None, Resolution='10M', spatialtype='RG', NUTS_LVL=0, m_year=20
     ----------
     path : String, optional
         Path to root of your project.
-    Resolution : String
+    resolution : String
         Resolution of the map. The default is '10M'.
-    spatialtype : String
+    SpatialType : String
         Format of data presentation. The default is 'RG'.
     NUTS_LVL : Int, optional
         NUTS-classification level, defined by the eurostat. The default is 0.
@@ -70,15 +70,15 @@ def read_mb(path=None, Resolution='10M', spatialtype='RG', NUTS_LVL=0, m_year=20
         path = config['PATH']['path']
     path = os.path.join(path, 'MappingData')
     if NUTS_LVL is None:
-        if spatialtype == 'LB':
-            foo = 'NUTS_' + spatialtype + '_' + str(m_year) + '_' + str(projection) + '.shp'
+        if SpatialType == 'LB':
+            foo = 'NUTS_' + SpatialType + '_' + str(m_year) + '_' + str(projection) + '.shp'
         else:
-            foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + str(m_year) + '_' + str(projection) + '.shp'
+            foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(projection) + '.shp'
     else:
-        if spatialtype == 'LB':
-            foo = 'NUTS_' + spatialtype + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
+        if SpatialType == 'LB':
+            foo = 'NUTS_' + SpatialType + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
         else:
-            foo = 'NUTS_' + spatialtype + '_' + Resolution + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
+            foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
     path = os.path.join(path, foo)
     try:
         mb = geopandas.read_file(path)
@@ -182,7 +182,7 @@ def change_NACECode_filter(total=None, add=None, sub=None):
     return None
 
 
-def get_Countrylist(db):
+def get_CountryList(db):
     """
     Returns a list of all appearing countries in given dataframe.
 
@@ -193,17 +193,17 @@ def get_Countrylist(db):
 
     Returns
     -------
-    Countrylist : List
+    CountryList : List
         List of unique countries.
 
     """
-    Countrylist = []
+    CountryList = []
     for items in db.CountryName.unique():
-        Countrylist.append(items)
-    return Countrylist
+        CountryList.append(items)
+    return CountryList
 
 
-def get_Yearlist(db):
+def get_YearList(db):
     """
     Returns a list of all appearing reporting years in given dataframe.
 
@@ -214,17 +214,17 @@ def get_Yearlist(db):
 
     Returns
     -------
-    Yearlist : List
+    YearList : List
         List of unique reporting years.
 
     """
-    Yearlist = []
+    YearList = []
     for items in db.ReportingYear.unique():
-        Yearlist.append(items)
-    return Yearlist
+        YearList.append(items)
+    return YearList
 
 
-def get_Pollutantlist(db):
+def get_PollutantList(db):
     """
     Returns a list of all appearing pollutant names in given dataframe.
 
@@ -235,17 +235,17 @@ def get_Pollutantlist(db):
 
     Returns
     -------
-    Pollutant : List
+    PollutantList : List
         List of unique pollutant names.
 
     """
-    Pollutantlist = []
+    PollutantList = []
     for items in db.PollutantName.unique():
-        Pollutantlist.append(items)
-    return Pollutantlist
+        PollutantList.append(items)
+    return PollutantList
 
 
-def get_CNTR_CODE_list(mb):
+def get_CNTR_CODEList(mb):
     """
     returns list of all possible CountryCodes in the given DataFrame.
 
@@ -256,14 +256,14 @@ def get_CNTR_CODE_list(mb):
 
     Returns
     -------
-    CNTR_CODE_list : list
+    CNTR_CODEList : list
         list of all Country codes present in the current DataFrame.
 
     """
-    CNTR_CODE_list = []
+    CNTR_CODEList = []
     for items in mb.CNTR_CODE.unique():
-        CNTR_CODE_list.append(items)
-    return CNTR_CODE_list
+        CNTR_CODEList.append(items)
+    return CNTR_CODEList
 
 
 def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ParentCompanyName=None, FacilityName=None, City=None, PostalCode=None, CountryCode=None, RBDGeoCode=None, RBDGeoName=None, NUTSRegionGeoName=None, NACEMainEconomicActivityName=None, MainIASectorCode=None, MainIASectorName=None, MainIAActivityCode=None, MainIAActivityName=None, PollutantReleaseID=None, ReleaseMediumCode=None, PollutantCode=None, PollutantGroupCode=None, ExclaveExclude=False, ReturnUnknown=False):
@@ -610,16 +610,16 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATN=None, ExclaveExclude=False)
     return mb
 
 
-def change_Unit(db, Unit=None):
+def change_unit(db, unit=None):
     """
-    Changes the Units of the emission in the table and adapts the numbers of TotalQuantity in the according way. If no Unit is given, no changes are applied.
+    Changes the units of the emission in the table and adapts the numbers of TotalQuantity in the according way. If no unit is given, no changes are applied.
 
     Parameters
     ----------
     db : DataFrame
-        DataFrame which Units are to be changed.
-    Unit : string, optional
-        New Unit. The default is None.
+        DataFrame which units are to be changed.
+    unit : string, optional
+        New unit. The default is None.
 
     Returns
     -------
@@ -627,8 +627,8 @@ def change_Unit(db, Unit=None):
         DataFrame with changed emission units.
 
     """
-    if Unit == None:
-        print('New Unit is needed. No changes applied.')
+    if unit == None:
+        print('New unit is needed. No changes applied.')
         return db
     UnitNumberDict = {
         'gram': 1,
@@ -649,21 +649,21 @@ def change_Unit(db, Unit=None):
     if len(data.UnitName.unique()) > 1:
         print('Warning: multiple units in DataFrame!')
 
-    # The first two lines are just applicable, if the DataFrame has just one Unit. They represent two ways how to call the values that are to change.
-    # factor = UnitNumberDict[db.UnitName.unique()[0]] / UnitNumberDict[Unit]
+    # The first two lines are just applicable, if the DataFrame has just one unit. They represent two ways how to call the values that are to change.
+    # factor = UnitNumberDict[db.UnitName.unique()[0]] / UnitNumberDict[unit]
     # The third line is more generally applicable. It's written more "Pythonic" but the dict can't be called from a hasable object.
     # data.loc[:, 'TotalQuantity'] = data.loc[:, 'TotalQuantity'] * factor
     # data.TotalQuantity = data.TotalQuantity * factor
-    # data.TotalQuantity = data.TotalQuantity * UnitNumberDict[data.UnitName] / UnitNumberDict[Unit]
+    # data.TotalQuantity = data.TotalQuantity * UnitNumberDict[data.UnitName] / UnitNumberDict[unit]
     for i in range(len(data)):
-        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[data.loc[i, 'UnitName']] / UnitNumberDict[Unit]
+        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[data.loc[i, 'UnitName']] / UnitNumberDict[unit]
 
-    data.loc[:, 'UnitName'] = Unit
-    data.loc[:, 'UnitCode'] = UnitCodeDict[Unit]
+    data.loc[:, 'UnitName'] = unit
+    data.loc[:, 'UnitCode'] = UnitCodeDict[unit]
     return data
 
 
-def perform_NACETransition(db, newNACE=2, path=None):
+def perform_NACETransition(db, NewNACE=2, path=None):
     """
     Changes the NACE_1_1 Codes of the input DataFrame into NACE_2 Codes.
 
@@ -671,7 +671,7 @@ def perform_NACETransition(db, newNACE=2, path=None):
     ----------
     db : DataFrame
         Input DataFrame with partly entries that are coded with NACE_1_1.
-    newNACE : Int, optional
+    NewNACE : Int, optional
         The target NACE-code. The default is 2.
     path : String, optional
         Path to the root of your project. If None is given, emipy searches for the path, stored in the config file. The default is None.
@@ -688,13 +688,13 @@ def perform_NACETransition(db, newNACE=2, path=None):
         path = config['PATH']['path']
 
     # The following lines are for loading the transition table into the session.
-    if newNACE == 2:
+    if NewNACE == 2:
         try:
             tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
         except FileNotFoundError:
             print('File not found in the given path.')
             return None
-    elif newNACE == 1:
+    elif NewNACE == 1:
         try:
             tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev2-NACERev1_1+table+format.xls'))
         except FileNotFoundError:
@@ -903,7 +903,7 @@ def row_reduction(db):
     return db
 
 
-def export_db_topickle(db, path=None, filename=None, **kwargs):
+def export_db_to_pickle(db, path=None, filename=None, **kwargs):
     """
     Stores the DataFrame given in the input as a .pkl file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
 
@@ -942,7 +942,7 @@ def export_db_topickle(db, path=None, filename=None, **kwargs):
     return None
 
 
-def export_db_tocsv(db, path=None, filename=None, **kwargs):
+def export_db_to_csv(db, path=None, filename=None, **kwargs):
     """
     Stores the DataFrame given in the input as a .csv file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
 
@@ -981,7 +981,7 @@ def export_db_tocsv(db, path=None, filename=None, **kwargs):
     return None
 
 
-def export_db_toexcel(db, path=None, filename=None, **kwargs):
+def export_db_to_excel(db, path=None, filename=None, **kwargs):
     """
     Stores the DataFrame given in the input as a .xlsx file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
 
