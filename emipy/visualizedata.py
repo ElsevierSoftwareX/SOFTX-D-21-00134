@@ -52,9 +52,9 @@ def get_PollutantVolume(db, FirstOrder=None, SecondOrder=None):
     return data
 
 
-def get_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, norm=None):
+def get_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, normtop=None, normtov=None):
     """
-    Normes the volume values to the absolut max value or max value of first order value which is called with norm.
+    Normalises the volume values to one specific value. This value is either the present max value of the returned data table or is specifed by normtop(osition) or normtov(alue).
 
     Parameters
     ----------
@@ -64,20 +64,34 @@ def get_PollutantVolume_rel(db, FirstOrder=None, SecondOrder=None, norm=None):
         Name of column, the data are sorted in the first order. The default is None.
     SecondOrder : String, optional
         Name of column, the data are sorted in the second order. The default is None.
-    norm : variable, optional
-        specific first order value, which should be normed to. The default is None.
-
+    normtop : list, optional
+        With this parameter you can choose a entry of your data table, that the entries should be normalised too. The first item of the list has to be one value of the FirstOrder. If SecondOrder is called, the second value has to be a value of the SecondOrder. The default is None.
+    normtov : float, optional
+        With this parameter you can define a value, that the PollutantVolume entries are normalised to. The default is None
     Returns
     -------
     data : DataFrame
-        Data table sorted to the announced paramters. The values are normed to some specific max value.
+        Data table sorted to the announced parameters. The values are normed to one specific max value. If normtop and normtov are both unequal None, no normalization is applied, since there is no concrete value, that can be normed to.
 
     """
     data = get_PollutantVolume(db, FirstOrder=FirstOrder, SecondOrder=SecondOrder)
-    if norm is None:
-        maxvalue = data.iloc[:, 1:].to_numpy().max()
-    else:
-        maxvalue = data[data[FirstOrder] == norm].to_numpy().max()
+
+    if (normtop is not None) and (normtov is not None):
+        print('Multiple normto values given. Decide for either normtoposition or normtovalue. No normalisation applied!')
+        return data
+
+    if (normtop is None) and (normtov is None):
+        maxvalue = np.nanmax(data.iloc[:, 1:].to_numpy())
+    elif normtop is not None:
+        if FirstOrder is None:
+            maxvalue = data.iloc[0, 1]
+        elif SecondOrder is None:
+            maxvalue = data[data[FirstOrder] == normtop[0]].reset_index().loc[0, 'TotalQuantity']
+        else:
+            maxvalue = data[data[FirstOrder] == normtop[0]].reset_index().loc[0, normtop[1]]
+    elif normtov is not None:
+        maxvalue = normtov
+
     data.iloc[:, 1:] = data.iloc[:, 1:] / maxvalue
     return data
 
@@ -93,7 +107,7 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     FirstOrder : String, optional
         Name of column, the data are sorted in the first order. The default is None.
     SecondOrder : String, optional
-        Name of column, the data are sorted in the second order.. The default is None.
+        Name of column, the data are sorted in the second order. The default is None.
 
     Returns
     -------
