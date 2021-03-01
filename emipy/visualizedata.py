@@ -92,9 +92,90 @@ def get_PollutantVolumeRel(db, FirstOrder=None, SecondOrder=None, normtop=None, 
     elif normtov is not None:
         maxvalue = normtov
 
+    if pd.isnull(maxvalue):
+        print('The determined maxvalue is of type Nan. Therefore, the normalization does not work and a DataFrame with NAN is returned.')
+
     data.iloc[:, 1:] = data.iloc[:, 1:] / maxvalue
     return data
 
+d = {'FacilityReportID': [1856, 1856, 1856, 1856, 1857, 3110391],
+     'PollutantReleaseAndTransferReportID': [1, 1, 1, 1, 1, 2453],
+     'FacilityID': [5763, 5763, 5763, 5763, 5764, 8896],
+     'NationalID': ['1013410312', '1013410312', '1013410312', '1013410312', '1013410313', '3428'],
+     'ParentCompanyName': ['Lenzing AG', 'Lenzing AG', 'Lenzing AG', 'Lenzing AG', 'Lenzing AG', 'NORDGROUP A/S'],
+     'FacilityName': ['Lenzing AG', 'Lenzing AG', 'Lenzing AG', 'Lenzing AG', 'Wasserreinhalteverband Lenzing - Lenzing AG', 'NORDGROUP A/S'],
+     'StreetName': ['Werkstraße 1', 'Werkstraße 1', 'Werkstraße 1', 'Werkstraße 1', 'Werkstraße 1', 'LINDHOLMVEJ'],
+     'BuildingNumber': [np.nan, np.nan, np.nan, np.nan, np.nan, 3],
+     'City': ['Lenzing', 'Lenzing', 'Lenzing', 'Lenzing', 'Lenzing', 'NYBORG'],
+     'PostalCode': ['4860', '4860', '4860', '4860', '4860', '5800'],
+     'CountryCode': ['AT', 'AT', 'AT', 'AT', 'AT', 'DK'],
+     'CountryName': ['Austria', 'Austria', 'Austria', 'Austria', 'Austria', 'Denmark'],
+     'Lat': [47.966667, 47.966667, 47.966667, 47.966667, 47.966667, 55.3022382837],
+     'Long': [13.616667000000001, 13.616667000000001, 13.616667000000001, 13.616667000000001, 13.61666700000000, 10.8151929632],
+     'RBDGeoCode': ['AT1000', 'AT1000', 'AT1000', 'AT1000', 'AT1000', 'DK1'],
+     'RBDGeoName': ['Danube', 'Danube', 'Danube', 'Danube', 'Danube', 'Jutland and Funen'],
+     'NUTSRegionGeoCode': ['AT31', 'AT31', 'AT31', 'AT31', 'AT31', 'FRY1'],
+     'NUTSRegionGeoName': ['Upper Austria', 'Upper Austria', 'Upper Austria', 'Upper Austria', 'Upper Austria', 'South Denmark'],
+     'RBDSourceCode': ['UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'UNKNOWN', 'DK1'],
+     'RBDSourceName': [np.nan, np.nan, np.nan, np.nan, np.nan, 'Jutland and Funen'],
+     'NUTSRegionSourceCode': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'NUTSRegionSourceName': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'NACEMainEconomicActivityCode': ['NACE_1.1:21.11', 'NACE_1.1:21.11', 'NACE_1.1:21.11', 'NACE_1.1:21.11', 'NACE_1.1:90.00', '38.22'],
+     'NACEMainEconomicActivityName': ['Manufacture of pulp', 'Manufacture of pulp', 'Manufacture of pulp', 'Manufacture of pulp', 'Sewage and refuse disposal, sanitation and similar activities', 'Treatment and disposal of hazardous waste'],
+     'CompetentAuthorityName': ['Not transferred from EPER', 'Not transferred from EPER', 'Not transferred from EPER', 'Not transferred from EPER', 'Not transferred from EPER', 'Miljøstyrelsen'],
+     'CompetentAuthorityAddressStreetName': [np.nan, np.nan, np.nan, np.nan, np.nan, 'Tolderlundsvej'],
+     'CompetentAuthorityAddressBuildingNumber': [np.nan, np.nan, np.nan, np.nan, np.nan, 5],
+     'CompetentAuthorityAddressCity': [np.nan, np.nan, np.nan, np.nan, np.nan, 'Odense'],
+     'CompetentAuthorityAddressPostalCode': [np.nan, np.nan, np.nan, np.nan, np.nan, '5000'],
+     'CompetentAuthorityAddressCountryCode': ['AT', 'AT', 'AT', 'AT', 'AT', 'DK'],
+     'CompetentAuthorityAddressCountryName': ['Austria', 'Austria', 'Austria', 'Austria', 'Austria', 'Denmark'],
+     'CompetentAuthorityTelephoneCommunication': ['0', '0', '0', '0', '0', '72544000'],
+     'CompetentAuthorityFaxCommunication': ['0', '0', '0', '0', '0', '72544000'],
+     'CompetentAuthorityEmailCommunication': [np.nan, np.nan, np.nan, np.nan, np.nan, 'karbn@mst.dk'],
+     'CompetentAuthorityContactPersonName': [np.nan, np.nan, np.nan, np.nan, np.nan, 'Kari Bach Nielsen'],
+     'ProductionVolumeProductName': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'ProductionVolumeQuantity': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'ProductionVolumeUnitCode': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'ProductionVolumeUnitName': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'TotalIPPCInstallationQuantity': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'OperatingHours': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'TotalEmployeeQuantity': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'WebsiteCommunication': [np.nan, np.nan, np.nan, np.nan, np.nan, 'http://www.nordgroup.eu'],
+     'PublicInformation': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'ConfidentialIndicator': [False, False, False, False, False, False],
+     'ConfidentialityReasonCode': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'ConfidentialityReasonName': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'ProtectVoluntaryData': [False, False, False, False, False, False],
+     'MainIASectorCode': ['EPER_4', 'EPER_4', 'EPER_4', 'EPER_4', 'EPER_5', '5'],
+     'MainIASectorName': ['Chemical industry', 'Chemical industry', 'Chemical industry', 'Chemical industry', 'Waste management', 'Waste and waste water management'],
+     'MainIAActivityCode': ['EPER_4.1', 'EPER_4.1', 'EPER_4.1', 'EPER_4.1', 'EPER_5.3/5.4', '5.(a)'],
+     'MainIAActivityName': ['Basic organic chemicals', 'Basic organic chemicals', 'Basic organic chemicals', 'Basic organic chemicals', 'Disposal of non-hazardous waste and landfills', 'Installations for the recovery or disposal of hazardous waste'],
+     'MainIASubActivityCode': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'MainIASubActivityName': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+     'ReportingYear': [2001, 2001, 2001, 2001, 2001, 2016],
+     'CoordinateSystemCode': ['EPSG:4326', 'EPSG:4326', 'EPSG:4326', 'EPSG:4326', 'EPSG:4326', 'EPSG:4326'],
+     'CoordinateSystemName': ['WGS 84', 'WGS 84', 'WGS 84', 'WGS 84', 'WGS 84', 'WGS 84'],
+     'CdrReleased': [20060623000000, 20060623000000, 20060623000000, 20060623000000, 20060623000000, 20190828122729],
+     'Published': [20061123000000.0, 20061123000000.0, 20061123000000.0, 20061123000000.0, 20061123000000.0, 20191010010100.0],
+     'PollutantReleaseID': [10819, 10820, 10817, 10818, 24207, 3831580],
+     'ReleaseMediumCode': ['AIR', 'AIR', 'AIR', 'AIR', 'WATER', 'AIR'],
+     'ReleaseMediumName': ['Air', 'Air', 'Air', 'Air', 'Water', 'Air'],
+     'PollutantCode': ['PM10', 'SOX', 'CO2 in EPER', 'NOX', 'ZN AND COMPOUNDS', 'CO2'],
+     'PollutantName': ['Particulate matter (PM10)', 'Sulphur oxides (SOx/SO2)', 'Carbon dioxide (CO2)', 'Nitrogen oxides (NOx/NO2)', 'Zinc and compounds (as Zn)', 'Carbon dioxide (CO2)'],
+     'PollutantGroupCode': ['INORG', 'OTHGAS', 'GRHGAS', 'OTHGAS', 'HEVMET', 'GRHGAS'],
+     'PollutantGroupName': ['Inorganic substances', 'Other gases', 'Greenhouse gases', 'Other gases', 'Heavy metals', 'Greenhouse gases'],
+     'PollutantCAS': [np.nan, np.nan, '124-38-9', np.nan, np.nan, '124-38-9'],
+     'MethodBasisCode': ['E', 'M', 'E', 'M', 'M', 'M'],
+     'MethodBasisName': ['Estimated', 'Measured', 'Estimated', 'Measured', 'Measured', 'Measured'],
+     'TotalQuantity': [68200.0, 420000.0, 182000000.0, 818000.0, 3210.0, 159000000.0],
+     'AccidentalQuantity': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+     'UnitCode': ['KGM', 'KGM', 'KGM', 'KGM', 'KGM', 'KGM'],
+     'UnitName': ['kilogram', 'kilogram', 'kilogram', 'kilogram', 'kilogram', 'kilogram']
+     }
+
+df = pd.DataFrame(data=d)
+
+test = get_PollutantVolumeRel(df, FirstOrder='CountryName', SecondOrder='ReleaseMediumName', normtop=['Denmark', 'Air'])
 
 def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     """
