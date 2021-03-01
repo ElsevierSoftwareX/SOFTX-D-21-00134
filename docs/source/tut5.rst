@@ -123,9 +123,41 @@ Impurity analysis
 	data15 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)')
 	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
 
-| You can specify your analysis with a few parameters. At first you sepcify your data that is to analyse with calling db. Then you name the target pollutant, which is the impured one. For the plot function you also have to specify the impurity molecule that you are looking for.
-| Additional paramters for the get_ function are *FirstOrder*, *ReleaseMediumName*, *absolute*, *FacilityFocus* and *impurity*. With *FirstOrder*, you specify the column at which your data is sorted. The default is FacilityReportID, since it is very intuitiv to look for the impurities of specific facilities. Nontheless, you could also choose for example NUTSRegionGeoCode, to make a region analysis, rather than a facility analysis.
+| You can specify your analysis with a few parameters. At first you specify your data that is to analyse with calling db. Then you name the target pollutant, which is the impured one. For the plot function you also have to specify the impurity molecule that you are looking for.
+| Additional paramters for the get_ function are *FirstOrder*, *ReleaseMediumName*, *absolute*, *FacilityFocus* and *impurity*. With *FirstOrder*, you specify the column at which your data is sorted. The default is FacilityReportID, since it is very intuitive to look for the impurities of specific facilities. Nontheless, you could also choose for example NUTSRegionGeoCode, to make a region analysis, rather than a facility analysis.
+
+.. code-block :: python
+
+	data16 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', FirstOrder='NUTSRegionGeoCode')
+	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', FirstOrder='NUTSRegionGeoCode')
+
 | You can change the *ReleaseMediumName* to Water or Soil, if your target pollutant is emitted in another medium than air. The function returns the emission value of your impurity in relation to the emission of your target. If you want to get the absolute value, you can change the *absolute* parameter to True.
+
+.. code-block :: python
+
+	data17 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', ReleaseMediumName='Air', absolute=True)
+	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', ReleaseMediumName='Air', absolute=True)
+
 | If your *FirstOrder* is something else than FacilityReportID, the *FacilityFocus* parameter becomes interesting. If this parameter is True, only impurities emitted in facilities that aswell emit your target pollutant are considered. You can put the parameter to False, to turn this feature off and analyse the impurities of all facilities in your Order parameter.
+
+.. code-block :: python
+
+	data18 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', FirstOrder='NUTSRegionGeoCode', FacilityFocus=False)
+	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', FirstOrder='NUTSRegionGeoCode', FacilityFocus=False)
+	
 | If you have not specified the impurity, you will get a table with all present impurities. You can specify your impurity, to receive only your impurity of interest.
+
+.. code-block :: python
+
+	data19 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)')
+	data20 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
+
 | In the function *plot_ImpurityVolume()* you can also set the parameter *statistics* to False or True to either simply plot your impurity values or to plot the statistics of these. The default is True.
+
+.. code-block :: python
+
+	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
+	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', statistics=False)
+
+| When creating a data table with *get_ImpurityVolume()* you will often have NaN as entries. This happens because different facilities have different impurities. So a NaN value means, that there is no impurity of this pollutant type listet in the data base. This does not mean, that there is definitly no impurity. Impurities can be below a certain threshold value and therefore not listet in the E-PRTR.
+| If *statistics* is True, *plot_ImpurityVolume()* automatically ignores NaN values.
