@@ -92,6 +92,8 @@ NACE-Code selection
 	db = ep.perform_NACETransition(db)
 
 | The transition does not allow an unique assignment of new codes, which is why the new codes may be stored as list of multiple codes. In a consequence, entries might pass your filter, but are not truly part of your requested data. You might want to check for these entries, if they really are part of your economic field.
+| There exist entries in the old data, that have 2 different NACE 1.1 Code, which have no assignment in the `transition tables <https://ec.europa.eu/eurostat/de/web/nace-rev2/correspondence_tables>`_. For these cases we decided for a assignment. 
+| The NACECode 27.35 is translated to 24.10 since the NACEMainEconomicActivityName of both sounds very similar. 74.84 is translated to 59.20, 63.99, 74.10, 74.90, 77.40, 82.30, 82.91, 82.99. Here the NACEMainEconomicActivityName is the same as for 74.87 and we copied the transition from this NACECode.
 | You can finde the NACE-Codes in the `NACE Rev.2 <https://ec.europa.eu/eurostat/documents/portlet_file_entry/3859598/KS-RA-07-015-EN.PDF.pdf/dd5443f5-b886-40e4-920d-9df03590ff91>`_ starting at page 63. Choosing the right code enables you to filter for your request. *NACEMainEconomicActivityCode* needs a string with the complete NACE Code like '01.46' or a list of these Codes.
 
 .. code-block :: python
@@ -124,7 +126,7 @@ Impurity analysis
 	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
 
 | You can specify your analysis with a few parameters. At first you specify your data that is to analyse with calling db. Then you name the target pollutant, which is the impured one. For the plot function you also have to specify the impurity molecule that you are looking for.
-| Additional paramters for the get_ function are *FirstOrder*, *ReleaseMediumName*, *absolute*, *FacilityFocus* and *impurity*. With *FirstOrder*, you specify the column at which your data is sorted. The default is FacilityReportID, since it is very intuitive to look for the impurities of specific facilities. Nontheless, you could also choose for example NUTSRegionGeoCode, to make a region analysis, rather than a facility analysis.
+| Additional paramters for the get_ function are *FirstOrder*, *ReleaseMediumName*, *absolute*, *FacilityFocus*, *impurity* and *statistics*. With *FirstOrder*, you specify the column at which your data is sorted. The default is FacilityReportID, since it is very intuitive to look for the impurities of specific facilities. Nontheless, you could also choose for example NUTSRegionGeoCode, to make a region analysis, rather than a facility analysis.
 
 .. code-block :: python
 
@@ -152,12 +154,12 @@ Impurity analysis
 	data19 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)')
 	data20 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
 
-| In the function *plot_ImpurityVolume()* you can also set the parameter *statistics* to False or True to either simply plot your impurity values or to plot the statistics of these. The default is True.
+| You can also set the parameter *statistics* to False or True to either simply get or plot your impurity values or to get or plot the statistics of these. The default is False.
 
 .. code-block :: python
 
-	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
-	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', statistics=False)
+	ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
+	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', statistics=True)
 
 | When creating a data table with *get_ImpurityVolume()* you will often have NaN as entries. This happens because different facilities have different impurities. So a NaN value means, that there is no impurity of this pollutant type listet in the data base. This does not mean, that there is definitly no impurity. Impurities can be below a certain threshold value and therefore not listet in the E-PRTR.
-| If *statistics* is True, *plot_ImpurityVolume()* automatically ignores NaN values.
+| If *statistics* is True, *plot_ImpurityVolume()* automatically ignores NaN values. When you plot your simple impurity values, you can set the parameter *PlotNA* to False. Then the na values are not plotted.
