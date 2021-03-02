@@ -341,8 +341,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if FacilityReportID is not None:
         dbna = dbna.append(db[db.FacilityReportID.isna()])
-        # The following line ensures that dbna has just data that is na over all filter parameter. Not needed in first filter paramter, but stays here for consistency.
-        dbna = dbna[dbna.FacilityReportID.isna()]
+        foo1 = dbna[dbna.FacilityReportID.isna()]
+        if isinstance(FacilityReportID, list):
+            foo2 = dbna[dbna.FacilityReportID.isin(FacilityReportID)]
+        else:
+            foo2 = dbna[dbna.FacilityReportID == FacilityReportID]
+        dbna = foo1.append(foo2)
+
         if isinstance(FacilityReportID, list):
             db = db[db.FacilityReportID.isin(FacilityReportID)]
         else:
@@ -350,7 +355,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if CountryName is not None:
         dbna = dbna.append(db[db.CountryName.isna()])
-        dbna = dbna[dbna.CountryName.isna()]
+        foo1 = dbna[dbna.CountryName.isna()]
+        if isinstance(CountryName, list):
+            foo2 = dbna[dbna.CountryName.isin(CountryName)]
+        else:
+            foo2 = dbna[dbna.CountryName == CountryName]
+        dbna = foo1.append(foo2)
+
         if isinstance(CountryName, list):
             db = db[db.CountryName.isin(CountryName)]
         else:
@@ -358,7 +369,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if ReportingYear is not None:
         dbna = dbna.append(db[db.ReportingYear.isna()])
-        dbna = dbna[dbna.ReportingYear.isna()]
+        foo1 = dbna[dbna.ReportingYear.isna()]
+        if isinstance(ReportingYear, list):
+            foo2 = dbna[dbna.ReportingYear.isin(ReportingYear)]
+        else:
+            foo2 = dbna[dbna.ReportingYear == ReportingYear]
+        dbna = foo1.append(foo2)
+
         if isinstance(ReportingYear, list):
             db = db[db.ReportingYear.isin(ReportingYear)]
         else:
@@ -366,7 +383,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if ReleaseMediumName is not None:
         dbna = dbna.append(db[db.ReleaseMediumName.isna()])
-        dbna = dbna[dbna.ReleaseMediumName.isna()]
+        foo1 = dbna[dbna.ReleaseMediumName.isna()]
+        if isinstance(ReleaseMediumName, list):
+            foo2 = dbna[dbna.ReleaseMediumName.isin(ReleaseMediumName)]
+        else:
+            foo2 = dbna[dbna.ReleaseMediumName == ReleaseMediumName]
+        dbna = foo1.append(foo2)
+
         if isinstance(ReleaseMediumName, list):
             db = db[db.ReleaseMediumName.isin(ReleaseMediumName)]
         else:
@@ -374,7 +397,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if PollutantName is not None:
         dbna = dbna.append(db[db.PollutantName.isna()])
-        dbna = dbna[dbna.PollutantName.isna()]
+        foo1 = dbna[dbna.PollutantName.isna()]
+        if isinstance(PollutantName, list):
+            foo2 = dbna[dbna.PollutantName.isin(PollutantName)]
+        else:
+            foo2 = dbna[dbna.PollutantName == PollutantName]
+        dbna = foo1.append(foo2)
+
         if isinstance(PollutantName, list):
             db = db[db.PollutantName.isin(PollutantName)]
         else:
@@ -382,7 +411,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if PollutantGroupName is not None:
         dbna = dbna.append(db[db.PollutantGroupName.isna()])
-        dbna = dbna[dbna.PollutantGroupName.isna()]
+        foo1 = dbna[dbna.PollutantGroupName.isna()]
+        if isinstance(PollutantGroupName, list):
+            foo2 = dbna[dbna.PollutantGroupName.isin(PollutantGroupName)]
+        else:
+            foo2 = dbna[dbna.PollutantGroupName == PollutantGroupName]
+        dbna = foo1.append(foo2)
+
         if isinstance(PollutantGroupName, list):
             db = db[db.PollutantGroupName.isin(PollutantGroupName)]
         else:
@@ -390,7 +425,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if NACEMainEconomicActivityCode is not None:
         dbna = dbna.append(db[db.NACEMainEconomicActivityCode.isna()])
-        dbna = dbna[dbna.NACEMainEconomicActivityCode.isna()]
+        foo1 = dbna[dbna.NACEMainEconomicActivityCode.isna()]
+        if isinstance(NACEMainEconomicActivityCode, list):
+            foo2 = dbna[dbna.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
+        else:
+            foo2 = dbna[dbna.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(NACEMainEconomicActivityCode, list):
             foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMainEconomicActivityCode).any(1).astype(int)
             db = db.assign(foo=foo.values)
@@ -405,7 +446,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if NUTSRegionGeoCode is not None:
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
-        dbna = dbna[dbna.NUTSRegionGeoCode.isna()]
+        foo1 = dbna[dbna.NUTSRegionGeoCode.isna()]
+        if isinstance(NUTSRegionGeoCode, list):
+            foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) == True]
+        else:
+            foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) == True]
+        dbna = foo1.append(foo2)
+
         if isinstance(NUTSRegionGeoCode, list):
             db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) == True]
         else:
@@ -413,7 +460,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if ParentCompanyName is not None:
         dbna = dbna.append(db[db.ParentCompanyName.isna()])
-        dbna = dbna[dbna.ParentCompanyName.isna()]
+        foo1 = dbna[dbna.ParentCompanyName.isna()]
+        if isinstance(ParentCompanyName, list):
+            foo2 = dbna[dbna.ParentCompanyName.isin(ParentCompanyName)]
+        else:
+            foo2 = dbna[dbna.ParentCompanyName == ParentCompanyName]
+        dbna = foo1.append(foo2)
+
         if isinstance(ParentCompanyName, list):
             db = db[db.ParentCompanyName.isin(ParentCompanyName)]
         else:
@@ -421,7 +474,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if FacilityName is not None:
         dbna = dbna.append(db[db.FacilityName.isna()])
-        dbna = dbna[dbna.FacilityName.isna()]
+        foo1 = dbna[dbna.FacilityName.isna()]
+        if isinstance(FacilityName, list):
+            foo2 = dbna[dbna.FacilityName.isin(FacilityName)]
+        else:
+            foo2 = dbna[dbna.FacilityName == FacilityName]
+        dbna = foo1.append(foo2)
+
         if isinstance(FacilityName, list):
             db = db[db.FacilityName.isin(FacilityName)]
         else:
@@ -429,7 +488,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if City is not None:
         dbna = dbna.append(db[db.City.isna()])
-        dbna = dbna[dbna.City.isna()]
+        foo1 = dbna[dbna.City.isna()]
+        if isinstance(City, list):
+            foo2 = dbna[dbna.City.isin(City)]
+        else:
+            foo2 = dbna[dbna.City == City]
+        dbna = foo1.append(foo2)
+
         if isinstance(City, list):
             db = db[db.City.isin(City)]
         else:
@@ -437,7 +502,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if PostalCode is not None:
         dbna = dbna.append(db[db.PostalCode.isna()])
-        dbna = dbna[dbna.PostalCode.isna()]
+        foo1 = dbna[dbna.PostalCode.isna()]
+        if isinstance(PostalCode, list):
+            foo2 = dbna[dbna.PostalCode.isin(PostalCode)]
+        else:
+            foo2 = dbna[dbna.PostalCode == PostalCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(PostalCode, list):
             db = db[db.PostalCode.isin(PostalCode)]
         else:
@@ -445,7 +516,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if CountryCode is not None:
         dbna = dbna.append(db[db.CountryCode.isna()])
-        dbna = dbna[dbna.CountryCode.isna()]
+        foo1 = dbna[dbna.CountryCode.isna()]
+        if isinstance(CountryCode, list):
+            foo2 = dbna[dbna.CountryCode.isin(CountryCode)]
+        else:
+            foo2 = dbna[dbna.CountryCode == CountryCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(CountryCode, list):
             db = db[db.CountryCode.isin(CountryCode)]
         else:
@@ -453,7 +530,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if RBDGeoCode is not None:
         dbna = dbna.append(db[db.RBDGeoCode.isna()])
-        dbna = dbna[dbna.RBDGeoCode.isna()]
+        foo1 = dbna[dbna.RBDGeoCode.isna()]
+        if isinstance(RBDGeoCode, list):
+            foo2 = dbna[dbna.RBDGeoCode.isin(RBDGeoCode)]
+        else:
+            foo2 = dbna[dbna.RBDGeoCode == RBDGeoCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(RBDGeoCode, list):
             db = db[db.RBDGeoCode.isin(RBDGeoCode)]
         else:
@@ -461,7 +544,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if RBDGeoName is not None:
         dbna = dbna.append(db[db.RBDGeoName.isna()])
-        dbna = dbna[dbna.RBDGeoName.isna()]
+        foo1 = dbna[dbna.RBDGeoName.isna()]
+        if isinstance(RBDGeoName, list):
+            foo2 = dbna[dbna.RBDGeoName.isin(RBDGeoName)]
+        else:
+            foo2 = dbna[dbna.RBDGeoName == RBDGeoName]
+        dbna = foo1.append(foo2)
+
         if isinstance(RBDGeoName, list):
             db = db[db.RBDGeoName.isin(RBDGeoName)]
         else:
@@ -469,7 +558,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if NUTSRegionGeoName is not None:
         dbna = dbna.append(db[db.NUTSRegionGeoName.isna()])
-        dbna = dbna[dbna.NUTSRegionGeoName.isna()]
+        foo1 = dbna[dbna.NUTSRegionGeoName.isna()]
+        if isinstance(NUTSRegionGeoName, list):
+            foo2 = dbna[dbna.NUTSRegionGeoName.isin(NUTSRegionGeoName)]
+        else:
+            foo2 = dbna[dbna.NUTSRegionGeoName == NUTSRegionGeoName]
+        dbna = foo1.append(foo2)
+
         if isinstance(NUTSRegionGeoName, list):
             db = db[db.NUTSRegionGeoName.isin(NUTSRegionGeoName)]
         else:
@@ -477,7 +572,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if NACEMainEconomicActivityName is not None:
         dbna = dbna.append(db[db.NACEMainEconomicActivityName.isna()])
-        dbna = dbna[dbna.NACEMainEconomicActivityName.isna()]
+        foo1 = dbna[dbna.NACEMainEconomicActivityName.isna()]
+        if isinstance(NACEMainEconomicActivityName, list):
+            foo2 = dbna[dbna.NACEMainEconomicActivityName.isin(NACEMainEconomicActivityName)]
+        else:
+            foo2 = dbna[dbna.NACEMainEconomicActivityName == NACEMainEconomicActivityName]
+        dbna = foo1.append(foo2)
+
         if isinstance(NACEMainEconomicActivityName, list):
             db = db[db.NACEMainEconomicActivityName.isin(NACEMainEconomicActivityName)]
         else:
@@ -485,7 +586,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if MainIASectorCode is not None:
         dbna = dbna.append(db[db.MainIASectorCode.isna()])
-        dbna = dbna[dbna.MainIASectorCode.isna()]
+        foo1 = dbna[dbna.MainIASectorCode.isna()]
+        if isinstance(MainIASectorCode, list):
+            foo2 = dbna[dbna.MainIASectorCode.isin(MainIASectorCode)]
+        else:
+            foo2 = dbna[dbna.MainIASectorCode == MainIASectorCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(MainIASectorCode, list):
             db = db[db.MainIASectorCode.isin(MainIASectorCode)]
         else:
@@ -493,7 +600,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if MainIASectorName is not None:
         dbna = dbna.append(db[db.MainIASectorName.isna()])
-        dbna = dbna[dbna.MainIASectorName.isna()]
+        foo1 = dbna[dbna.MainIASectorName.isna()]
+        if isinstance(MainIASectorName, list):
+            foo2 = dbna[dbna.MainIASectorName.isin(MainIASectorName)]
+        else:
+            foo2 = dbna[dbna.MainIASectorName == MainIASectorName]
+        dbna = foo1.append(foo2)
+
         if isinstance(MainIASectorName, list):
             db = db[db.MainIASectorName.isin(MainIASectorName)]
         else:
@@ -501,7 +614,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if MainIAActivityCode is not None:
         dbna = dbna.append(db[db.MainIAActivityCode.isna()])
-        dbna = dbna[dbna.MainIAActivityCode.isna()]
+        foo1 = dbna[dbna.MainIAActivityCode.isna()]
+        if isinstance(MainIAActivityCode, list):
+            foo2 = dbna[dbna.MainIAActivityCode.isin(MainIAActivityCode)]
+        else:
+            foo2 = dbna[dbna.MainIAActivityCode == MainIAActivityCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(MainIAActivityCode, list):
             db = db[db.MainIAActivityCode.isin(MainIAActivityCode)]
         else:
@@ -509,7 +628,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if MainIAActivityName is not None:
         dbna = dbna.append(db[db.MainIAActivityName.isna()])
-        dbna = dbna[dbna.MainIAActivityName.isna()]
+        foo1 = dbna[dbna.MainIAActivityName.isna()]
+        if isinstance(MainIAActivityName, list):
+            foo2 = dbna[dbna.MainIAActivityName.isin(MainIAActivityName)]
+        else:
+            foo2 = dbna[dbna.MainIAActivityName == MainIAActivityName]
+        dbna = foo1.append(foo2)
+
         if isinstance(MainIAActivityName, list):
             db = db[db.MainIAActivityName.isin(MainIAActivityName)]
         else:
@@ -517,7 +642,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if PollutantReleaseID is not None:
         dbna = dbna.append(db[db.PollutantReleaseID.isna()])
-        dbna = dbna[dbna.PollutantReleaseID.isna()]
+        foo1 = dbna[dbna.PollutantReleaseID.isna()]
+        if isinstance(PollutantReleaseID, list):
+            foo2 = dbna[dbna.PollutantReleaseID.isin(PollutantReleaseID)]
+        else:
+            foo2 = dbna[dbna.PollutantReleaseID == PollutantReleaseID]
+        dbna = foo1.append(foo2)
+
         if isinstance(PollutantReleaseID, list):
             db = db[db.PollutantReleaseID.isin(PollutantReleaseID)]
         else:
@@ -525,7 +656,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if ReleaseMediumCode is not None:
         dbna = dbna.append(db[db.ReleaseMediumCode.isna()])
-        dbna = dbna[dbna.ReleaseMediumCode.isna()]
+        foo1 = dbna[dbna.ReleaseMediumCode.isna()]
+        if isinstance(ReleaseMediumCode, list):
+            foo2 = dbna[dbna.ReleaseMediumCode.isin(ReleaseMediumCode)]
+        else:
+            foo2 = dbna[dbna.ReleaseMediumCode == ReleaseMediumCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(ReleaseMediumCode, list):
             db = db[db.ReleaseMediumCode.isin(ReleaseMediumCode)]
         else:
@@ -533,7 +670,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if PollutantCode is not None:
         dbna = dbna.append(db[db.PollutantCode.isna()])
-        dbna = dbna[dbna.PollutantCode.isna()]
+        foo1 = dbna[dbna.PollutantCode.isna()]
+        if isinstance(PollutantCode, list):
+            foo2 = dbna[dbna.PollutantCode.isin(PollutantCode)]
+        else:
+            foo2 = dbna[dbna.PollutantCode == PollutantCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(PollutantCode, list):
             db = db[db.PollutantCode.isin(PollutantCode)]
         else:
@@ -541,7 +684,13 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
 
     if PollutantGroupCode is not None:
         dbna = dbna.append(db[db.PollutantGroupCode.isna()])
-        dbna = dbna[dbna.PollutantGroupCode.isna()]
+        foo1 = dbna[dbna.PollutantGroupCode.isna()]
+        if isinstance(PollutantGroupCode, list):
+            foo2 = dbna[dbna.PollutantGroupCode.isin(PollutantGroupCode)]
+        else:
+            foo2 = dbna[dbna.PollutantGroupCode == PollutantGroupCode]
+        dbna = foo1.append(foo2)
+
         if isinstance(PollutantGroupCode, list):
             db = db[db.PollutantGroupCode.isin(PollutantGroupCode)]
         else:
@@ -551,7 +700,9 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
     if ExclaveExclude is True:
         # negation does not work on na-values
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
-        dbna = dbna[dbna.NUTSRegionGeoCode.isna()]
+        foo1 = dbna[dbna.NUTSRegionGeoCode.isna()]
+        foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(ExclaveList)]
+        dbna = foo1.append(foo2)
         db = db[db.NUTSRegionGeoCode.notna()]
         db = db[~db.NUTSRegionGeoCode.str.startswith(ExclaveList)]
 
@@ -750,9 +901,9 @@ def perform_NACETransition(db, NewNACE=2, path=None):
         else:
             foo6 = list(tt[tt.NACE_1_1_CODE.str.startswith(items[0:3])].NACE_2007_CODE.unique())
             transitiondict.update({items: foo6})
-    # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?) They need a seperate value we have to look it up which are best for this!!!!
-    transitiondict.update({'74.84': list('37.00')})
-    transitiondict.update({'27.35': list('37.00')})
+    # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?) We have assigned values that we think fit the best. Further explanation, how we come to the decision, can be found on the documentation side.
+    transitiondict.update({'27.35': list('24.10')})
+    transitiondict.update({'74.84': list('59.20', '63.99', '74.10', '74.90', '77.40', '82.30', '82.91', '82.99')})
 
     # The following lines are for performing the transition.
     for i in range(len(pre2007)):
