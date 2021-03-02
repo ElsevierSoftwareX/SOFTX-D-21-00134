@@ -400,7 +400,7 @@ def plot_ImpurityVolume(db, target, impurity, FirstOrder='FacilityReportID', Rel
     statistics : Boolean, optional
         If this parameter is True, the statistics of the data are plotted. If it is False, the actual values are plotted. The default is False.
     PlotNA : Boolean, optional
-        This argument is a option for discarding the na values if plotting the impurities. The default is False.
+        This argument is a option for discarding the na values if plotting the impurities. The default is True.
     *args : TYPE
         pandas.plot() input variables.
     **kwargs : TYPE
