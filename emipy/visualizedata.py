@@ -206,7 +206,7 @@ def get_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None):
     return data
 
 
-def get_ImpurityVolume(db, target, FirstOrder='FacilityReportID', ReleaseMediumName='Air', absolute=False, FacilityFocus=True, impurity=None):
+def get_ImpurityVolume(db, target, FirstOrder='FacilityReportID', ReleaseMediumName='Air', absolute=False, FacilityFocus=True, impurity=None, statistics=False):
     """
     Creates a table with the impurities of the target pollutant, sorted by the FirstOrder parameter. Putting the absolute parameter to True, gives absolute values instead of relative.
 
@@ -226,6 +226,8 @@ def get_ImpurityVolume(db, target, FirstOrder='FacilityReportID', ReleaseMediumN
         If this parameter is true, only the impurities in the facilities in which the target is emittet is taken in to consideration. If it is false, all data are taken into consideration. The default is True.
     impurity : String, optional
         With this parameter, you can specify the impurity pollutant you want to return. Otherwise, all present impurities are shown. The default is None.
+    statistics : Boolean, optional
+        If this argument is True, the statistics (determined by .describe()) of the output DataFrame are returned, instead of the usual impurity table. The default is False.
 
     Returns
     -------
@@ -251,10 +253,17 @@ def get_ImpurityVolume(db, target, FirstOrder='FacilityReportID', ReleaseMediumN
     if impurity != None:
         d2 = d2[[FirstOrder, 'TotalQuantity', impurity]]
         d3 = d3[[FirstOrder, 'TotalQuantity', impurity]]
-    if absolute == True:
-        return d2
+    
+    if absolute:
+        if statistics:
+            return d2.describe()
+        else:
+            return d2
     else:
-        return d3
+        if statistics:
+            return d3.describe()
+        else:
+            return d3
 
 
 def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
@@ -368,7 +377,7 @@ def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=Fa
     return ax
 
 
-def plot_ImpurityVolume(db, target, impurity, FirstOrder='FacilityReportID', ReleaseMediumName='Air', absolute=False, FacilityFocus=True, statistics=True, *args, **kwargs):
+def plot_ImpurityVolume(db, target, impurity, FirstOrder='FacilityReportID', ReleaseMediumName='Air', absolute=False, FacilityFocus=True, statistics=False, PlotNA=True, *args, **kwargs):
     """
     Plots the impurities for the different FirstOrder values or the statistics of the entries.
 
@@ -389,7 +398,9 @@ def plot_ImpurityVolume(db, target, impurity, FirstOrder='FacilityReportID', Rel
     FacilityFocus : Boolean, optional
         If this parameter is true, only the impurities in the facilities in which the target is emittet is taken in to consideration. If it is false, all data are taken into consideration. The default is True.
     statistics : Boolean, optional
-        If this parameter is True, the statistics of the data are plotted. If it is False, the actual values are plotted. The default is True.
+        If this parameter is True, the statistics of the data are plotted. If it is False, the actual values are plotted. The default is False.
+    PlotNA : Boolean, optional
+        This argument is a option for discarding the na values if plotting the impurities. The default is False.
     *args : TYPE
         pandas.plot() input variables.
     **kwargs : TYPE
@@ -401,12 +412,13 @@ def plot_ImpurityVolume(db, target, impurity, FirstOrder='FacilityReportID', Rel
         Plot of the impurities in db, or the statistics of these impurities.
 
     """
-    if statistics is True:
-        data = get_ImpurityVolume(db=db, target=target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, impurity=impurity, absolute=absolute, FacilityFocus=FacilityFocus).describe()
-        ax = data.drop('count').plot(kind='bar', y=impurity, *args, **kwargs)
-    else:
-        data = get_ImpurityVolume(db=db, target=target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, impurity=impurity, absolute=absolute, FacilityFocus=FacilityFocus)
+    data = get_ImpurityVolume(db=db, target=target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, impurity=impurity, absolute=absolute, FacilityFocus=FacilityFocus, statistics=statistics)
+
+    if PlotNA:
         ax = data.drop('TotalQuantity', axis=1).plot(x=FirstOrder, y=impurity, kind='bar', *args, **kwargs)
+    else:
+        ax = data.drop('TotalQuantity', axis=1).dropna().plot(x=FirstOrder, y=impurity, kind='bar', *args, **kwargs)
+    
     return ax
 
 
