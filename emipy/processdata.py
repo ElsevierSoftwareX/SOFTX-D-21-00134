@@ -902,8 +902,8 @@ def perform_NACETransition(db, NewNACE=2, path=None):
             foo6 = list(tt[tt.NACE_1_1_CODE.str.startswith(items[0:3])].NACE_2007_CODE.unique())
             transitiondict.update({items: foo6})
     # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?) We have assigned values that we think fit the best. Further explanation, how we come to the decision, can be found on the documentation side.
-    transitiondict.update({'27.35': list('24.10')})
-    transitiondict.update({'74.84': list('59.20', '63.99', '74.10', '74.90', '77.40', '82.30', '82.91', '82.99')})
+    transitiondict.update({'27.35': ['24.10']})
+    transitiondict.update({'74.84': list(('59.20', '63.99', '74.10', '74.90', '77.40', '82.30', '82.91', '82.99'))})
 
     # The following lines are for performing the transition.
     for i in range(len(pre2007)):
