@@ -11,7 +11,7 @@ import configparser
 import copy
 
 
-def read_db(path=None):
+def read_db(path=None, newdata=False):
     """
     Loads complete pollution record.
 
@@ -19,22 +19,33 @@ def read_db(path=None):
     ----------
     path : String, optional
         Path to the root of the project.
+    newdata : Boolean, optional
+        If this is set to True, the data base with data from 2017 - 2019 is loaded instead of the one with data from 2001 - 2017.
 
     Returns
     -------
     db : DataFrame
-        complete pollution record.
+        Pollution record for either the years 2001-2017 or 2017-2019.
 
     """
     if path == None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
-    try:
-        db = pd.read_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
-    except FileNotFoundError:
-        print('File not found in the given path.')
-        return None
+
+    if newdata is False:
+        try:
+            db = pd.read_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
+        except FileNotFoundError:
+            print('File not found in the given path.')
+            return None
+    else:
+        try:
+            db = pd.read_pickle(os.path.join(path, 'PollutionaData\\emipy_newdb.pkl'))
+        except FileNotFoundError:
+            print('File not found in the given path.')
+            return None
+        
     return db
 
 

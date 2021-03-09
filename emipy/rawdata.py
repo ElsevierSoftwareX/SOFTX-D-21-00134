@@ -238,6 +238,60 @@ def merge_PollutionData(path, force_rerun=False):
     return None
 
 
+def generate_PollutionaData_2(path):
+    """
+    Generates the new data set. For this, the function downloads the .pkl file from the emipy repository, decompresses it and renames the columns.
+
+    Parameters
+    ----------
+    path : String
+        Path to the root of the project.
+
+    Returns
+    -------
+    data2 : DataFrame
+        The new data base in the format, that enables the emipy functions to act on it.
+
+    """
+    directory = 'PollutionData'
+    path = os.path.join(path, directory)
+    if os.path.isdir(path) is False:
+        os.mkdir(path)
+    if 'emipy_newdb.pkl' not in os.listdir(path):
+        url = 'https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy/-/raw/master/additionaldata/emipy_newdb.pkl?inline=false'
+        urllib.request.urlretrieve(url, os.path.join(path, 'emipy_newdb.pkl'))
+
+    data = pd.read_pickle(r'C:\Witthaut\tests\testinitiation\PollutionData\emipy_newdb.pkl', compression='xz')
+    columndict = {
+        'reportingYear': 'ReportingYear',
+        'Facility_INSPIRE_ID': 'FacilityReportID',
+        'parentCompanyName': 'ParentCompanyName',
+        'nameOfFeature': 'FacilityName',
+        'mainActivityCode': 'MainIAActivityCode',
+        'mainActivityName': 'MainIAActivityName',
+        'pointGeometryLon': 'Long',
+        'pointGeometryLat': 'Lat',
+        'streetName': 'StreetName',
+        'buildingNumber': 'BuildingNumber',
+        'postalCode': 'PostalCode',
+        'city': 'City',
+        'countryCode': 'CountryCode',
+        'pollutantCode': 'PollutantCode',
+        'pollutantName': 'PollutantName',
+        'medium': 'ReleaseMediumCode',
+        'totalPollutantQuantityKg': 'TotalQuantity',
+        'AccidentalPollutantQuantityKG': 'AccidentalQuantity',
+        'methodCode': 'MethodBasisCode',
+        'methodName': 'MethodBasisName',
+        'NUTSRegionSourceCode': 'NUTSRegionSourceCode',
+        'NUTSRegionSourceName': 'NUTSRegionSourceName',
+        'NACEMainEconomicActivityCode': 'NACEMainEconomicActivityCode',
+        'NACEMainEconomicActivityName': 'NACEMainEconomicActivityName'
+    }
+    data2 = data.rename(columndict, axis='columns')
+    data2.to_pickle(os.path.join(path, 'PollutionData\\dbnew.pkl'))
+
+
 def get_RootPath():
     """
     Returns the current root path, stored in the config file.
@@ -307,6 +361,8 @@ def init_emipy_project(path, resolution=10, force_rerun=False):
     pickle_RawData(path=path, force_rerun=force_rerun)
     merge_PollutionData(path=path, force_rerun=force_rerun)
     print('Data merged and pickled.')
+    generate_PollutionaData_2(path)
+    print('New data base with data from 2017-2019 is generated.')
     directory = 'ExportData'
     path = os.path.join(path, directory)
     if os.path.isdir(path) is False:
