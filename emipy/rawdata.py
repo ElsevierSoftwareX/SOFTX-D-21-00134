@@ -289,7 +289,8 @@ def generate_PollutionaData_2(path):
         'NACEMainEconomicActivityName': 'NACEMainEconomicActivityName'
     }
     data2 = data.rename(columndict, axis='columns')
-    data2.to_pickle(os.path.join(path, 'PollutionData\\dbnew.pkl'))
+    data2.to_pickle(os.path.join(path, 'dbnew.pkl'))
+    os.remove(os.path.join(path, 'emipy_newdb.pkl'))
 
 
 def get_RootPath():
@@ -367,5 +368,5 @@ def init_emipy_project(path, resolution=10, force_rerun=False):
     path = os.path.join(path, directory)
     if os.path.isdir(path) is False:
         os.mkdir(path)
-    print('The initialisation process is completed.')   
+    print('The initialisation process is completed.')
     return None
