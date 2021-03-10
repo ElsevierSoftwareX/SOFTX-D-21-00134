@@ -261,7 +261,8 @@ def generate_PollutionaData_2(path):
         url = 'https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy/-/raw/master/additionaldata/emipy_newdb.pkl?inline=false'
         urllib.request.urlretrieve(url, os.path.join(path, 'emipy_newdb.pkl'))
 
-    data = pd.read_pickle(r'C:\Witthaut\tests\testinitiation\PollutionData\emipy_newdb.pkl', compression='xz')
+    data = pd.read_pickle(os.path.join(path, 'emipy_newdb.pkl'),
+                          compression='xz')
     columndict = {
         'reportingYear': 'ReportingYear',
         'Facility_INSPIRE_ID': 'FacilityReportID',
