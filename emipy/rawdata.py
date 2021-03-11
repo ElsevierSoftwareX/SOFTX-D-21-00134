@@ -260,37 +260,36 @@ def generate_PollutionaData_2(path):
     if 'emipy_newdb.pkl' not in os.listdir(path):
         url = 'https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy/-/raw/master/additionaldata/emipy_newdb.pkl?inline=false'
         urllib.request.urlretrieve(url, os.path.join(path, 'emipy_newdb.pkl'))
-
-    data = pd.read_pickle(os.path.join(path, 'emipy_newdb.pkl'),
-                          compression='xz')
-    columndict = {
-        'reportingYear': 'ReportingYear',
-        'Facility_INSPIRE_ID': 'FacilityReportID',
-        'parentCompanyName': 'ParentCompanyName',
-        'nameOfFeature': 'FacilityName',
-        'mainActivityCode': 'MainIAActivityCode',
-        'mainActivityName': 'MainIAActivityName',
-        'pointGeometryLon': 'Long',
-        'pointGeometryLat': 'Lat',
-        'streetName': 'StreetName',
-        'buildingNumber': 'BuildingNumber',
-        'postalCode': 'PostalCode',
-        'city': 'City',
-        'countryCode': 'CountryCode',
-        'pollutantCode': 'PollutantCode',
-        'pollutantName': 'PollutantName',
-        'medium': 'ReleaseMediumCode',
-        'totalPollutantQuantityKg': 'TotalQuantity',
-        'AccidentalPollutantQuantityKG': 'AccidentalQuantity',
-        'methodCode': 'MethodBasisCode',
-        'methodName': 'MethodBasisName',
-        'NUTSRegionSourceCode': 'NUTSRegionSourceCode',
-        'NUTSRegionSourceName': 'NUTSRegionSourceName',
-        'NACEMainEconomicActivityCode': 'NACEMainEconomicActivityCode',
-        'NACEMainEconomicActivityName': 'NACEMainEconomicActivityName'
-    }
-    data2 = data.rename(columndict, axis='columns')
-    data2.to_pickle(os.path.join(path, 'dbnew.pkl'))
+    if 'dbnew.pkl' not in os.listdir(path):
+        data = pd.read_pickle(os.path.join(path, 'emipy_newdb.pkl'), compression='xz')
+        columndict = {
+            'reportingYear': 'ReportingYear',
+            'Facility_INSPIRE_ID': 'FacilityReportID',
+            'parentCompanyName': 'ParentCompanyName',
+            'nameOfFeature': 'FacilityName',
+            'mainActivityCode': 'MainIAActivityCode',
+            'mainActivityName': 'MainIAActivityName',
+            'pointGeometryLon': 'Long',
+            'pointGeometryLat': 'Lat',
+            'streetName': 'StreetName',
+            'buildingNumber': 'BuildingNumber',
+            'postalCode': 'PostalCode',
+            'city': 'City',
+            'countryCode': 'CountryCode',
+            'pollutantCode': 'PollutantCode',
+            'pollutantName': 'PollutantName',
+            'medium': 'ReleaseMediumCode',
+            'totalPollutantQuantityKg': 'TotalQuantity',
+            'AccidentalPollutantQuantityKG': 'AccidentalQuantity',
+            'methodCode': 'MethodBasisCode',
+            'methodName': 'MethodBasisName',
+            'NUTSRegionSourceCode': 'NUTSRegionSourceCode',
+            'NUTSRegionSourceName': 'NUTSRegionSourceName',
+            'NACEMainEconomicActivityCode': 'NACEMainEconomicActivityCode',
+            'NACEMainEconomicActivityName': 'NACEMainEconomicActivityName'
+        }
+        data2 = data.rename(columndict, axis='columns')
+        data2.to_pickle(os.path.join(path, 'dbnew.pkl'))
     os.remove(os.path.join(path, 'emipy_newdb.pkl'))
 
 
@@ -371,3 +370,5 @@ def init_emipy_project(path, resolution=10, force_rerun=False):
         os.mkdir(path)
     print('The initialisation process is completed.')
     return None
+
+init_emipy_project(r'C:\Witthaut\tests\teste72')
