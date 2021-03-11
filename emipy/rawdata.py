@@ -370,5 +370,3 @@ def init_emipy_project(path, resolution=10, force_rerun=False):
         os.mkdir(path)
     print('The initialisation process is completed.')
     return None
-
-init_emipy_project(r'C:\Witthaut\tests\teste72')
