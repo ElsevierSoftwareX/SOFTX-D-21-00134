@@ -285,8 +285,8 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
     ----------
     db : DataFrame
         Input DataFrame.
-    FacilityReportID : Int/List, optional
-        List of FacilityReportID's to be maintained. The default is None.
+    FacilityReportID : Int/String/List, optional
+        List of FacilityReportID's to be maintained. In the data from 2001-2017 this entry is an integer. Therefore we have to use integers or a list of integers for the filtering. In the data from 2017-2019 this is stored as a string. Therefore we have to use a string or a list of strings for the filtering. The default is None.
     CountryName : String/List, optional
         List of countries to be maintained. The default is None.
     ReportingYear : String/List, optional

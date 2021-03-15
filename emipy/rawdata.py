@@ -238,7 +238,7 @@ def merge_PollutionData(path, force_rerun=False):
     return None
 
 
-def generate_PollutionaData_2(path):
+def generate_PollutionData_2(path):
     """
     Generates the new data set. For this, the function downloads the .pkl file from the emipy repository, decompresses it and renames the columns.
 
@@ -283,12 +283,19 @@ def generate_PollutionaData_2(path):
             'AccidentalPollutantQuantityKG': 'AccidentalQuantity',
             'methodCode': 'MethodBasisCode',
             'methodName': 'MethodBasisName',
-            'NUTSRegionSourceCode': 'NUTSRegionSourceCode',
-            'NUTSRegionSourceName': 'NUTSRegionSourceName',
+            'NUTSRegionSourceCode': 'NUTSRegionGeoCode',
+            'NUTSRegionSourceName': 'NUTSRegionGeoName',
             'NACEMainEconomicActivityCode': 'NACEMainEconomicActivityCode',
             'NACEMainEconomicActivityName': 'NACEMainEconomicActivityName'
         }
         data2 = data.rename(columndict, axis='columns')
+
+        data2.loc[:, 'TotalQuantity'] = data2.loc[:, 'TotalQuantity'].replace(',', '.', regex=True).astype(float)
+        data2.loc[:, 'AccidentalQuantity'] = data2.loc[:, 'AccidentalQuantity'].replace(',', '.', regex=True).astype(float)
+        data2.loc[:, 'Long'] = data2.loc[:, 'Long'].replace(',', '.', regex=True).astype(float)
+        data2.loc[:, 'Lat'] = data2.loc[:, 'Lat'].replace(',', '.', regex=True).astype(float)
+        data2.loc[:, 'NACEMainEconomicActivityCode'] = data2.loc[:, 'NACEMainEconomicActivityCode'].astype(str).apply(lambda x: '0' + x if x.find('.') == 1 else x).apply(lambda x: x + '0' if len(x) == 4 else x)
+
         data2.to_pickle(os.path.join(path, 'dbnew.pkl'))
     os.remove(os.path.join(path, 'emipy_newdb.pkl'))
 
@@ -362,7 +369,7 @@ def init_emipy_project(path, resolution=10, force_rerun=False):
     pickle_RawData(path=path, force_rerun=force_rerun)
     merge_PollutionData(path=path, force_rerun=force_rerun)
     print('Data merged and pickled.')
-    generate_PollutionaData_2(path)
+    generate_PollutionData_2(path)
     print('New data base with data from 2017-2019 is generated.')
     directory = 'ExportData'
     path = os.path.join(path, directory)
