@@ -7,8 +7,10 @@ Data parameters
 Pollution Data
 --------------
 
-The European Environmental Agency (EEA) provides a lot of information that are assigned to the pollution data. There are very intuitiv ones like the name of the country, in that the pollutants are emitted or the year of the emission. 
+The European Environmental Agency (EEA) provides a lot of information that are assigned to the pollution data. There are very intuitiv ones like the name of the country in that the pollutants are emitted or the year of the emission. 
 But there are also very "specialized" ones like the *facility report ID*, or the *NACE-main economic activity code* (an economic classification, performed by Eurostat). Here we provide a short explanation of the most used parameters and how to access them in the f_db() function.
+For the time span of 2001 - 2017 we use the data, uploaded under the E-PRTR directive. Since 2017 the EEA combines the data from the E-PRTR data base with the data from IED(Industrial Emission Directive) and LCP (Large Combustion Plants).
+As a consequence, the structure of the data changes partly (for instance, FacilityReportID becomes FacilityInspireID). Therefore we decided to keep the new data as a seperate data table, adapted it to the needs of emipy but let structural changes stay. The possible filter arguments are listed in the second table.
 For more detailed information, take a look at the `EEA webpage <https://www.eea.europa.eu/>`_ or the `Eurostat webpage <https://ec.europa.eu/eurostat/de/home>`_.
 
 
@@ -41,6 +43,27 @@ For more detailed information, take a look at the `EEA webpage <https://www.eea.
 	"ReleaseMediumCode", "String or List of Strings", ":ref:`releasemediumcode`","f_db(db, ReleaseMediumCode='AIR')"
 	"PollutantCode", "String or List of Strings", ":ref:`pollutantcode`","f_db(db, PollutantCode='ZN AND COMPOUNDS')"
 	"PollutantGroupCode", "String or List of Strings", ":ref:`pollutantgroupcode`","f_db(db, PollutantGroupCode='INORG')"
+
+.. csv-table::
+	:header: "Column Name", "Input Data Type", "List Of Entries", "Example"
+	:widths: 10, 10, 10, 10
+	
+	"FacilityReportID", "String or List of Strings", ":ref:`facilityreportid_NewData`", "f_db(db, FacilityReportID='AT.CAED/9008390316955.FACILITY')"
+	"ReportingYear", "Integer or List of Integers", ":ref:`reportingyear_NewData`", "f_db(db, ReportingYear=2015)"
+	"PollutantName", "String or List of Strings", ":ref:`pollutantname_NewData`", "f_db(db, PollutantName='Carbon dioxide (CO2)')"
+	"NACEMainEconomicActivityCode", "String or List of Strings", ":ref:`nacemaineconomicactivitycode_NewData`", "f_db(db, NACEMainEconomicActivityCode='25.91')"
+	"NUTSRegionGeoCode", "String or List of Strings", ":ref:`nutsregiongeocode_NewData`", "f_db(db, NUTSRegionGeoCode='AT11')"
+	"ParentCompanyName", "String or List of Strings", ":ref:`parentcompanyname_NewData`","f_db(db, ParentCompanyName='Lenzing AG')"
+	"FacilityName", "String or List of Strings", ":ref:`facilityname_NewData`","f_db(db, FacilityName='Lenzing AG')"
+	"City", "String or List of Strings", ":ref:`city_NewData`","f_db(db, City='Lenzing')"
+	"PostalCode", "String or List of Strings", ":ref:`postalcode_NewData`","f_db(db, PostalCode='4860')"
+	"CountryCode", "String or List of Strings", ":ref:`countrycode_NewData`","f_db(db, CountryCode='AT')"
+	"NUTSRegionGeoName", "String or List of Strings", ":ref:`nutsregiongeoname_NewData`","f_db(db, NUTSRegionGeoName='')"
+	"NACEMainEconomicActivityName", "String or List of Strings", ":ref:`nacemaineconomicactivityname_NewData`","f_db(db, NACEMainEconomicActivityName='Manufacture of pulp')"
+	"MainIAActivityCode", "String or List of Strings", ":ref:`mainiaactivitycode_NewData`","f_db(db, MainIAActivityCode='EPER_5.1/5.2')"
+	"MainIAActivityName", "String or List of Strings", ":ref:`mainiaactivityname_NewData`","f_db(db, MainIAActivityName='Tanning of hides and skins')"
+	"ReleaseMediumCode", "String or List of Strings", ":ref:`releasemediumcode_NewData`","f_db(db, ReleaseMediumCode='AIR')"
+	"PollutantCode", "String or List of Strings", ":ref:`pollutantcode_NewData`","f_db(db, PollutantCode='ZN AND COMPOUNDS')"
 
 
 Map Data

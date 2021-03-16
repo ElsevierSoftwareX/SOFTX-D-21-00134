@@ -1,0 +1,35 @@
+.. _countrycode_NewData:
+
+CountryCode
+-----------
+
+| AT,
+| BE,
+| BG,
+| CH,
+| CY,
+| CZ,
+| DK,
+| EE,
+| GR,
+| ES,
+| FR,
+| HR,
+| FI,
+| DE,
+| HU,
+| IE,
+| IS,
+| IT,
+| LT,
+| LU,
+| LV,
+| MT,
+| NL,
+| PL,
+| PT,
+| RO,
+| RS,
+| SE,
+| SI,
+| GB

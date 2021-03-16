@@ -58,8 +58,8 @@ For beginners of the Python world, we provide a step by step installation guide:
 	    Since we now are in Python, the inserted path needs a special format. Python reads ``"\"`` as a escape, like ``"\n"`` for new line. You can either use ``"\\"`` or "/" instead of a single ``"\"`` or, alternatively you can put a "r" before the path.
 	    Python needs the single mark quotes around the path to recognize it as a String. Keep that in mind, for all further applications of the emipy functions!
 
-	| ``>>>from emipy import rawdata``
-	| ``>>>rawdata.init_emipy_project('C:\\Choose\\a\\path')``
+	| ``>>>import emipy as ep``
+	| ``>>>ep.init_emipy_project('C:\\Choose\\a\\path')``
 	| ``>>>exit()``
 	| If the Init function completed it's task, it prints 'The Initialisation process is completed.' If you do not receive this message, check for typos and repeat executing the function.
 
