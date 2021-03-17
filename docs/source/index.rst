@@ -20,3 +20,11 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Find us on PyPi
+===============
+Our package is hosted by `PyPi <https://pypi.org/project/emipy/>`.
+
+Contact
+=======
+If you want to reach out for us please contact `s.morgenthaler@fz-juelich.de <mailto:s.morgenthaler@fz-juelich.de>`.
