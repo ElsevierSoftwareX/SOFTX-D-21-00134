@@ -10,11 +10,13 @@ Core features
 - Download and extract shape files from Eurostat (to plot all kinds of maps)
 - Integrated filter function to generate datasets of your needs
 - Integrated visualisation functions
+
   - Plot emission quantities
   - Plot emissions as maps (both, dots and colormaps)
+
 - Integrated impurity analyses
 - Export data and figures
-- Interface to the open-source modeling framework `Calliope <https://www.callio.pe/>_` (experimental)
+- Interface to the open-source modeling framework `Calliope <https://www.callio.pe/>`_ (experimental)
 
 Contents
 ========
