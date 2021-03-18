@@ -66,6 +66,9 @@ If you are not familiar with Python yet we suggest you follow our step by step i
 
 You can also download the emipy package via the package manager pip:
 
+    .. note::
+        At the moment we are working on issues regarding the automatic installation of geopandas during the installation of emipy. The problem  is caused by the package Fiona. You can avoid this problem by manually install Fiona via conda-forge.
+
     ``>pip install emipy``
 
 Keep in mind that you have to install the list of packages given above. Execute point 3 from the step by step guide to initialize a new project.
