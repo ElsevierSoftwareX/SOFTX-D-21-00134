@@ -1,3 +1,5 @@
+.. _getintouch:
+
 Get in touch
 =============
 
