@@ -20,6 +20,8 @@ import emipy
 import ruamel.yaml
 import sphinx_rtd_theme
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath('.'))))
+# Wegen readthedocs build error
+sys.setrecursionlimit(1500)
 
 
 
