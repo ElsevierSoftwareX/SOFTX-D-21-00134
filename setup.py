@@ -33,6 +33,15 @@ setuptools.setup(
 	'Source': 'https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy'
     },
     python_requires='>=3.6',
+    install_requires=[
+    	'matplotlib>=3.3.1',
+    	'requests>=2.24.0',
+    	'configparser>=5.0.0',
+    	'pandas>=1.1.1',
+    	'geopandas>=0.8.1',
+    	'descartes>=1.1.0',
+    	'ruamel.yaml>=0.16.12'
+    ]
 )
 
 
