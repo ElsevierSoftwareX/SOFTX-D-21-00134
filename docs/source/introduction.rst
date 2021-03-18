@@ -53,8 +53,6 @@ If you are not familiar with Python yet we suggest you follow our step by step i
     2. Execute the following lines to load the module rawdata and execute the function `init_emipy_project()` which will create a folder structure at the given path and download all necessary data.
         .. note::
 	    You have to change the path to the location, where you want the data to be stored!
-
-		..note::
 		The inialization process may take a few minutes as large amounts of data is downloaded. Please be patient and let it run until finished completely.
 
 	.. note::
