@@ -4,8 +4,8 @@ Introduction and quick start guide
 =============
 Introduction
 =============    
-| emipy is a python package to analyse industrial emission sources within Europe.
-| The package accesses data from the `European Environmental Agency <https://www.eea.europa.eu/data-and-maps/data/member-states-reporting-art-7-under-the-european-pollutant-release-and-transfer-register-e-prtr-regulation-23>`_ and `Eurostat <https://ec.europa.eu/eurostat/de/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts#nuts21>`_ , and allows to generate a desired data set with clearly structured filter functions. Furthermore, functions are provided that allow a quick visualization of the data.
+| Emipy is a python package to analyze industrial emission sources within Europe.
+| The package accesses data from the `European Environmental Agency <https://www.eea.europa.eu/data-and-maps/data/member-states-reporting-art-7-under-the-european-pollutant-release-and-transfer-register-e-prtr-regulation-23>`_ and `Eurostat <https://ec.europa.eu/eurostat/de/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts#nuts21>`_  and allows to generate desired data sets. Data sets can be filtered with clearly structured build-in functions. Furthermore, functions are provided that allow a quick visualization of the data.
 
 =============
 Installation    
@@ -30,16 +30,16 @@ Emipy  requires:
 Installation & Initialisation
 ----------------------------- 
 
-For beginners of the Python world, we provide a step by step installation guide:
+If you are not familiar with Python yet we suggest you follow our step by step installtion guide:
 
 1. Download and install the Anaconda distribution from the `Anaconda page <https://www.anaconda.com/products/individual>`_.
 2. Create a new environment. For this:
     1. Download the environment.yml file from our `GitLab repository <https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy>`_.
     2. Start the console "Anaconda Prompt"
-    3. Create the environment with the just downloaded file via executing the following line in the console:
+    3. Create the environment with the downloaded environment.yml file via executing the following line in "Anaconda Prompt":
 
         .. note::
-            | You have to change the path to the path, where you stored environment.yml!
+            | You have to change the path to the path where you stored environment.yml!
 	    | Make sure you have no blanks in your path!
 
     	``>conda env create -f C:\your\individual\path\environment.yml``
@@ -53,6 +53,8 @@ For beginners of the Python world, we provide a step by step installation guide:
     2. Execute the following lines to load the module rawdata and execute the function `init_emipy_project()` which will create a folder structure at the given path and download all necessary data.
         .. note::
 	    You have to change the path to the location, where you want the data to be stored!
+		..note::
+		The inialization process may take a few minutes as large amounts of data is downloaded. Please be patient and let it run until finished completely.
 
 	.. note::
 	    Since we now are in Python, the inserted path needs a special format. Python reads ``"\"`` as a escape, like ``"\n"`` for new line. You can either use ``"\\"`` or "/" instead of a single ``"\"`` or, alternatively you can put a "r" before the path.
@@ -61,13 +63,13 @@ For beginners of the Python world, we provide a step by step installation guide:
 	| ``>>>import emipy as ep``
 	| ``>>>ep.init_emipy_project('C:\\Choose\\a\\path')``
 	| ``>>>exit()``
-	| If the Init function completed it's task, it prints 'The Initialisation process is completed.' If you do not receive this message, check for typos and repeat executing the function.
+	| If the initialization function completed its task it prints the message 'The Initialization process is completed.' If you do not receive this message check for typos and repeat executing the function.
 
-Experienced users can download the emipy package via the package manager pip:
+You can also download the emipy package via the package manager pip:
 
     ``>pip install emipy``
 
-Keep in mind, that you have to install the list of packages given above. Execute point 3 from the step by step guide to initialize a new project.
+Keep in mind that you have to install the list of packages given above. Execute point 3 from the step by step guide to initialize a new project.
     
 
 
