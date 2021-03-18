@@ -459,15 +459,15 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
         foo1 = dbna[dbna.NUTSRegionGeoCode.isna()]
         if isinstance(NUTSRegionGeoCode, list):
-            foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) == True]
+            foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode), na=False) == True]
         else:
-            foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) == True]
+            foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode, na=False) == True]
         dbna = foo1.append(foo2)
 
         if isinstance(NUTSRegionGeoCode, list):
-            db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode)) == True]
+            db = db[db.NUTSRegionGeoCode.str.startswith(tuple(NUTSRegionGeoCode), na=False) == True]
         else:
-            db = db[db.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode) == True]
+            db = db[db.NUTSRegionGeoCode.str.startswith(NUTSRegionGeoCode, na=False) == True]
 
     if ParentCompanyName is not None:
         dbna = dbna.append(db[db.ParentCompanyName.isna()])
@@ -712,7 +712,7 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         # negation does not work on na-values
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
         foo1 = dbna[dbna.NUTSRegionGeoCode.isna()]
-        foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(ExclaveList)]
+        foo2 = dbna[dbna.NUTSRegionGeoCode.str.startswith(ExclaveList, na=False)]
         dbna = foo1.append(foo2)
         db = db[db.NUTSRegionGeoCode.notna()]
         db = db[~db.NUTSRegionGeoCode.str.startswith(ExclaveList)]
