@@ -39,7 +39,8 @@ setuptools.setup(
     	'configparser>=5.0.0',
     	'pandas>=1.1.1',
     	'geopandas>=0.8.1',
-    	'ruamel.yaml>=0.16.12'
+    	'ruamel.yaml>=0.16.12',
+        'descartes>=1.1.0'
     ]
 )
 
