@@ -319,6 +319,6 @@ Generating data sets
 
 .. code-block:: python
 
-    data5 = ep.f_db(db, CountryName='Germany', ReturnUnknown=True,)
+    data5 = ep.f_db(db, CountryName='Germany', ReturnUnknown=True)
 
 | Now you can generate your own data set of interest with a few lines of code. Since db is a DataFrame object, you can use all `pandas <https://pandas.pydata.org/docs/index.html>`_ functions as well, to personalize your data generation.
