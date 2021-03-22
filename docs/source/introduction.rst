@@ -43,7 +43,7 @@ If you are not familiar with Python yet we suggest you follow our step by step i
     4. Activate the environment with:
 	| ``>conda activate emipy``
 	| The environment is active when your active code line starts with "(emipy)" instead of "(base)".
-	5. install emipy via:
+    5. install emipy via:
 	  ``>pip install emipy``
 3. Initialize a new emipy project. For this:
     1. Open a Python skript in the Anaconda Prompt console via entering:
