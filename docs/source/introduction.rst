@@ -24,8 +24,8 @@ Emipy  requires:
     4. pandas
     5. geopandas
     6. descartes   
-    7. ruamel.yaml
-	8. openpyxl
+    7. openpyxl
+	8. ruamel.yaml
 
 3. The emipy package itself    
 
@@ -51,9 +51,8 @@ If you are not familiar with Python yet we suggest you follow our step by step i
         ``>python``
     2. Execute the following lines to load emipy and execute the function `init_emipy_project()` which will create a folder structure at the given path and download all necessary data.
         .. note::
-		
-	        You have to change the path to the location, where you want the data to be stored!
-		    The inialization process may take a few minutes as large amounts of data is downloaded. Please be patient and let it run until finished completely.
+	        | You have to change the path to the location, where you want the data to be stored!
+		    | The inialization process may take a few minutes as large amounts of data is downloaded. Please be patient and let it run until finished completely.
 
 	.. note::
 	    Since we now are in Python, the inserted path needs a special format. Python reads ``"\"`` as a escape, like ``"\n"`` for new line. You can either use ``"\\"`` or "/" instead of a single ``"\"`` or, alternatively you can put a "r" before the path.
