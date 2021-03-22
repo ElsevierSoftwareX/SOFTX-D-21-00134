@@ -25,6 +25,7 @@ Emipy  requires:
     5. geopandas
     6. descartes   
     7. ruamel.yaml
+	8. openpyxl
 3. The emipy package itself    
 
 Installation & Initialisation
@@ -34,23 +35,20 @@ If you are not familiar with Python yet we suggest you follow our step by step i
 
 1. Download and install the Anaconda distribution from the `Anaconda page <https://www.anaconda.com/products/individual>`_.
 2. Create a new environment. For this:
-    1. Download the environment.yml file from our `GitLab repository <https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy>`_.
-    2. Start the console "Anaconda Prompt"
-    3. Create the environment with the downloaded environment.yml file via executing the following line in "Anaconda Prompt":
+    1. Start the console "Anaconda Prompt"
+    2. Create the environment via executing the following line in "Anaconda Prompt":
 
-        .. note::
-            | You have to change the path to the path where you stored environment.yml!
-	    | Make sure you have no blanks in your path!
-
-    	``>conda env create -f C:\your\individual\path\environment.yml``
-    4. Enter 'y' if asked to install all required packages.
-    5. Activate the environment with:
+    	``>conda create -n emipy python=3.7 matplotlib requests configparser pandas geopandas descartes ruamel.yaml openpyxl``
+    3. Enter 'y' if asked to install all required packages.
+    4. Activate the environment with:
 	| ``>conda activate emipy``
 	| The environment is active when your active code line starts with "(emipy)" instead of "(base)".
+	5. install emipy via:
+	  ``>pip install emipy``
 3. Initialize a new emipy project. For this:
     1. Open a Python skript in the Anaconda Prompt console via entering:
         ``>python``
-    2. Execute the following lines to load the module rawdata and execute the function `init_emipy_project()` which will create a folder structure at the given path and download all necessary data.
+    2. Execute the following lines to load emipy and execute the function `init_emipy_project()` which will create a folder structure at the given path and download all necessary data.
         .. note::
 	        You have to change the path to the location, where you want the data to be stored!
 		    The inialization process may take a few minutes as large amounts of data is downloaded. Please be patient and let it run until finished completely.
