@@ -38,9 +38,9 @@ setuptools.setup(
     	'requests>=2.24.0',
     	'configparser>=5.0.0',
     	'pandas>=1.1.1',
-    	'geopandas>=0.8.1',
     	'ruamel.yaml>=0.16.12',
-        'descartes>=1.1.0'
+        'descartes>=1.1.0',
+        'openpyxl>=3.0.6'
     ]
 )
 
