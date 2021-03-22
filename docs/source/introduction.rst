@@ -25,7 +25,7 @@ Emipy  requires:
     5. geopandas
     6. descartes
     7. openpyxl
-	8. ruamel.yaml
+    8. ruamel.yaml
 3. The emipy package itself    
 
 Installation & Initialisation
