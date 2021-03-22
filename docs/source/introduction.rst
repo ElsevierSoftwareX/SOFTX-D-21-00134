@@ -26,6 +26,7 @@ Emipy  requires:
     6. descartes   
     7. ruamel.yaml
 	8. openpyxl
+
 3. The emipy package itself    
 
 Installation & Initialisation
@@ -50,6 +51,7 @@ If you are not familiar with Python yet we suggest you follow our step by step i
         ``>python``
     2. Execute the following lines to load emipy and execute the function `init_emipy_project()` which will create a folder structure at the given path and download all necessary data.
         .. note::
+		
 	        You have to change the path to the location, where you want the data to be stored!
 		    The inialization process may take a few minutes as large amounts of data is downloaded. Please be patient and let it run until finished completely.
 
