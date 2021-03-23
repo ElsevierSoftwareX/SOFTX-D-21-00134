@@ -18,9 +18,9 @@ def read_db(path=None, NewData=False):
     Parameters
     ----------
     path : String, optional
-        Path to the root of the project.
+        Path to the file, that is to be loaded. The file has to be a .pkl file. If None is given, the function loades the data file, stored in the emipy project, that is specified in the config file. The default is 'None'.
     NewData : Boolean, optional
-        If this is set to True, the data base with data from 2017 - 2019 is loaded instead of the one with data from 2001 - 2017.
+        If this is set to True, the data base with data from 2017 - 2019 is loaded instead of the one with data from 2001 - 2017. The default is False.
 
     Returns
     -------
@@ -28,35 +28,34 @@ def read_db(path=None, NewData=False):
         Pollution record for either the years 2001-2017 or 2017-2019.
 
     """
+
     if path == None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
+        path = os.path.join(path, 'PollutionData')
+        if NewData is False:
+            path = os.path.join(path, 'db.pkl')
+        else:
+            path = os.path.join(path, 'dbnew.pkl')
 
-    if NewData is False:
-        try:
-            db = pd.read_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
-        except FileNotFoundError:
-            print('File not found in the given path.')
-            return None
-    else:
-        try:
-            db = pd.read_pickle(os.path.join(path, 'PollutionData\\dbnew.pkl'))
-        except FileNotFoundError:
-            print('File not found in the given path.')
-            return None
-        
+    try:
+        db = pd.read_pickle(path)
+    except FileNotFoundError:
+        print('File not found in the given path.')
+        return None
+
     return db
 
 
 def read_mb(path=None, resolution='10M', SpatialType='RG', NUTS_LVL=0, m_year=2016, projection=4326):
     """
-    Reads the shp file with the specifications given in the input.
+    Reads the shp file with the specifications given in the input to load the map data.
 
     Parameters
     ----------
     path : String, optional
-        Path to root of your project.
+        Path of the file, that is to be loaded. The file has to be a .shp file. If None is given, the function loads the shp file in the emipy project, that is specified in the config file. The default is None.
     resolution : String
         Resolution of the map. The default is '10M'.
     SpatialType : String
@@ -79,18 +78,19 @@ def read_mb(path=None, resolution='10M', SpatialType='RG', NUTS_LVL=0, m_year=20
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
-    path = os.path.join(path, 'MappingData')
-    if NUTS_LVL is None:
-        if SpatialType == 'LB':
-            foo = 'NUTS_' + SpatialType + '_' + str(m_year) + '_' + str(projection) + '.shp'
+        path = os.path.join(path, 'MappingData')
+        if NUTS_LVL is None:
+            if SpatialType == 'LB':
+                foo = 'NUTS_' + SpatialType + '_' + str(m_year) + '_' + str(projection) + '.shp'
+            else:
+                foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(projection) + '.shp'
         else:
-            foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(projection) + '.shp'
-    else:
-        if SpatialType == 'LB':
-            foo = 'NUTS_' + SpatialType + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
-        else:
-            foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
-    path = os.path.join(path, foo)
+            if SpatialType == 'LB':
+                foo = 'NUTS_' + SpatialType + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
+            else:
+                foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
+        path = os.path.join(path, foo)
+
     try:
         mb = geopandas.read_file(path)
     except FileNotFoundError:
