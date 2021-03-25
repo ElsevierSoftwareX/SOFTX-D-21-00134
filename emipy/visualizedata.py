@@ -338,11 +338,14 @@ def plot_ImpurityVolume(db, target, impurity, FirstOrder='FacilityReportID', Rel
     """
     data = get_ImpurityVolume(db=db, target=target, FirstOrder=FirstOrder, ReleaseMediumName=ReleaseMediumName, impurity=impurity, absolute=absolute, FacilityFocus=FacilityFocus, statistics=statistics)
 
-    if PlotNA:
-        ax = data.drop('TotalQuantity', axis=1).plot(x=FirstOrder, y=impurity, kind='bar', *args, **kwargs)
+    if statistics is True:
+        ax = data.drop('count').plot(kind='bar', y=impurity, *args, **kwargs)
     else:
-        ax = data.drop('TotalQuantity', axis=1).dropna().plot(x=FirstOrder, y=impurity, kind='bar', *args, **kwargs)
-    
+        if PlotNA:
+            ax = data.drop('TotalQuantity', axis=1).plot(x=FirstOrder, y=impurity, kind='bar', *args, **kwargs)
+        else:
+            ax = data.drop('TotalQuantity', axis=1).dropna().plot(x=FirstOrder, y=impurity, kind='bar', *args, **kwargs)
+
     return ax
 
 
