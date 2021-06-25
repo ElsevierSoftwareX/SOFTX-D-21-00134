@@ -5,11 +5,10 @@ Created on Sun May 17 10:25:20 2020
 @author: f-ove
 """
 
-
 import setuptools
 import os
 
-with open ("README.md", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
@@ -29,23 +28,18 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     project_urls={
-	'Documentation': 'https://emipy.readthedocs.io/en/latest/',
-	'Source': 'https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy'
+        'Documentation': 'https://emipy.readthedocs.io/en/latest/',
+        'Source': 'https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy'
     },
     python_requires='>=3.6',
     install_requires=[
-    	'matplotlib>=3.3.1',
-    	'requests>=2.24.0',
-    	'configparser>=5.0.0',
-    	'pandas>=1.1.1',
-    	'ruamel.yaml>=0.16.12',
+        'matplotlib>=3.3.1',
+        'requests>=2.24.0',
+        'configparser>=5.0.0',
+        'pandas>=1.1.1',
+        'geopandas>=0.9.0',
+        'ruamel.yaml>=0.16.12',
         'descartes>=1.1.0',
         'openpyxl>=3.0.6'
     ]
 )
-
-
-
-
-
-

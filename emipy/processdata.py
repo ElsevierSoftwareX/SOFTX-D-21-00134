@@ -31,7 +31,7 @@ def read_db(path=None, NewData=False):
 
     if path == None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(path, 'PollutionData')
         if NewData is False:
@@ -76,7 +76,7 @@ def read_mb(path=None, resolution='10M', SpatialType='RG', NUTS_LVL=0, m_year=20
 
     if path == None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(path, 'MappingData')
         if NUTS_LVL is None:
@@ -86,9 +86,11 @@ def read_mb(path=None, resolution='10M', SpatialType='RG', NUTS_LVL=0, m_year=20
                 foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(projection) + '.shp'
         else:
             if SpatialType == 'LB':
-                foo = 'NUTS_' + SpatialType + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
+                foo = 'NUTS_' + SpatialType + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(
+                    NUTS_LVL) + '.shp'
             else:
-                foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
+                foo = 'NUTS_' + SpatialType + '_' + resolution + '_' + str(m_year) + '_' + str(
+                    projection) + '_LEVL_' + str(NUTS_LVL) + '.shp'
         path = os.path.join(path, foo)
 
     try:
@@ -115,7 +117,7 @@ def get_NACECode_filter(specify=None):
     """
     config = configparser.ConfigParser()
     config.optionxform = str
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
     if specify == None:
         NACElist = dict(config.items('NACECODES'))
     elif isinstance(specify, list):
@@ -147,9 +149,12 @@ def get_NACECode_filter_industry(group=None):
     elif group == 'is':
         NACECode = ['19.10', '24.10', '24.20', '24.51', '24.52', '24.53', '24.54']
     elif group == 'pap':
-        NACECode = ['16.21', '16.22', '16.23', '16.24', '16.29', '17.11', '17.12', '17.21', '17.22', '17.23', '17.24', '17.29']
+        NACECode = ['16.21', '16.22', '16.23', '16.24', '16.29', '17.11', '17.12', '17.21', '17.22', '17.23', '17.24',
+                    '17.29']
     elif group == 'chem':
-        NACECode = ['20.11', '20.12', '20.13', '20.14', '20.15', '20.16', '20.17', '20.20', '20.30', '20.41', '20.42', '20.51', '20.52', '20.53', '20.59', '21.10', '10.20', '22.11', '22.19', '22.21', '22.22', '22.23', '22.29']
+        NACECode = ['20.11', '20.12', '20.13', '20.14', '20.15', '20.16', '20.17', '20.20', '20.30', '20.41', '20.42',
+                    '20.51', '20.52', '20.53', '20.59', '21.10', '10.20', '22.11', '22.19', '22.21', '22.22', '22.23',
+                    '22.29']
     elif group == 'alu':
         NACECode = ['24.42']
     elif group == 'ref':
@@ -181,14 +186,15 @@ def change_NACECode_filter(total=None, add=None, sub=None):
     """
     config = configparser.ConfigParser()
     config.optionxform = str
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
-    if total != None:
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
+    if total is not None:
         config['NACECODES'] = total
-    if add != None:
+    if add is not None:
         config['NACECODES'].update(add)
-    if sub != None:
+    if sub is not None:
         all(map(config['NACECODES'].pop, sub))
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'),
+              'w') as configfile:
         config.write(configfile)
     return None
 
@@ -277,7 +283,12 @@ def get_CNTR_CODEList(mb):
     return CNTR_CODEList
 
 
-def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None, PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ParentCompanyName=None, FacilityName=None, City=None, PostalCode=None, CountryCode=None, RBDGeoCode=None, RBDGeoName=None, NUTSRegionGeoName=None, NACEMainEconomicActivityName=None, MainIASectorCode=None, MainIASectorName=None, MainIAActivityCode=None, MainIAActivityName=None, PollutantReleaseID=None, ReleaseMediumCode=None, PollutantCode=None, PollutantGroupCode=None, ExclaveExclude=False, ReturnUnknown=False):
+def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, ReleaseMediumName=None, PollutantName=None,
+         PollutantGroupName=None, NACEMainEconomicActivityCode=None, NUTSRegionGeoCode=None, ParentCompanyName=None,
+         FacilityName=None, City=None, PostalCode=None, CountryCode=None, RBDGeoCode=None, RBDGeoName=None,
+         NUTSRegionGeoName=None, NACEMainEconomicActivityName=None, MainIASectorCode=None, MainIASectorName=None,
+         MainIAActivityCode=None, MainIAActivityName=None, PollutantReleaseID=None, ReleaseMediumCode=None,
+         PollutantCode=None, PollutantGroupCode=None, ExclaveExclude=False, ReturnUnknown=False):
     """
     Takes DataFrame and filters out data, according to input parameters.
 
@@ -444,14 +455,16 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         dbna = foo1.append(foo2)
 
         if isinstance(NACEMainEconomicActivityCode, list):
-            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMainEconomicActivityCode).any(1).astype(int)
+            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
+                NACEMainEconomicActivityCode).any(1).astype(int)
             db = db.assign(foo=foo.values)
             db = db[db.foo == 1].drop(['foo'], axis=1)
             # The following does not work. Seems like pandas can not handle lists as values in the dataframe.
             # db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
         else:
             NACEMainEconomicActivityCode = [NACEMainEconomicActivityCode]
-            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMainEconomicActivityCode).any(1).astype(int)
+            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
+                NACEMainEconomicActivityCode).any(1).astype(int)
             db = db.assign(foo=foo.values)
             db = db[db.foo == 1].drop(['foo'], axis=1)
 
@@ -789,16 +802,16 @@ def change_unit(db, unit=None):
         DataFrame with changed emission units.
 
     """
-    if unit == None:
+    if unit is None:
         print('New unit is needed. No changes applied.')
         return db
     UnitNumberDict = {
         'gram': 1,
-        'kilogram': 10**3,
-        'ton': 10**6,
-        'kiloton': 10**9,
-        'megaton': 10**12,
-        'gigaton': 10**15}
+        'kilogram': 10 ** 3,
+        'ton': 10 ** 6,
+        'kiloton': 10 ** 9,
+        'megaton': 10 ** 12,
+        'gigaton': 10 ** 15}
     UnitCodeDict = {
         'gram': 'GM',
         'kilogram': 'KGM',
@@ -818,7 +831,8 @@ def change_unit(db, unit=None):
     # data.TotalQuantity = data.TotalQuantity * factor
     # data.TotalQuantity = data.TotalQuantity * UnitNumberDict[data.UnitName] / UnitNumberDict[unit]
     for i in range(len(data)):
-        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[data.loc[i, 'UnitName']] / UnitNumberDict[unit]
+        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[data.loc[i, 'UnitName']] / \
+                                       UnitNumberDict[unit]
 
     data.loc[:, 'UnitName'] = unit
     data.loc[:, 'UnitCode'] = UnitCodeDict[unit]
@@ -852,13 +866,15 @@ def perform_NACETransition(db, NewNACE=2, path=None):
     # The following lines are for loading the transition table into the session.
     if NewNACE == 2:
         try:
-            tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
+            tt = pd.read_excel(os.path.join(path, 'TransitionData',
+                                            'Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
         except FileNotFoundError:
             print('File not found in the given path.')
             return None
     elif NewNACE == 1:
         try:
-            tt = pd.read_excel(os.path.join(path, 'TransitionData\\Correspondance+table+NACERev2-NACERev1_1+table+format.xls'))
+            tt = pd.read_excel(os.path.join(path, 'TransitionData',
+                                            'Correspondance+table+NACERev2-NACERev1_1+table+format.xls'))
         except FileNotFoundError:
             print('File not found in the given path.')
             return None
@@ -922,7 +938,7 @@ def perform_NACETransition(db, NewNACE=2, path=None):
 
     # The following line is just for combining both DataFrames to receive the final DataFrame.
     final = post2007.append(pre2007)
-    return(final)
+    return (final)
 
 
 def change_RenameDict(total=None, add=None, sub=None, reset=False):
@@ -948,18 +964,22 @@ def change_RenameDict(total=None, add=None, sub=None, reset=False):
     """
     config = configparser.ConfigParser()
     config.optionxform = str
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
-    if reset == True:
-        resetdict = {'ReportingYear': 'Year', 'CountryName': 'Country', 'NUTSRegionGeoCode': 'NUTSID', 'NACEMainEconomicActivityCode': 'NACEID', 'NACEMainEconomicActivityName': 'NACEName', 'PollutantName': 'Pollutant', 'UnitCode': 'Unit'}
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
+    if reset is True:
+        resetdict = {'ReportingYear': 'Year', 'CountryName': 'Country', 'NUTSRegionGeoCode': 'NUTSID',
+                     'NACEMainEconomicActivityCode': 'NACEID', 'NACEMainEconomicActivityName': 'NACEName',
+                     'PollutantName': 'Pollutant', 'UnitCode': 'Unit'}
         config['COLUMNNAMES'] = resetdict
-    if total != None:
+    if total is not None:
         config['COLUMNNAMES'] = total
-    if add != None:
+    if add is not None:
         config['COLUMNNAMES'].update(add)
-    if sub != None:
+    if sub is not None:
         all(map(config['COLUMNNAMES'].pop, sub))
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'),
+              'w') as configfile:
         config.write(configfile)
+
     return config['COLUMNNAMES']
 
 
@@ -980,7 +1000,7 @@ def rename_columns(db):
     """
     config = configparser.ConfigParser()
     config.optionxform = str
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
     columndict = dict(config.items('COLUMNNAMES'))
     db = db.rename(columns=columndict)
     return db
@@ -1008,7 +1028,7 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
 
     """
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
     if reset == True:
         columnnames = 'CountryCode,CountryName,Lat,Long,NUTSRegionGeoCode,NACEMainEconomicActivityCode,NACEMainEconomicActivityName,ReportingYear,PollutantReleaseID,PollutantName,TotalQuantity,UnitCode'
         config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
@@ -1037,7 +1057,8 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
             columnnames.remove(sub)
             columnnames = ','.join(columnnames)
             config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'),
+              'w') as configfile:
         config.write(configfile)
     return config['COLUMNSOFINTEREST']
 
@@ -1058,7 +1079,7 @@ def row_reduction(db):
 
     """
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
     remain = config['COLUMNSOFINTEREST']['columnnames']
     remain = remain.split(',')
     db = db[remain]
@@ -1085,18 +1106,20 @@ def export_db_to_pickle(db, path=None, filename=None, **kwargs):
     None
 
     """
-    if (path == None and filename == None):
+    if path is None and filename is None:
         print('A filename is required')
         return None
-    elif path == None:
+
+    elif path is None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
-    elif (path != None and filename != None):
+
+    elif path is not None and filename is not None:
         path = os.path.join(path, filename)
 
-    if path.endswith('.pkl') == False:
+    if path.endswith('.pkl') is False:
         print('The file name or path must end with .pkl')
         return None
 
@@ -1124,22 +1147,24 @@ def export_db_to_csv(db, path=None, filename=None, **kwargs):
     None
 
     """
-    if (path == None and filename == None):
+    if path is None and filename is None:
         print('A filename is required')
         return None
-    elif path == None:
+    elif path is None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
-    elif (path != None and filename != None):
+    elif path is not None and filename is not None:
         path = os.path.join(path, filename)
 
-    if path.endswith('.csv') == False:
+    if path.endswith('.csv') is False:
         print('The file name or path must end with .csv')
+
         return None
 
     db.to_csv(path, **kwargs)
+
     return None
 
 
@@ -1163,20 +1188,23 @@ def export_db_to_excel(db, path=None, filename=None, **kwargs):
     None
 
     """
-    if (path == None and filename == None):
+    if path is None and filename is None:
         print('A filename is required')
         return None
-    elif path == None:
+    elif path is None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
-    elif (path != None and filename != None):
+
+    elif path is not None and filename is not None:
         path = os.path.join(path, filename)
 
-    if path.endswith('.xlsx') == False:
+    if path.endswith('.xlsx') is False:
         print('The file name or path must end with .xlsx')
+
         return None
 
     db.to_excel(path, **kwargs)
+
     return None

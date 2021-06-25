@@ -93,7 +93,8 @@ def get_PollutantVolumeRel(db, FirstOrder=None, SecondOrder=None, normtop=None, 
         maxvalue = normtov
 
     if pd.isnull(maxvalue):
-        print('The determined maxvalue is of type Nan. Therefore, the normalization does not work and a DataFrame with NAN is returned.')
+        print('The determined maxvalue is of type Nan. Therefore, the normalization does not' +
+              ' work and a DataFrame with NAN is returned.')
 
     data.iloc[:, 1:] = data.iloc[:, 1:] / maxvalue
     return data

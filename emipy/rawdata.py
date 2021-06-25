@@ -5,13 +5,15 @@ This module contains all functions, necessary for the inititation of an emipy pr
 
 import pandas as pd
 import os
-from os.path import join, isfile
-import matplotlib.pyplot as plt
-import requests, zipfile, io
-import csv
+
+import requests
+import zipfile
+import io
+
 import configparser
 import urllib.request
 
+path_sep = os.sep
 
 def download_PollutionData(path, chunk_size=128):
     """
@@ -189,19 +191,19 @@ def pickle_RawData(path, force_rerun=False):
 
     """
     # POLLUTANTRELEASEANDTRANSFERREPORT
-    if ((os.path.isfile(os.path.join(path, 'PollutionData\\pratr.pkl')) is False) or force_rerun):
-        pratr = pd.read_csv(os.path.join(path, 'PollutionData\\dbo.PUBLISH_POLLUTANTRELEASEANDTRANSFERREPORT.csv'))
-        pratr.to_pickle(os.path.join(path, 'PollutionData\\pratr.pkl'))
+    if (os.path.isfile(os.path.join(path, 'PollutionData', 'pratr.pkl')) is False) or force_rerun:
+        pratr = pd.read_csv(os.path.join(path, 'PollutionData', 'dbo.PUBLISH_POLLUTANTRELEASEANDTRANSFERREPORT.csv'))
+        pratr.to_pickle(os.path.join(path, 'PollutionData', 'pratr.pkl'))
 
     # FACILITYREPORT
-    if ((os.path.isfile(os.path.join(path, 'PollutionData\\fr.pkl')) is False) or force_rerun):
-        fr = pd.read_csv(os.path.join(path, 'PollutionData\\dbo.PUBLISH_FACILITYREPORT.csv'), encoding='latin-1', low_memory=False)
-        fr.to_pickle(os.path.join(path, 'PollutionData\\fr.pkl'))
+    if (os.path.isfile(os.path.join(path, 'PollutionData', 'fr.pkl')) is False) or force_rerun:
+        fr = pd.read_csv(os.path.join(path, 'PollutionData', 'dbo.PUBLISH_FACILITYREPORT.csv'), encoding='latin-1', low_memory=False)
+        fr.to_pickle(os.path.join(path, 'PollutionData', 'fr.pkl'))
 
     # POLLUTANTRELEASE
-    if ((os.path.isfile(os.path.join(path, 'PollutionData\\pr.pkl')) is False) or force_rerun):
-        pr = pd.read_csv(os.path.join(path, 'PollutionData\\dbo.PUBLISH_POLLUTANTRELEASE.csv'), low_memory=False)
-        pr.to_pickle(os.path.join(path, 'PollutionData\\pr.pkl'))
+    if (os.path.isfile(os.path.join(path, 'PollutionData', 'pr.pkl')) is False) or force_rerun:
+        pr = pd.read_csv(os.path.join(path, 'PollutionData', 'dbo.PUBLISH_POLLUTANTRELEASE.csv'), low_memory=False)
+        pr.to_pickle(os.path.join(path, 'PollutionData', 'pr.pkl'))
 
     return None
 
@@ -222,19 +224,20 @@ def merge_PollutionData(path, force_rerun=False):
     None.
 
     """
-    if (os.path.isfile(os.path.join(path, 'PollutionData\\db.pkl')) is False) or force_rerun:
+    if (os.path.isfile(os.path.join(path, 'PollutionData', 'db.pkl')) is False) or force_rerun:
         try:
-            fr = pd.read_pickle(os.path.join(path, 'PollutionData\\fr.pkl'))
-            pr = pd.read_pickle(os.path.join(path, 'PollutionData\\pr.pkl'))
-            pratr = pd.read_pickle(os.path.join(path, 'PollutionData\\pratr.pkl'))
+            fr = pd.read_pickle(os.path.join(path, 'PollutionData', 'fr.pkl'))
+            pr = pd.read_pickle(os.path.join(path, 'PollutionData', 'pr.pkl'))
+            pratr = pd.read_pickle(os.path.join(path, 'PollutionData', 'pratr.pkl'))
         except FileNotFoundError:
             print('Error. Run function pickle_RawData')
         # speed difference for variing merge-order?? Table length differs, merge smart enough to add multiple one row to multiple?
         # problematic to merge by multiple coloum names?
         # Some data have no PostalCode, wrong fomrated postal code or not actual PostalCode
         db01 = pd.merge(fr, pratr, on=['PollutantReleaseAndTransferReportID', 'CountryName', 'CountryCode'])
-        db02 = pd.merge(db01, pr, on=['FacilityReportID', 'ConfidentialIndicator', 'ConfidentialityReasonCode', 'ConfidentialityReasonName'])
-        db02.to_pickle(os.path.join(path, 'PollutionData\\db.pkl'))
+        db02 = pd.merge(db01, pr, on=['FacilityReportID', 'ConfidentialIndicator', 'ConfidentialityReasonCode',
+                                      'ConfidentialityReasonName'])
+        db02.to_pickle(os.path.join(path, 'PollutionData', 'db.pkl'))
     return None
 
 
@@ -258,7 +261,8 @@ def generate_PollutionData_2(path):
     if os.path.isdir(path) is False:
         os.mkdir(path)
     if 'emipy_newdb.pkl' not in os.listdir(path):
-        url = 'https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy/-/raw/master/additionaldata/emipy_newdb.pkl?inline=false'
+        url = ('https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy/'
+               + '-/raw/master/additionaldata/emipy_newdb.pkl?inline=false')
         urllib.request.urlretrieve(url, os.path.join(path, 'emipy_newdb.pkl'))
     if 'dbnew.pkl' not in os.listdir(path):
         data = pd.read_pickle(os.path.join(path, 'emipy_newdb.pkl'), compression='xz')
@@ -311,7 +315,8 @@ def get_RootPath():
 
     """
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration',
+                             'configuration.ini'))
     path = config['PATH']['path']
     return path
 
@@ -331,9 +336,10 @@ def change_RootPath(path):
 
     """
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+    print(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
     config.set('PATH', 'path', path)
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'), 'w') as configfile:
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'), 'w') as configfile:
         config.write(configfile)
 
 
@@ -365,7 +371,7 @@ def init_emipy_project(path, resolution=10, force_rerun=False):
     download_MapData(path=path, resolution=resolution)
     print('Map data successfully downloaded and extractet.')
     download_NACE_TransitionTables(path)
-    print('Transition tables succesfully downloaded.')
+    print('Transition tables successfully downloaded.')
     pickle_RawData(path=path, force_rerun=force_rerun)
     merge_PollutionData(path=path, force_rerun=force_rerun)
     print('Data merged and pickled.')

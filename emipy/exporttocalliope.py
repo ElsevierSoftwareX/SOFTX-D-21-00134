@@ -6,6 +6,7 @@ import copy
 import configparser
 import os
 
+
 def get_default_config():
     """
     Returns the default configuration 
@@ -134,7 +135,7 @@ def export_calliope(data, path=None, yamlfilename='emipy2calliope.yaml', csvfile
     yaml = ruamel.yaml.YAML()
     yaml.indent(mapping=4, sequence=4, offset=2)
 
-    if path == None:
+    if path is None:
         configuration = configparser.ConfigParser()
         configuration.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = configuration['PATH']['path']
