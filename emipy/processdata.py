@@ -5,7 +5,7 @@ This module contains all functions to produce the data set of interest.
 
 import pandas as pd
 import os
-from os.path import join, isfile
+
 import geopandas
 import configparser
 import copy

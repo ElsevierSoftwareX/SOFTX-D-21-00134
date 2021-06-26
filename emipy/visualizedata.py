@@ -469,17 +469,21 @@ def change_proj(gdf, OutProj=None):
         Data with new projection in the geometry.
 
     """
-    if OutProj == None:
+    if OutProj is None:
         sys.exit('InputError: For the change of projection is a target projection required.')
-    if gdf.crs == None:
-        if ('Long' not in gdf.columns or 'Lat' not in gdf.columns):
-            sys.exit('InputError: No information about projection of geometry. Define CRS or give coordinates as Long and Lat!')
+
+    if gdf.crs is None:
+        if 'Long' not in gdf.columns or 'Lat' not in gdf.columns:
+            sys.exit('InputError: No information about projection of geometry.' +
+                     ' Define CRS or give coordinates as Long and Lat!')
         gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(gdf.Long, gdf.Lat), crs='EPSG:4326').reset_index(drop=True)
     gdf = gdf.to_crs(crs=OutProj)
-    return(gdf)
+
+    return gdf
 
 
-def map_PollutantSource(db, mb, category=None, MarkerSize=0, OutProj=None, ReturnMarker=0, *args, **kwargs):
+def map_PollutantSource(db, mb, category=None, MarkerSize=0, OutProj=None,
+                        ReturnMarker=0, *args, **kwargs):
     """
     maps pollutant sources given by db on map given by mb.
 
@@ -523,6 +527,7 @@ def map_PollutantSource(db, mb, category=None, MarkerSize=0, OutProj=None, Retur
         gdfd = exclude_DataOutsideBorders(borders=borders, gdf=gdf)[1]
         gdfp = add_MarkerSize(gdfp, MaxMarker=MarkerSize)
         ax = gdfp.plot(color='r', zorder=1, markersize=gdfp['MarkerSize'], *args, **kwargs)
+
     else:
         for items in db[category].unique():
             if not colorlist:
@@ -536,14 +541,18 @@ def map_PollutantSource(db, mb, category=None, MarkerSize=0, OutProj=None, Retur
             gdfd = exclude_DataOutsideBorders(borders=borders, gdf=gdf)[1]
             gdfp = add_MarkerSize(gdfp, MaxMarker=MarkerSize)
             ax = gdfp.plot(color=color, zorder=1, markersize=gdfp['MarkerSize'], *args, **kwargs)
+
     if gdfd.empty is False:
         print('Some data points are out of borders')
     else:
         print('All data points are within rectangular borders')
+
     if ReturnMarker == 0:
         return ax
+
     elif ReturnMarker == 1:
         return gdfp
+
     else:
         return gdfd
 
@@ -578,7 +587,8 @@ def map_PollutantRegions(db, mb, ReturnMarker=0, *args, **kwargs):
 
     NUTSlvl = mb.LEVL_CODE.unique()
     if len(NUTSlvl) != 1:
-        print('There are multiple NUTS-Levels present in the map data input. This function can not seperate the data in the required way. No Output!')
+        print('There are multiple NUTS-Levels present in the map data input.' +
+              'This function can not seperate the data in the required way. No Output!')
         return None
     NUTSlvl = NUTSlvl[0]
 
@@ -590,8 +600,11 @@ def map_PollutantRegions(db, mb, ReturnMarker=0, *args, **kwargs):
             itemvalue = itemdata.TotalQuantity.sum()
             dbpremerge = dbpremerge.append({'NUTS_ID': item, 'TotalQuantity': itemvalue}, ignore_index=True)
     elif NUTSlvl == 3:
-        print('The NUTS-Level of the map data is to high. The geospatial resolution of the emission data is not high enough to differentiate on level 3 regions. Use NUTS-LVL smaller or equal to 2.')
+        print('The NUTS-Level of the map data is to high.' +
+              ' The geospatial resolution of the emission data is not high' +
+              ' enough to differentiate on level 3 regions. Use NUTS-LVL smaller or equal to 2.')
         return None
+
     db02 = pd.merge(mb, dbpremerge, how='left', on=['NUTS_ID'])
     ax = db02.plot(column='TotalQuantity', *args, **kwargs)
 
@@ -600,11 +613,13 @@ def map_PollutantRegions(db, mb, ReturnMarker=0, *args, **kwargs):
     dbna = db01[~db01.NUTSRegionGeoCode.str.startswith(presentNUTS_IDs)]
 
     if ReturnMarker == 0:
-        return(ax)
+        return ax
+
     elif ReturnMarker == 1:
-        return(dbp)
+        return dbp
+
     else:
-        return(dbna)
+        return dbna
 
 
 def export_fig(fig, path=None, filename=None, **kwargs):
@@ -627,20 +642,22 @@ def export_fig(fig, path=None, filename=None, **kwargs):
     None.
 
     """
-    if (path == None and filename == None):
+    if path is None and filename is None:
         print('A filename is required.')
         return None
-    elif path == None:
+
+    elif path is None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
-    elif (path != None and filename != None):
+    elif path is not None and filename is None:
         path = os.path.join(path, filename)
 
-    if path.endswith(r'\\') == True:
+    if path.endswith(r'{}'.format(os.sep)):
         print('The file name or path must end with a file type extension')
         return None
 
     fig.savefig(path, **kwargs)
+
     return None

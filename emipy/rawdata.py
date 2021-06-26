@@ -131,7 +131,7 @@ def download_MapData(path, resolution=10, clear=False, chunk_size=128):
                 urllist.append(urldict.get(urlkey))
 
         for items in urllist:
-            if items == None:
+            if items is None:
                 continue
             r = requests.get(items, stream=True)
             z = zipfile.ZipFile(io.BytesIO(r.content))

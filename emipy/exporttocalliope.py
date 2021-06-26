@@ -137,7 +137,8 @@ def export_calliope(data, path=None, yamlfilename='emipy2calliope.yaml', csvfile
 
     if path is None:
         configuration = configparser.ConfigParser()
-        configuration.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        configuration.read(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                        'configuration', 'configuration.ini'))
         path = configuration['PATH']['path']
         path = os.path.join(path, 'ExportData')
 
