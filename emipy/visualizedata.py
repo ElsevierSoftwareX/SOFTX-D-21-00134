@@ -648,7 +648,8 @@ def export_fig(fig, path=None, filename=None, **kwargs):
 
     elif path is None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
     elif path is not None and filename is None:

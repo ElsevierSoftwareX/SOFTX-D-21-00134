@@ -15,6 +15,7 @@ import urllib.request
 
 path_sep = os.sep
 
+
 def download_PollutionData(path, chunk_size=128):
     """
     Downloads the pollution data into given path.
@@ -36,7 +37,10 @@ def download_PollutionData(path, chunk_size=128):
     if os.path.isdir(path) is False:
         os.mkdir(path)
     if not os.listdir(path):
-        url = 'https://www.eea.europa.eu/data-and-maps/data/member-states-reporting-art-7-under-the-european-pollutant-release-and-transfer-register-e-prtr-regulation-23/european-pollutant-release-and-transfer-register-e-prtr-data-base/eprtr_v9_csv.zip/at_download/file'
+        url = ('https://www.eea.europa.eu/data-and-maps/data/' +
+               'member-states-reporting-art-7-under-the-european-pollutant' +
+               '-release-and-transfer-register-e-prtr-regulation-23/european-' +
+               'pollutant-release-and-transfer-register-e-prtr-data-base/eprtr_v9_csv.zip/at_download/file')
         r = requests.get(url, stream=True)
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(path)
@@ -70,7 +74,7 @@ def download_MapData(path, resolution=10, clear=False, chunk_size=128):
         if os.path.isdir(path) is False:
             os.mkdir(path)
 
-        if clear == True:
+        if clear:
             os.chdir(path)
             for item in os.listdir(path):
                 file_name = os.path.abspath(item)
@@ -168,8 +172,10 @@ def download_NACE_TransitionTables(path):
     if os.path.isdir(path) is False:
         os.mkdir(path)
     if not os.listdir(path):
-        url1 = r'https://ec.europa.eu/eurostat/documents/1965800/1978760/52249E90762B69F8E0440003BA9322F9.xls/2314229f-7606-4230-96d4-da18f045b692'
-        url2 = r'https://ec.europa.eu/eurostat/documents/1965800/1978760/Copy+of+5225C5EEBF016050E0440003BA9322F9.xls/6e1aec88-f15b-4d0f-bccc-4ee505c7f810'
+        url1 = (r'https://ec.europa.eu/eurostat/documents/1965800/1978760/' +
+                '52249E90762B69F8E0440003BA9322F9.xls/2314229f-7606-4230-96d4-da18f045b692')
+        url2 = (r'https://ec.europa.eu/eurostat/documents/1965800/1978760/' +
+                'Copy+of+5225C5EEBF016050E0440003BA9322F9.xls/6e1aec88-f15b-4d0f-bccc-4ee505c7f810')
         urllib.request.urlretrieve(url1, os.path.join(path, 'Correspondance+table+NACERev2-NACERev1_1+table+format.xls'))
         urllib.request.urlretrieve(url2, os.path.join(path, 'Correspondance+table+NACERev1_1-NACERev2+table+format.xls'))
 
@@ -190,6 +196,7 @@ def pickle_RawData(path, force_rerun=False):
     None.
 
     """
+
     # POLLUTANTRELEASEANDTRANSFERREPORT
     if (os.path.isfile(os.path.join(path, 'PollutionData', 'pratr.pkl')) is False) or force_rerun:
         pratr = pd.read_csv(os.path.join(path, 'PollutionData', 'dbo.PUBLISH_POLLUTANTRELEASEANDTRANSFERREPORT.csv'))
@@ -231,7 +238,8 @@ def merge_PollutionData(path, force_rerun=False):
             pratr = pd.read_pickle(os.path.join(path, 'PollutionData', 'pratr.pkl'))
         except FileNotFoundError:
             print('Error. Run function pickle_RawData')
-        # speed difference for variing merge-order?? Table length differs, merge smart enough to add multiple one row to multiple?
+        # speed difference for variing merge-order?? Table length differs,
+        # merge smart enough to add multiple one row to multiple?
         # problematic to merge by multiple coloum names?
         # Some data have no PostalCode, wrong fomrated postal code or not actual PostalCode
         db01 = pd.merge(fr, pratr, on=['PollutantReleaseAndTransferReportID', 'CountryName', 'CountryCode'])
@@ -336,10 +344,13 @@ def change_RootPath(path):
 
     """
     config = configparser.ConfigParser()
-    print(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
-    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
+    print(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration',
+                       'configuration.ini'))
+    config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration',
+                             'configuration.ini'))
     config.set('PATH', 'path', path)
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'), 'w') as configfile:
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration',
+                           'configuration.ini'), 'w') as configfile:
         config.write(configfile)
 
 

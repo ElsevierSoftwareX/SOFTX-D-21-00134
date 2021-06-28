@@ -29,9 +29,10 @@ def read_db(path=None, NewData=False):
 
     """
 
-    if path == None:
+    if path is None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(path, 'PollutionData')
         if NewData is False:
@@ -74,7 +75,7 @@ def read_mb(path=None, resolution='10M', SpatialType='RG', NUTS_LVL=0, m_year=20
 
     """
 
-    if path == None:
+    if path is None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
@@ -118,7 +119,7 @@ def get_NACECode_filter(specify=None):
     config = configparser.ConfigParser()
     config.optionxform = str
     config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
-    if specify == None:
+    if specify is None:
         NACElist = dict(config.items('NACECODES'))
     elif isinstance(specify, list):
         NACElist = []
@@ -163,6 +164,7 @@ def get_NACECode_filter_industry(group=None):
         NACECode = ['23.11', '23.12', '23.13', '23.14', '23.19']
     elif group == 'wa':
         NACECode = ['38.11', '38.12', '38.21', '38.22', '38.31', '38.32']
+
     return NACECode
 
 
