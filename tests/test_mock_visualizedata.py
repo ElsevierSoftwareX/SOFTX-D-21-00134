@@ -5,21 +5,12 @@ Created on Thu Feb 18 10:22:07 2021
 @author: f-ove
 This is a testscript for the module visualizedata of the package emipy.
 """
-import os
+
 import pandas as pd
 
 import numpy as np
 import emipy as ep
 import copy
-
-
-# The seperation is not necessary.
-# RootPath has simply to be a path, to the root of an emipy project.
-path = os.getcwd()
-RootPath = os.path.join(path, 'testinitiation')
-
-ep.change_RootPath(RootPath)
-
 
 d = {'FacilityReportID': [1856, 1856, 1856, 1856, 1857, 3110391],
      'PollutantReleaseAndTransferReportID': [1, 1, 1, 1, 1, 2453],

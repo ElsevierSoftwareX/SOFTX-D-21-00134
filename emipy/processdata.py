@@ -860,9 +860,9 @@ def perform_NACETransition(db, NewNACE=2, path=None):
         The input DataFrame with changed NACE-codes if necessary.
 
     """
-    if path == None:
+    if path is None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
 
     # The following lines are for loading the transition table into the session.
@@ -978,7 +978,7 @@ def change_RenameDict(total=None, add=None, sub=None, reset=False):
         config['COLUMNNAMES'].update(add)
     if sub is not None:
         all(map(config['COLUMNNAMES'].pop, sub))
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'),
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'),
               'w') as configfile:
         config.write(configfile)
 
@@ -1114,7 +1114,7 @@ def export_db_to_pickle(db, path=None, filename=None, **kwargs):
 
     elif path is None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
 
@@ -1154,7 +1154,7 @@ def export_db_to_csv(db, path=None, filename=None, **kwargs):
         return None
     elif path is None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
     elif path is not None and filename is not None:
@@ -1195,7 +1195,8 @@ def export_db_to_excel(db, path=None, filename=None, **kwargs):
         return None
     elif path is None:
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration\\configuration.ini'))
+        config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration',
+                                 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
 
