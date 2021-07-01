@@ -100,8 +100,18 @@ class TestReadData:
         assert type(db) == pd.core.frame.DataFrame
 
     def test_read_mb1(self):
+        # Test if the mapbase is loadable (without specifing the path)
+        mb = ep.read_mb()
+        i = 0
+        if len(mb) == 37:
+            i = i + 1
+        if len(mb.columns) == 10:
+            i = i + 1
+        assert i == 2
+        
+    def test_read_mb2(self):
         # Test if basic mapbase is loadable (with specifing the path) and has 37 rows and 10 columns.
-        mb = ep.read_mb(os.path.join(RootPath, 'MappingData', 'NUTS_BN_10M_2006_3035.shp'))
+        mb = ep.read_mb(os.path.join(RootPath, 'MappingData', 'NUTS_RG_10M_2016_4326_LEVL_0.shp'))
         i = 0
         if len(mb) == 37:
             i = i + 1
@@ -109,7 +119,7 @@ class TestReadData:
             i = i + 1
         assert i == 2
 
-    def test_read_mb2(self):
+    def test_read_mb3(self):
         # Test if the standard mapbases are all loadable (without outspecifing the path)
         mb = ep.read_mb(m_year=2003)
         mb = ep.read_mb(m_year=2003, NUTS_LVL=0)
