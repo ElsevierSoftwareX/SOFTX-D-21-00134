@@ -26,4 +26,4 @@ To contribute changes:
 5. Create a new pull request from the feature branch on GitLab
 
 # Contact
-For contact write a mail to s.morgenthaler@fz-juelich.de
+For contact write a mail to p.boettcher@fz-juelich.de
