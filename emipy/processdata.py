@@ -796,11 +796,11 @@ def change_unit(db, unit=None):
     db : DataFrame
         DataFrame which units are to be changed.
     unit : string, optional
-        New unit. The default is None.
+        New unit name. The default is None.
 
     Returns
     -------
-    data : DataFrame
+    data_out : DataFrame
         DataFrame with changed emission units.
 
     """
@@ -824,22 +824,19 @@ def change_unit(db, unit=None):
 
     data = copy.deepcopy(db).reset_index(drop=True)
     if len(data.UnitName.unique()) > 1:
-        print('Warning: multiple units in DataFrame!')
+        print('Warning: multiple units in DataFrame! They are changed, according to the corresponding UnitName.')
 
-    # The first two lines are just applicable, if the DataFrame has just one unit. They represent two ways how to call the values that are to change.
-    # factor = UnitNumberDict[db.UnitName.unique()[0]] / UnitNumberDict[unit]
-    # The third line is more generally applicable. It's written more "Pythonic" but the dict can't be called from a hasable object.
-    # data.loc[:, 'TotalQuantity'] = data.loc[:, 'TotalQuantity'] * factor
-    # data.TotalQuantity = data.TotalQuantity * factor
-    # data.TotalQuantity = data.TotalQuantity * UnitNumberDict[data.UnitName] / UnitNumberDict[unit]
-    for i in range(len(data)):
-        OldCode = data.loc[i, 'UnitName']
-        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[OldCode]/UnitNumberDict[unit]
-        data.loc[i, 'AccidentalQuantity'] = data.loc[i, 'AccidentalQuantity'] * UnitNumberDict[OldCode]/UnitNumberDict[unit]                             
-
-    data.loc[:, 'UnitName'] = unit
-    data.loc[:, 'UnitCode'] = UnitCodeDict[unit]
-    return data
+    data_out = pd.DataFrame()
+    for obj in data.UnitName.unique():
+        foo = data[data.UnitName == obj]
+        foo2 = foo[['TotalQuantity', 'AccidentalQuantity']] * UnitNumberDict[obj]/UnitNumberDict[unit]
+        foo = foo.assign(TotalQuantity = foo2['TotalQuantity'])
+        foo = foo.assign(AccidentalQuantity = foo2['AccidentalQuantity'])
+        data_out = data_out.append(foo)
+    data_out.loc[:, 'UnitName'] = unit
+    data_out.loc[:, 'UnitCode'] = UnitCodeDict[unit]
+    data_out = data_out.sort_index()
+    return data_out
 
 
 def perform_NACETransition(db, NewNACE=2, path=None):
