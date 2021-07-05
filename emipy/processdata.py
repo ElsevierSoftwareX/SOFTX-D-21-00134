@@ -98,6 +98,7 @@ def read_mb(path=None, resolution='10M', SpatialType='RG', NUTS_LVL=0, m_year=20
         mb = geopandas.read_file(path)
     except FileNotFoundError:
         print('File not found in the given path.')
+
     return mb
 
 
@@ -198,7 +199,8 @@ def change_NACECode_filter(total=None, add=None, sub=None):
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'),
               'w') as configfile:
         config.write(configfile)
-    return None
+
+    return
 
 
 def get_CountryList(db):
@@ -219,6 +221,7 @@ def get_CountryList(db):
     CountryList = []
     for items in db.CountryName.unique():
         CountryList.append(items)
+
     return CountryList
 
 
@@ -732,7 +735,7 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         db = db[db.NUTSRegionGeoCode.notna()]
         db = db[~db.NUTSRegionGeoCode.str.startswith(ExclaveList)]
 
-    if ReturnUnknown == True:
+    if ReturnUnknown:
         return dbna
     else:
         return db
@@ -826,9 +829,11 @@ def change_unit(db, unit=None):
     if len(data.UnitName.unique()) > 1:
         print('Warning: multiple units in DataFrame!')
 
-    # The first two lines are just applicable, if the DataFrame has just one unit. They represent two ways how to call the values that are to change.
+    # The first two lines are just applicable, if the DataFrame has just one unit.
+    # They represent two ways how to call the values that are to change.
     # factor = UnitNumberDict[db.UnitName.unique()[0]] / UnitNumberDict[unit]
-    # The third line is more generally applicable. It's written more "Pythonic" but the dict can't be called from a hasable object.
+    # The third line is more generally applicable. It's written more "Pythonic" but
+    # the dict can't be called from a hashable object.
     # data.loc[:, 'TotalQuantity'] = data.loc[:, 'TotalQuantity'] * factor
     # data.TotalQuantity = data.TotalQuantity * factor
     # data.TotalQuantity = data.TotalQuantity * UnitNumberDict[data.UnitName] / UnitNumberDict[unit]
@@ -881,7 +886,8 @@ def perform_NACETransition(db, NewNACE=2, path=None):
             print('File not found in the given path.')
             return None
 
-    # The following lines are just for converting the columns NACE_1_1_CODE and NACE_2007_CODE to strings with the needed format (add 0)
+    # The following lines are just for converting the columns
+    # NACE_1_1_CODE and NACE_2007_CODE to strings with the needed format (add 0)
     tt = tt.astype({'NACE_1_1_CODE': str, 'NACE_2007_CODE': str})
     foo1, foo2 = [], []
     for i in range(len(tt)):
@@ -904,7 +910,8 @@ def perform_NACETransition(db, NewNACE=2, path=None):
     post2007 = db[~db.NACEMainEconomicActivityCode.str.startswith('NACE')]
     pre2007 = db[db.NACEMainEconomicActivityCode.str.startswith('NACE')]
 
-    # The following lines are just for slicing the string "NACE1_1" out of the column NACEMainEconomicActivityCode. Perhaps more easy way but pandas has problems with changing values dependend on these values.
+    # The following lines are just for slicing the string "NACE1_1" out of the column NACEMainEconomicActivityCode.
+    # Perhaps more easy way but pandas has problems with changing values dependend on these values.
     foo = pre2007['NACEMainEconomicActivityCode'].str.slice(start=9)
     pre2007 = pre2007.drop(columns=['NACEMainEconomicActivityCode'])
     pre2007['NACEMainEconomicActivityCode'] = foo
@@ -913,7 +920,8 @@ def perform_NACETransition(db, NewNACE=2, path=None):
     cols.insert(a, cols.pop(b))
     pre2007 = pre2007[cols]
 
-    # The following lines are for creating the transition dict. This is partly direct the transition table but for some old codes there is no transition, so we have to search for the appropriate codes.
+    # The following lines are for creating the transition dict. This is partly direct the transition table
+    # but for some old codes there is no transition, so we have to search for the appropriate codes.
     transitiondict = {}
     for items in tt.NACE_1_1_CODE.unique():
         foo3 = list(tt[tt.NACE_1_1_CODE == items].NACE_2007_CODE.unique())
@@ -930,7 +938,9 @@ def perform_NACETransition(db, NewNACE=2, path=None):
         else:
             foo6 = list(tt[tt.NACE_1_1_CODE.str.startswith(items[0:3])].NACE_2007_CODE.unique())
             transitiondict.update({items: foo6})
-    # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?) We have assigned values that we think fit the best. Further explanation, how we come to the decision, can be found on the documentation side.
+    # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?)
+    # We have assigned values that we think fit the best. Further explanation, how we come to the decision,
+    # can be found on the documentation side.
     transitiondict.update({'27.35': ['24.10']})
     transitiondict.update({'74.84': list(('59.20', '63.99', '74.10', '74.90', '77.40', '82.30', '82.91', '82.99'))})
 
@@ -940,7 +950,7 @@ def perform_NACETransition(db, NewNACE=2, path=None):
 
     # The following line is just for combining both DataFrames to receive the final DataFrame.
     final = post2007.append(pre2007)
-    return (final)
+    return final
 
 
 def change_RenameDict(total=None, add=None, sub=None, reset=False):
@@ -1005,6 +1015,7 @@ def rename_columns(db):
     config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
     columndict = dict(config.items('COLUMNNAMES'))
     db = db.rename(columns=columndict)
+
     return db
 
 
@@ -1031,16 +1042,19 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
     """
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
-    if reset == True:
-        columnnames = 'CountryCode,CountryName,Lat,Long,NUTSRegionGeoCode,NACEMainEconomicActivityCode,NACEMainEconomicActivityName,ReportingYear,PollutantReleaseID,PollutantName,TotalQuantity,UnitCode'
+    if reset:
+        columnnames = ('CountryCode,CountryName,Lat,Long,NUTSRegionGeoCode,NACEMainEconomicActivityCode,' +
+                       'NACEMainEconomicActivityName,ReportingYear,PollutantReleaseID,' +
+                       'PollutantName,TotalQuantity,UnitCode')
+
         config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
-    if total != None:
+    if total is not None:
         if isinstance(total, list):
             columnnames = ','.join(total)
             config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
         else:
             config.set('COLUMNSOFINTEREST', 'columnnames', total)
-    if add != None:
+    if add is not None:
         if isinstance(add, list):
             columnnames = config['COLUMNSOFINTEREST']['columnnames'].split(',') + add
             columnnames = ','.join(columnnames)
@@ -1048,7 +1062,7 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
         else:
             columnnames = config['COLUMNSOFINTEREST']['columnnames'] + ',' + add
             config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
-    if sub != None:
+    if sub is not None:
         if isinstance(sub, list):
             columnnames = [item for item in config['COLUMNSOFINTEREST']['columnnames'].split(',') if item not in sub]
             columnnames = ','.join(columnnames)
@@ -1062,6 +1076,7 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'),
               'w') as configfile:
         config.write(configfile)
+
     return config['COLUMNSOFINTEREST']
 
 
@@ -1085,12 +1100,14 @@ def row_reduction(db):
     remain = config['COLUMNSOFINTEREST']['columnnames']
     remain = remain.split(',')
     db = db[remain]
+
     return db
 
 
 def export_db_to_pickle(db, path=None, filename=None, **kwargs):
     """
-    Stores the DataFrame given in the input as a .pkl file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
+    Stores the DataFrame given in the input as a .pkl file to the given path, or if the path is
+     not given to the ExportData folder in the root path with the given filename.
 
     Parameters
     ----------
@@ -1099,7 +1116,8 @@ def export_db_to_pickle(db, path=None, filename=None, **kwargs):
     path : String, optional
         Path under which the DataFrame is stored.
     filename : String, optional
-        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
+        If the path is not given, this is the file name under which the DataFrame is
+         stored in the ExportData folder of the project
     kwargs : Type, optional
         pandas.to_pickle() input arguments
 
@@ -1126,12 +1144,14 @@ def export_db_to_pickle(db, path=None, filename=None, **kwargs):
         return None
 
     db.to_pickle(path, **kwargs)
+
     return None
 
 
 def export_db_to_csv(db, path=None, filename=None, **kwargs):
     """
-    Stores the DataFrame given in the input as a .csv file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
+    Stores the DataFrame given in the input as a .csv file to the given path,
+     or if the path is not given to the ExportData folder in the root path with the given filename.
 
     Parameters
     ----------
@@ -1140,7 +1160,8 @@ def export_db_to_csv(db, path=None, filename=None, **kwargs):
     path : String, optional
         Path under which the DataFrame is stored.
     filename : String, optional
-        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
+        If the path is not given, this is the file name under which the DataFrame is stored
+         in the ExportData folder of the project
     kwargs : Type, optional
         pandas.to_csv() input arguments
 
@@ -1152,11 +1173,13 @@ def export_db_to_csv(db, path=None, filename=None, **kwargs):
     if path is None and filename is None:
         print('A filename is required')
         return None
+
     elif path is None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
+
     elif path is not None and filename is not None:
         path = os.path.join(path, filename)
 
@@ -1172,7 +1195,8 @@ def export_db_to_csv(db, path=None, filename=None, **kwargs):
 
 def export_db_to_excel(db, path=None, filename=None, **kwargs):
     """
-    Stores the DataFrame given in the input as a .xlsx file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
+    Stores the DataFrame given in the input as a .xlsx file to the given path, or if the path is not given
+    to the ExportData folder in the root path with the given filename.
 
     Parameters
     ----------
@@ -1181,7 +1205,8 @@ def export_db_to_excel(db, path=None, filename=None, **kwargs):
     path : String, optional
         Path under which the DataFrame is stored.
     filename : String, optional
-        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
+        If the path is not given, this is the file name under which the DataFrame
+        is stored in the ExportData folder of the project
     kwargs : Type, optional
         pandas.to_excel() input arguments
 

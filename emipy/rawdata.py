@@ -269,7 +269,7 @@ def generate_PollutionData_2(path):
     if os.path.isdir(path) is False:
         os.mkdir(path)
     if 'emipy_newdb.pkl' not in os.listdir(path):
-        url = ('https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy/'
+        url = ('https://gitlab-public.fz-juelich.de/network-science-group/emipy/'
                + '-/raw/master/additionaldata/emipy_newdb.pkl?inline=false')
         urllib.request.urlretrieve(url, os.path.join(path, 'emipy_newdb.pkl'))
     if 'dbnew.pkl' not in os.listdir(path):
@@ -374,7 +374,8 @@ def init_emipy_project(path, resolution=10, force_rerun=False):
     """
     if path is None:
         print('A path to the root of the project is needed to initialize the project.')
-        return None
+        return
+
     change_RootPath(path)
     print('Root path successfully changed.')
     download_PollutionData(path=path)
@@ -393,4 +394,5 @@ def init_emipy_project(path, resolution=10, force_rerun=False):
     if os.path.isdir(path) is False:
         os.mkdir(path)
     print('The initialisation process is completed.')
-    return None
+
+    return
