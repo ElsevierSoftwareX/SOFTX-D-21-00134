@@ -28,7 +28,7 @@ sys.setrecursionlimit(1500)
 # -- Project information -----------------------------------------------------
 
 project = 'emipy'
-copyright = '2020, IEK-STE, Forschungszentrum Jülich GmbH'
+copyright = '2021, IEK-STE, Forschungszentrum Jülich GmbH'
 author = 'Overberg, Morgenthaler'
 
 # The full version, including alpha/beta/rc tags
