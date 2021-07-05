@@ -451,10 +451,17 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         dbna = dbna.append(db[db.NACEMainEconomicActivityCode.isna()])
         foo1 = dbna[dbna.NACEMainEconomicActivityCode.isna()]
         if isinstance(NACEMainEconomicActivityCode, list):
-            foo2 = dbna[dbna.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
+            foo = pd.DataFrame(dbna.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
+                NACEMainEconomicActivityCode).any(1).astype(int)
+            dbna = dbna.assign(foo=foo.values)
+            dbna = dbna[dbna.foo == 1].drop(['foo'], axis=1)
         else:
-            foo2 = dbna[dbna.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
-        dbna = foo1.append(foo2)
+            NACEMainEconomicActivityCode = [NACEMainEconomicActivityCode]
+            foo = pd.DataFrame(dbna.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
+                NACEMainEconomicActivityCode).any(1).astype(int)
+            dbna = dbna.assign(foo=foo.values)
+            dbna = dbna[dbna.foo == 1].drop(['foo'], axis=1)
+        dbna = foo1.append(dbna)
 
         if isinstance(NACEMainEconomicActivityCode, list):
             foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
