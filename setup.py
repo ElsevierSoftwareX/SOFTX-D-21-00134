@@ -14,12 +14,12 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="emipy",
     version="0.0.63",
-    author="Florian Overberg; Simon Morgenthaler",
-    author_email="s.morgenthaler@fz-juelich.de",
-    description="Python package for emission data analysis based on the E-PRTR database",
+    author="Florian Overberg, Philipp C. Böttcher, Simon Morgenthaler",
+    author_email="p.boettcher@fz-juelich.de",
+    description="Python package for emission data analysis based on the E-PRTR database.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy",
+    url="https://jugit.fz-juelich.de/network-science-group/emipy",
     packages=setuptools.find_packages(),
     package_data={"emipy": ["configuration/*.ini"]},
     classifiers=[
@@ -29,7 +29,7 @@ setuptools.setup(
     ],
     project_urls={
         'Documentation': 'https://emipy.readthedocs.io/en/latest/',
-        'Source': 'https://gitlab-public.fz-juelich.de/s.morgenthaler/emipy'
+        'Source': 'https://jugit.fz-juelich.de/network-science-group/emipy'
     },
     python_requires='>=3.6',
     install_requires=[
@@ -37,7 +37,6 @@ setuptools.setup(
         'requests>=2.24.0',
         'configparser>=5.0.0',
         'pandas>=1.1.1',
-        'geopandas>=0.9.0',
         'ruamel.yaml>=0.16.12',
         'descartes>=1.1.0',
         'openpyxl>=3.0.6'

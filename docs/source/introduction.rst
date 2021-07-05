@@ -31,7 +31,7 @@ Emipy  requires:
 Installation & Initialisation
 ----------------------------- 
 
-If you are not familiar with Python yet we suggest you follow our step by step installtion guide:
+If you are not familiar with Python yet we suggest you follow our step by step installation guide:
 
 1. Download and install the Anaconda distribution from the `Anaconda page <https://www.anaconda.com/products/individual>`_.
 2. Create a new environment. For this:
@@ -53,7 +53,7 @@ If you are not familiar with Python yet we suggest you follow our step by step i
 	        You have to change the path to the location, where you want the data to be stored! The inialization process may take a few minutes as large amounts of data is downloaded. Please be patient and let it run until finished completely.
 
 	.. note::
-	    Since we now are in Python, the inserted path needs a special format. Python reads ``"\"`` as a escape, like ``"\n"`` for new line. You can either use ``"\\"`` or "/" instead of a single ``"\"`` or, alternatively you can put a "r" before the path.
+	    If you are using Windows, we have the inserted path needs a special format. Python reads ``"\"`` as a escape, like ``"\n"`` for new line. You can either use ``"\\"`` or "/" instead of a single ``"\"`` or, alternatively you can put a "r" before the path.
 	    Python needs the single mark quotes around the path to recognize it as a String. Keep that in mind, for all further applications of the emipy functions!
 
 	| ``>>>import emipy as ep``
@@ -64,11 +64,14 @@ If you are not familiar with Python yet we suggest you follow our step by step i
 You can also download the emipy package via the package manager pip:
 
     .. note::
-        At the moment we are working on issues regarding the automatic installation of geopandas during the installation of emipy. The problem  is caused by the package Fiona. You can avoid this problem by manually install Fiona via conda-forge.
+        If you are using Windows the dependency of geopandas during the installation of emipy.
+The     problem  is caused by the package Fiona. You can avoid this problem by manually install .
 
     ``>pip install emipy``
 
 Keep in mind that you have to install the list of packages given above. Execute point 3 from the step by step guide to initialize a new project.
+In principle you could also install emipy using only pip but it is advised to install the dependencies separately, since some packages (e.g. geopandas)
+don't install correctly in Windows when using only the version installed from pypi.
     
 
 

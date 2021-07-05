@@ -12,7 +12,7 @@ Our package is hosted by `PyPi <https://pypi.org/project/emipy/>`_.
 Find us on Gitlab
 ------------------
 
-The package development takes place on `Gitlab <https://gitlab-public.fz-juelich.de/network-science-group/emipy>`_.
+The package development takes place on `Gitlab <https://jugit.fz-juelich.de/network-science-group/emipy>`_.
 
 
 Contact
