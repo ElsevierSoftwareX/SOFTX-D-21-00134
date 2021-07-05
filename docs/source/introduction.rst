@@ -53,17 +53,17 @@ If you are not familiar with Python yet we suggest you follow our step by step i
 	        You have to change the path to the location, where you want the data to be stored! The inialization process may take a few minutes as large amounts of data is downloaded. Please be patient and let it run until finished completely.
 
 	.. note::
-	    If you are using Windows, the path needs a special format. Python reads ``"\"`` as an escape, like
-        ``"\n"`` for new line. You can either use ``"\\"`` or "/" instead of a single ``"\"`` or, alternatively you
-        can put a "r" before the string to convert to a raw string.
+	    If you are using Windows, the path needs a special format. Python reads ``"\"`` as an escape,
+	    like ``"\n"`` for new line. You can either use ``"\\"`` or "/" instead of a single ``"\"`` or, alternatively you
+	    can put a "r" before the string to convert to a raw string.
 	    Python needs the single mark quotes around the path to recognize it as a String.
-        Keep that in mind, for all further applications of the emipy functions!
+	    Keep that in mind, for all further applications of the emipy functions!
 
 	| ``>>>import emipy as ep``
 	| ``>>>ep.init_emipy_project('<some_path>')``
 	| ``>>>exit()``
     | Here, <some_path> is the name of the directory, where you want to put the data.
-	| If the initialization function completed its task it prints the message 'The Initialization process is completed.'
+    | If the initialization function completed its task it prints the message 'The Initialization process is completed.'
     | If you do not receive this message check for typos and repeat executing the function.
 
 You can also download the emipy package via the package manager pip:
