@@ -792,7 +792,7 @@ def f_mb(mb, NUTS_ID=None, CNTR_CODE=None, NAME_LATN=None, ExclaveExclude=False)
 
 def change_unit(db, unit=None):
     """
-    Changes the units of the emission in the table and adapts the numbers of TotalQuantity in the according way. If no unit is given, no changes are applied.
+    Changes the units of the emission in the table and adapts the numbers of TotalQuantity and AccidentalQuantity in the according way. If no unit is given, no changes are applied.
 
     Parameters
     ----------
@@ -838,8 +838,9 @@ def change_unit(db, unit=None):
     # data.TotalQuantity = data.TotalQuantity * factor
     # data.TotalQuantity = data.TotalQuantity * UnitNumberDict[data.UnitName] / UnitNumberDict[unit]
     for i in range(len(data)):
-        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[data.loc[i, 'UnitName']] / \
-                                       UnitNumberDict[unit]
+        OldCode = data.loc[i, 'UnitName']
+        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[OldCode]/UnitNumberDict[unit]
+        data.loc[i, 'AccidentalQuantity'] = data.loc[i, 'AccidentalQuantity'] * UnitNumberDict[OldCode]/UnitNumberDict[unit]                             
 
     data.loc[:, 'UnitName'] = unit
     data.loc[:, 'UnitCode'] = UnitCodeDict[unit]
