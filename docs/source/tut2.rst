@@ -108,6 +108,7 @@ Visualize data sets
     fig1_axes[1,1] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,1],
                                              SecondOrder='CountryName', rot=0, ylabel='Emission [kg]')
 
+    plt.tight_layout()
     plt.show()
 
 .. image:: ./pictures/Tut2pic6.svg
