@@ -83,8 +83,12 @@ Keep in mind that you have to install the list of packages given above. Execute 
 Quick start
 =============
 
-1. Start the IDE of your preference. If you are new, just execute ``>jupyter notebook`` in the Anaconda Prompt console. This should open a window in your browser. Click on "New" and select Python3.
-   (`Here <https://nbviewer.jupyter.org/github/jupyter/notebook/blob/master/docs/source/examples/Notebook/Running%20Code.ipynb>`_ is a short example for the Jupyter Notebook usage. You can also look at the `documentation <https://jupyter-notebook.readthedocs.io/en/latest/notebook.html>`_)
+1. Start the IDE of your preference. If you are new, just execute ``>jupyter notebook`` in the Anaconda Prompt console.
+   Make sure to have the jupyter package installed in the Anaconda environment that you are using.
+   This should open a window in your browser. Click on "New" and select Python3.
+   (`Here <https://nbviewer.jupyter.org/github/jupyter/notebook/blob/master/docs/source/examples/Notebook/Running%20Code.ipynb>`_ is
+   a short example for the Jupyter Notebook usage.
+   You can also look at the `documentation <https://jupyter-notebook.readthedocs.io/en/latest/notebook.html>`_)
 2. Import the emipy module:
     | ``import emipy as ep``
 3. Load the data into your current session with:
