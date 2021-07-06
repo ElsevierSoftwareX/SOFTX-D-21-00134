@@ -1,0 +1,7 @@
+emipy
+pandas
+matplotlib
+geopandas
+descartes
+ruamel.yaml
+sphinx-rtd-theme

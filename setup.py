@@ -20,7 +20,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://jugit.fz-juelich.de/network-science-group/emipy",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=('tests',)),
     package_data={"emipy": ["configuration/*.ini"]},
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -32,13 +32,7 @@ setuptools.setup(
         'Source': 'https://jugit.fz-juelich.de/network-science-group/emipy'
     },
     python_requires='>=3.6',
-    install_requires=[
-        'matplotlib>=3.3.1',
-        'requests>=2.24.0',
-        'configparser>=5.0.0',
-        'pandas>=1.1.1',
-        'ruamel.yaml>=0.16.12',
-        'descartes>=1.1.0',
-        'openpyxl>=3.0.6'
-    ]
+    install_requires=open('requirements.txt').read().splitlines(),
+
+
 )
