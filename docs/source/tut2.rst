@@ -100,13 +100,13 @@ Visualize data sets
 
     fig1, fig1_axes = plt.subplots(2, 2)
     fig1_axes[0,0] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear',
-                                             ax=fig1_axes[0,0], rot=0, ylabel='Emission [kg]')
+                                             ax=fig1_axes[0,0], rot=0, ylabel='Emission [kg]', color='r')
     fig1_axes[1,0] = ep.plot_PollutantVolumeRel(data1, FirstOrder='ReportingYear',
                                                 ax=fig1_axes[1,0], rot=0, ylabel='Normalized Emission')
     fig1_axes[0,1] = ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear',
                                                    ax=fig1_axes[0,1], rot=0, ylabel='Emission [kg]')
     fig1_axes[1,1] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,1],
-                                             color='r', rot=0, ylabel='Emission [kg]')
+                                             SecondOrder='CountryName', rot=0, ylabel='Emission [kg]')
 
     plt.show()
 
