@@ -27,8 +27,9 @@ Export Data and Figures
 | If you want to export the file to a different path, you can use the argument path to name the corresponding path. 
 
 .. code-block:: python
-    ep.export_db_to_csv(dataset1, path=r'C:User\User1\testpath', filename='Benelux2.csv')
-    ep.export_db_to_csv(dataset1, path=r'C:User\User1\testpath\Benelux3.csv')
+
+    ep.export_db_to_csv(dataset1, path=r'C:\User\User1\testpath', filename='Benelux2.csv')
+    ep.export_db_to_csv(dataset1, path=r'C:\User\User1\testpath\Benelux3.csv')
 
 | You can aswell export to other file types. The emipy export functions are based on the `pandas <https://pandas.pydata.org/docs/index.html>`_ export functions and imply their features:
 

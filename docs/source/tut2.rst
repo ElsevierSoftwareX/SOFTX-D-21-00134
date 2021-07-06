@@ -13,13 +13,15 @@ Visualize data sets
     ReportingYear = [2014, 2015, 2016, 2017]
     PollutantName = ['Carbon dioxide (CO2)']
 
-    data1 = ep.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
+    data1 = ep.f_db(db, CountryName=CountryName, ReportingYear=ReportingYear,
+                    PollutantName=PollutantName)
 
 | Now we can plot the CO2 volume against the reporting years:
 
 .. code-block:: python
 
-    ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear')
+    ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', rot=0,
+                            ylabel='Emission [kg]')
 
 .. image:: ./pictures/Tut2pic1.svg
     :width: 80%
@@ -31,7 +33,9 @@ Visualize data sets
 
 .. code-block:: python
 
-    ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', SecondOrder='CountryName')
+    ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear',
+                            SecondOrder='CountryName', rot=0,
+                            ylabel='Emission [kg]')
 
 .. image:: ./pictures/Tut2pic2.svg
     :width: 80%
@@ -44,7 +48,8 @@ Visualize data sets
 .. code-block:: python
 
     data2 = ep.f_db(data1, CountryName='Austria')
-    ep.plot_PollutantVolume(data2, FirstOrder='ReportingYear')
+    ep.plot_PollutantVolume(data2, FirstOrder='ReportingYear',
+                            rot=0, ylabel='Emission [kg]')
 
 .. image:: ./pictures/Tut2pic3.svg
     :width: 80%
@@ -56,7 +61,9 @@ Visualize data sets
 
 .. code-block:: python
 
-    ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear', SecondOrder='CountryName')
+    ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear',
+                                  SecondOrder='CountryName', rot=0,
+                                  ylabel='Change of emission [kg]')
 
 .. image:: ./pictures/Tut2pic4.svg
     :width: 80%
@@ -74,7 +81,9 @@ Visualize data sets
 
     data3 = ep.f_db(db,CountryName=CountryName, ReportingYear=ReportingYear, PollutantName=PollutantName)
 
-    ep.plot_PollutantVolumeRel(data3, FirstOrder='PollutantName', SecondOrder='ReportingYear')
+    ep.plot_PollutantVolumeRel(data3, FirstOrder='PollutantName',
+                               SecondOrder='ReportingYear', rot=0,
+                               ylabel='Normalized emission')
 
 .. image:: ./pictures/Tut2pic5.svg
     :width: 80%
@@ -90,10 +99,14 @@ Visualize data sets
     import matplotlib.pyplot as plt
 
     fig1, fig1_axes = plt.subplots(2, 2)
-    fig1_axes[0,0] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[0,0])
-    fig1_axes[1,0] = ep.plot_PollutantVolumeRel(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,0])
-    fig1_axes[0,1] = ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear', ax=fig1_axes[0,1])
-    fig1_axes[1,1] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,1], color='r')
+    fig1_axes[0,0] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear',
+                                             ax=fig1_axes[0,0], rot=0, ylabel='Emission [kg]')
+    fig1_axes[1,0] = ep.plot_PollutantVolumeRel(data1, FirstOrder='ReportingYear',
+                                                ax=fig1_axes[1,0], rot=0, ylabel='Normalized Emission')
+    fig1_axes[0,1] = ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear',
+                                                   ax=fig1_axes[0,1], rot=0, ylabel='Emission [kg]')
+    fig1_axes[1,1] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,1],
+                                             color='r', rot=0, ylabel='Emission [kg]')
 
     plt.show()
 

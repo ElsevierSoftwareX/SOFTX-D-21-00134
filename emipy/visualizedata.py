@@ -223,6 +223,7 @@ def plot_PollutantVolume(db, FirstOrder=None, SecondOrder=None, stacked=False, *
             ax = data.plot.bar(x=FirstOrder, stacked=True, *args, **kwargs)
         else:
             ax = data.plot.bar(x=FirstOrder, *args, **kwargs)
+
     return ax
 
 
@@ -268,7 +269,8 @@ def plot_PollutantVolumeRel(db, FirstOrder=None, SecondOrder=None, normtop=None,
 
 def plot_PollutantVolumeChange(db, FirstOrder=None, SecondOrder=None, stacked=False, *args, **kwargs):
     """
-    Plots the volume change of the data set. The first order is the x-axis, the second order is a differentiation of the y-values.
+    Plots the volume change of the data set. The first order is the x-axis, the second order
+     is a differentiation of the y-values.
 
     Parameters
     ----------
