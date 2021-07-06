@@ -199,8 +199,7 @@ def change_NACECode_filter(total=None, add=None, sub=None):
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'),
               'w') as configfile:
         config.write(configfile)
-
-    return
+    return None
 
 
 def get_CountryList(db):
@@ -221,7 +220,6 @@ def get_CountryList(db):
     CountryList = []
     for items in db.CountryName.unique():
         CountryList.append(items)
-
     return CountryList
 
 
@@ -735,7 +733,7 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         db = db[db.NUTSRegionGeoCode.notna()]
         db = db[~db.NUTSRegionGeoCode.str.startswith(ExclaveList)]
 
-    if ReturnUnknown:
+    if ReturnUnknown == True:
         return dbna
     else:
         return db
@@ -829,22 +827,17 @@ def change_unit(db, unit=None):
     if len(data.UnitName.unique()) > 1:
         print('Warning: multiple units in DataFrame!')
 
-    # The first two lines are just applicable, if the DataFrame has just one unit.
-    # They represent two ways how to call the values that are to change.
-    # factor = UnitNumberDict[db.UnitName.unique()[0]] / UnitNumberDict[unit]
-    # The third line is more generally applicable. It's written more "Pythonic" but
-    # the dict can't be called from a hashable object.
-    # data.loc[:, 'TotalQuantity'] = data.loc[:, 'TotalQuantity'] * factor
-    # data.TotalQuantity = data.TotalQuantity * factor
-    # data.TotalQuantity = data.TotalQuantity * UnitNumberDict[data.UnitName] / UnitNumberDict[unit]
-    for i in range(len(data)):
-        OldCode = data.loc[i, 'UnitName']
-        data.loc[i, 'TotalQuantity'] = data.loc[i, 'TotalQuantity'] * UnitNumberDict[OldCode]/UnitNumberDict[unit]
-        data.loc[i, 'AccidentalQuantity'] = data.loc[i, 'AccidentalQuantity'] * UnitNumberDict[OldCode]/UnitNumberDict[unit]                             
-
-    data.loc[:, 'UnitName'] = unit
-    data.loc[:, 'UnitCode'] = UnitCodeDict[unit]
-    return data
+    data_out = pd.DataFrame()
+    for obj in data.UnitName.unique():
+        foo = data[data.UnitName == obj]
+        foo2 = foo[['TotalQuantity', 'AccidentalQuantity']] * UnitNumberDict[obj]/UnitNumberDict[unit]
+        foo = foo.assign(TotalQuantity = foo2['TotalQuantity'])
+        foo = foo.assign(AccidentalQuantity = foo2['AccidentalQuantity'])
+        data_out = data_out.append(foo)
+    data_out.loc[:, 'UnitName'] = unit
+    data_out.loc[:, 'UnitCode'] = UnitCodeDict[unit]
+    data_out = data_out.sort_index()
+    return data_out
 
 
 def perform_NACETransition(db, NewNACE=2, path=None):
@@ -887,8 +880,7 @@ def perform_NACETransition(db, NewNACE=2, path=None):
             print('File not found in the given path.')
             return None
 
-    # The following lines are just for converting the columns
-    # NACE_1_1_CODE and NACE_2007_CODE to strings with the needed format (add 0)
+    # The following lines are just for converting the columns NACE_1_1_CODE and NACE_2007_CODE to strings with the needed format (add 0)
     tt = tt.astype({'NACE_1_1_CODE': str, 'NACE_2007_CODE': str})
     foo1, foo2 = [], []
     for i in range(len(tt)):
@@ -911,8 +903,7 @@ def perform_NACETransition(db, NewNACE=2, path=None):
     post2007 = db[~db.NACEMainEconomicActivityCode.str.startswith('NACE')]
     pre2007 = db[db.NACEMainEconomicActivityCode.str.startswith('NACE')]
 
-    # The following lines are just for slicing the string "NACE1_1" out of the column NACEMainEconomicActivityCode.
-    # Perhaps more easy way but pandas has problems with changing values dependend on these values.
+    # The following lines are just for slicing the string "NACE1_1" out of the column NACEMainEconomicActivityCode. Perhaps more easy way but pandas has problems with changing values dependend on these values.
     foo = pre2007['NACEMainEconomicActivityCode'].str.slice(start=9)
     pre2007 = pre2007.drop(columns=['NACEMainEconomicActivityCode'])
     pre2007['NACEMainEconomicActivityCode'] = foo
@@ -921,8 +912,7 @@ def perform_NACETransition(db, NewNACE=2, path=None):
     cols.insert(a, cols.pop(b))
     pre2007 = pre2007[cols]
 
-    # The following lines are for creating the transition dict. This is partly direct the transition table
-    # but for some old codes there is no transition, so we have to search for the appropriate codes.
+    # The following lines are for creating the transition dict. This is partly direct the transition table but for some old codes there is no transition, so we have to search for the appropriate codes.
     transitiondict = {}
     for items in tt.NACE_1_1_CODE.unique():
         foo3 = list(tt[tt.NACE_1_1_CODE == items].NACE_2007_CODE.unique())
@@ -939,9 +929,7 @@ def perform_NACETransition(db, NewNACE=2, path=None):
         else:
             foo6 = list(tt[tt.NACE_1_1_CODE.str.startswith(items[0:3])].NACE_2007_CODE.unique())
             transitiondict.update({items: foo6})
-    # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?)
-    # We have assigned values that we think fit the best. Further explanation, how we come to the decision,
-    # can be found on the documentation side.
+    # These are for 2 nace codes that have no transition (perhaps forgotten by eurostat?) We have assigned values that we think fit the best. Further explanation, how we come to the decision, can be found on the documentation side.
     transitiondict.update({'27.35': ['24.10']})
     transitiondict.update({'74.84': list(('59.20', '63.99', '74.10', '74.90', '77.40', '82.30', '82.91', '82.99'))})
 
@@ -951,7 +939,7 @@ def perform_NACETransition(db, NewNACE=2, path=None):
 
     # The following line is just for combining both DataFrames to receive the final DataFrame.
     final = post2007.append(pre2007)
-    return final
+    return (final)
 
 
 def change_RenameDict(total=None, add=None, sub=None, reset=False):
@@ -1016,7 +1004,6 @@ def rename_columns(db):
     config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
     columndict = dict(config.items('COLUMNNAMES'))
     db = db.rename(columns=columndict)
-
     return db
 
 
@@ -1077,7 +1064,6 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'),
               'w') as configfile:
         config.write(configfile)
-
     return config['COLUMNSOFINTEREST']
 
 
@@ -1101,7 +1087,6 @@ def row_reduction(db):
     remain = config['COLUMNSOFINTEREST']['columnnames']
     remain = remain.split(',')
     db = db[remain]
-
     return db
 
 
