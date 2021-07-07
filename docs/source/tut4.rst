@@ -58,10 +58,13 @@ Export Data and Figures
     import matplotlib.pyplot as plt
 
     fig1, ax = plt.subplots(2, 2, figsize=(8.27, (1.5/3)*11.69))
-    ep.plot_PollutantVolume(dataset1, ax=ax[0,0], FirstOrder='ReportingYear', SecondOrder='CountryName')
-    ep.plot_PollutantVolumeChange(dataset1, ax=ax[0,1], FirstOrder='ReportingYear', SecondOrder='CountryName')
-    ep.map_PollutantSource(dataset1,mapdata1, ax=ax[1,0], MarkerSize=100)
-    ep.map_PollutantRegions(dataset1, mapdata1, ax=ax[1,1], legend=True)
+    ep.plot_PollutantVolume(dataset1, ax=ax[0,0], FirstOrder='ReportingYear', SecondOrder='CountryName', rot=0).set(xlabel='Reporting Year', ylabel='Emission [kg]')
+    ep.plot_PollutantVolumeChange(dataset1, ax=ax[0,1], FirstOrder='ReportingYear', SecondOrder='CountryName', rot=0).set(xlabel='Reporting Year', ylabel='Change of Emission [kg]')
+    ep.map_PollutantSource(dataset1,mapdata1, ax=ax[1,0], MarkerSize=100).set(xlabel='Longitude', ylabel='Latitude')
+    ep.map_PollutantRegions(dataset1, mapdata1, ax=ax[1,1], legend=True).set(xlabel='Longitude', ylabel='Latitude')
+
+    fig1.set_figheight(10)
+    fig1.set_figwidth(20)
 
 .. image:: ./pictures/Tut4pic1.svg
     :width: 100%
@@ -75,7 +78,7 @@ Export Data and Figures
 
     ep.export_fig(fig1, filename='Benelux.png')
     ep.export_fig(fig1, filename='Benelux.pdf', facecolor='w', edgecolor='w')
-    ep.export_fig(fig1, filename='Benelux.svg', quality=60, facecolor='w', edgecolor='w')    
+    ep.export_fig(fig1, filename='Benelux.svg', facecolor='w', edgecolor='w')
 
 | Emipy provides functions for the export to calliope. Calliope is a multi-scale energy systems modelling framework.
 

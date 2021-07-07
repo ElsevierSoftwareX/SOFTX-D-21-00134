@@ -22,7 +22,7 @@ Using map data
     m_year = '2013'
 
     mb = ep.read_mb(resolution=resolution, SpatialType=SpatialType, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
-    mb.plot()
+    mb.plot().set(xlabel='Longitude', ylabel='Latitude')
 
 .. image:: ./pictures/Tut3pic1.svg
     :width: 80%
@@ -34,7 +34,7 @@ Using map data
 .. code-block:: python
 
     mapdata1 = ep.f_mb(mb, ExclaveExclude=True)
-    mapdata1.plot()
+    mapdata1.plot().set(xlabel='Longitude', ylabel='Latitude')
 
 .. image:: ./pictures/Tut3pic2.svg
     :width: 80%
@@ -46,7 +46,7 @@ Using map data
 .. code-block:: python
 
     mapdata2 = ep.f_mb(mb, CNTR_CODE='DE')
-    mapdata2.plot()
+    mapdata2.plot().set(xlabel='Longitude', ylabel='Latitude')
 
 .. image:: ./pictures/Tut3pic3.svg
     :width: 80%
@@ -58,7 +58,7 @@ Using map data
 .. code-block:: python
 
     mapdata3 = ep.f_mb(mb, NUTS_ID=['DEA'], CNTR_CODE='DE')
-    mapdata3.plot(aspect='equal')
+    mapdata3.plot(aspect='equal').set(xlabel='Longitude', ylabel='Latitude')
 
 .. image:: ./pictures/Tut3pic4.svg
     :width: 80%
@@ -84,7 +84,8 @@ Using map data
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(1, 1, 1)
     #ax1 = mapdata1.plot(ax=ax1, color='lightgrey')
-    ax1 = ep.map_PollutantSource(data4, mapdata4, MarkerSize=200, ax=ax1)
+    ax1 = ep.map_PollutantSource(data4, mapdata4, MarkerSize=200,
+                                 ax=ax1).set(xlabel='Longitude', ylabel='Latitude')
     fig1.set_figheight(10)
     fig1.set_figwidth(10)
 
@@ -110,7 +111,8 @@ Using map data
 
     fig2 = plt.figure()
     ax1 = fig2.add_subplot(1, 1, 1)
-    ax1 = ep.map_PollutantSource(data5, mapdata5, MarkerSize=200, category='PollutantName', ax=ax1)
+    ax1 = ep.map_PollutantSource(data5, mapdata5, MarkerSize=200, category='PollutantName',
+                                 ax=ax1).set(xlabel='Longitude', ylabel='Latitude')
     fig2.set_figheight(10)
     fig2.set_figwidth(10)
 
@@ -124,12 +126,14 @@ Using map data
 .. code-block:: python
 
     NUTS_LVL = '2'
-    resolution = '10M'
+    Resolution = '10M'
     projection = '4326'
     SpatialType = 'RG'
     m_year = '2013'
 
-    mb = ep.read_mb(resolution=resolution, SpatialType=SpatialType, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+    mb = ep.read_mb(resolution=resolution, SpatialType=SpatialType,
+                    NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+
 
     CountryName = ['Austria']
     ReportingYear = [2017]
@@ -141,8 +145,11 @@ Using map data
     fig3 = plt.figure()
     ax1 = fig3.add_subplot(1, 1, 1)
     ax1 = ep.map_PollutantRegions(data6, mapdata6, ax=ax1, legend=True)
+    plt.title("CO2 emission in Austria in the year 2017 in [kg]", fontsize=20)
     fig3.set_figheight(10)
-    fig3.set_figwidth(10)
+    fig3.set_figwidth(20)
+    plt.xlabel('Longitude', fontsize=16)
+    plt.ylabel('Latitude', fontsize=16)
 
 .. image:: ./pictures/Tut3pic7.svg
     :width: 80%
