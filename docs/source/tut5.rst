@@ -1,5 +1,6 @@
 .. _tut5:
 
+
 Special Features
 ================
 
@@ -163,3 +164,39 @@ Impurity analysis
 
 | When creating a data table with *get_ImpurityVolume()* you will often have NaN as entries. This happens because different facilities have different impurities. So a NaN value means, that there is no impurity of this pollutant type listet in the data base. This does not mean, that there is definitly no impurity. Impurities can be below a certain threshold value and therefore not listet in the E-PRTR.
 | If *statistics* is True, *plot_ImpurityVolume()* automatically ignores NaN values. When you plot your simple impurity values, you can set the parameter *PlotNA* to False. Then the na values are not plotted.
+
+
+Calliope Export
+------------------
+| The following code generates csv and yaml files for the use with the energy modelling framework Calliope.
+| The csv file contains information about the supply constraint of the carbon dioxide source
+
+.. code-block :: python
+
+    db = emipy.read_db()
+    source = f_db(db, CountryName='Germany', ReportingYear=2017, PollutantCode='CO2', City='Dueren')
+    emipy.export_calliope(source)
+
+| The generated yaml file contains the technology definition. In the default setting the costs for :math:`CO_2` provision are set to 70€ (which can be specified using the *sc* variable).
+
+.. code-block :: yaml
+
+    3519569:
+    techs:
+        co2_supply:
+            essentials:
+                name: CO2 Supply
+                color: '#0b95ef'
+                parent: supply
+                carrier: co2
+            constraints:
+                resource: file=emipy2calliope.csv:3519569
+                energy_cap_max: 20776.255707762557
+                lifetime: 1
+            costs:
+                monetary:
+                    interest_rate: 0
+                    om_prod: 0.07
+    coordinates:
+        lat: 50.776516546
+        lon: 6.48949128038
