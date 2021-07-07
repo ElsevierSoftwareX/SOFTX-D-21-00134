@@ -9,8 +9,8 @@ This is a testscript for the module processdata of the package emipy.
 
 import emipy as ep
 import pandas as pd
-
 import numpy as np
+
 
 d = {'FacilityReportID': [1856, 1856, 1856, 1856, 1857, 3110391],
      'PollutantReleaseAndTransferReportID': [1, 1, 1, 1, 1, 2453],
@@ -34,7 +34,7 @@ d = {'FacilityReportID': [1856, 1856, 1856, 1856, 1857, 3110391],
      'RBDSourceName': [np.nan, np.nan, np.nan, np.nan, np.nan, 'Jutland and Funen'],
      'NUTSRegionSourceCode': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
      'NUTSRegionSourceName': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-     'NACEMainEconomicActivityCode': ['NACE_1.1:21.11', 'NACE_1.1:21.11', 'NACE_1.1:21.11', 'NACE_1.1:21.11', 'NACE_1.1:90.00', '38.22'],
+     'NACEMainEconomicActivityCode': ['03.11', 'NACE_1.1:21.11', ['38.22', '21.11'], '35.12', 'NACE_1.1:90.00', '38.22'],
      'NACEMainEconomicActivityName': ['Manufacture of pulp', 'Manufacture of pulp', 'Manufacture of pulp', 'Manufacture of pulp', 'Sewage and refuse disposal, sanitation and similar activities', 'Treatment and disposal of hazardous waste'],
      'CompetentAuthorityName': ['Not transferred from EPER', 'Not transferred from EPER', 'Not transferred from EPER', 'Not transferred from EPER', 'Not transferred from EPER', 'Miljøstyrelsen'],
      'CompetentAuthorityAddressStreetName': [np.nan, np.nan, np.nan, np.nan, np.nan, 'Tolderlundsvej'],
@@ -459,15 +459,44 @@ class Testf_db:
     def test_f_db12(self):
         #
         assert len(ep.f_db(df, PollutantGroupName='Greenhouse gases')) == 2
-
+    """
+    These tests are ready to use, when the new emipy version is uploaded (07.07.2021)
     def test_f_db13(self):
         #
         assert type(ep.f_db(df, NACEMainEconomicActivityCode='38.22')) == pd.core.frame.DataFrame
 
     def test_f_db14(self):
-        #
-        assert len(ep.f_db(df, NACEMainEconomicActivityCode='38.22')) == 1
+        # Check for the argument NACEMainEconomicActivityCode, when value is never in list
+        assert len(ep.f_db(df, NACEMainEconomicActivityCode='35.12')) == 1
+        
+    def test_f_db14_2(self):
+        # when value is in list and in single entry
+        assert len(ep.f_db(df, NACEMainEconomicActivityCode='38.22')) == 2
 
+    def test_f_db14_3(self):
+        # when value is just in list
+        assert len(ep.f_db(df, NACEMainEconomicActivityCode='21.11')) == 1
+
+    def test_f_db14_4(self):
+        #
+        assert len(ep.f_db(df, NACEMainEconomicActivityCode=['35.12'])) == 1
+        
+    def test_f_db14_5(self):
+        #
+        assert len(ep.f_db(df, NACEMainEconomicActivityCode=['38.22'])) == 2
+
+    def test_f_db14_6(self):
+        #
+        assert len(ep.f_db(df, NACEMainEconomicActivityCode=['21.11'])) == 1
+
+    def test_f_db14_7(self):
+        #
+        assert len(ep.f_db(df, NACEMainEconomicActivityCode=['21.11', '35.12', '03.11'])) == 3
+
+    def test_f_db14_8(self):
+        #
+        assert len(ep.f_db(pd.DataFrame(columns=list(df.columns)), NACEMainEconomicActivityCode=['21.11'])) == 0
+    """
     def test_f_db15(self):
         #
         assert type(ep.f_db(df, NUTSRegionGeoCode='AT31')) == pd.core.frame.DataFrame
