@@ -449,13 +449,24 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
             db = db[db.PollutantGroupName == PollutantGroupName]
 
     if NACEMainEconomicActivityCode is not None:
+        #This part is for creating and filtering dbna
         dbna = dbna.append(db[db.NACEMainEconomicActivityCode.isna()])
-        foo1 = dbna[dbna.NACEMainEconomicActivityCode.isna()]
-        if isinstance(NACEMainEconomicActivityCode, list):
-            foo2 = dbna[dbna.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
-        else:
-            foo2 = dbna[dbna.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
-        dbna = foo1.append(foo2)
+        if dbna.empty is False:
+            foo1 = dbna[dbna.NACEMainEconomicActivityCode.isna()]
+            foo_dbna_list = dbna[dbna.NACEMainEconomicActivityCode.apply(lambda x: isinstance(x, list))]
+            foo_dbna_nolist = dbna[dbna.NACEMainEconomicActivityCode.apply(lambda x: isinstance(x, str))]
+            if isinstance(NACEMainEconomicActivityCode, list):
+                foo_dbna_nolist = foo_dbna_nolist[foo_dbna_nolist.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
+            else:
+                foo_dbna_nolist = foo_dbna_nolist[foo_dbna_nolist.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]       
+            if isinstance(NACEMainEconomicActivityCode, list) is False:
+                NACEMEAC = [NACEMainEconomicActivityCode]
+            else:
+                NACEMEAC = NACEMainEconomicActivityCode
+            foo = pd.DataFrame(foo_dbna_list.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMEAC).any(1).astype(int)
+            foo_dbna_list = foo_dbna_list.assign(foo=foo.values)
+            foo_dbna_list = foo_dbna_list[foo_dbna_list.foo == 1].drop(['foo'], axis=1)    
+            dbna = foo1.append(foo_dbna_nolist).append(foo_dbna_list).sort_index()
 
         if isinstance(NACEMainEconomicActivityCode, list):
             foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
@@ -797,11 +808,11 @@ def change_unit(db, unit=None):
     db : DataFrame
         DataFrame which units are to be changed.
     unit : string, optional
-        New unit. The default is None.
+        New unit name. The default is None.
 
     Returns
     -------
-    data : DataFrame
+    data_out : DataFrame
         DataFrame with changed emission units.
 
     """
@@ -825,7 +836,7 @@ def change_unit(db, unit=None):
 
     data = copy.deepcopy(db).reset_index(drop=True)
     if len(data.UnitName.unique()) > 1:
-        print('Warning: multiple units in DataFrame!')
+        print('Warning: multiple units in DataFrame! They are changed, according to the corresponding UnitName.')
 
     data_out = pd.DataFrame()
     for obj in data.UnitName.unique():
@@ -1030,19 +1041,16 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
     """
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
-    if reset:
-        columnnames = ('CountryCode,CountryName,Lat,Long,NUTSRegionGeoCode,NACEMainEconomicActivityCode,' +
-                       'NACEMainEconomicActivityName,ReportingYear,PollutantReleaseID,' +
-                       'PollutantName,TotalQuantity,UnitCode')
-
+    if reset == True:
+        columnnames = 'CountryCode,CountryName,Lat,Long,NUTSRegionGeoCode,NACEMainEconomicActivityCode,NACEMainEconomicActivityName,ReportingYear,PollutantReleaseID,PollutantName,TotalQuantity,UnitCode'
         config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
-    if total is not None:
+    if total != None:
         if isinstance(total, list):
             columnnames = ','.join(total)
             config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
         else:
             config.set('COLUMNSOFINTEREST', 'columnnames', total)
-    if add is not None:
+    if add != None:
         if isinstance(add, list):
             columnnames = config['COLUMNSOFINTEREST']['columnnames'].split(',') + add
             columnnames = ','.join(columnnames)
@@ -1050,7 +1058,7 @@ def change_ColumnsOfInterest(total=None, add=None, sub=None, reset=False):
         else:
             columnnames = config['COLUMNSOFINTEREST']['columnnames'] + ',' + add
             config.set('COLUMNSOFINTEREST', 'columnnames', columnnames)
-    if sub is not None:
+    if sub != None:
         if isinstance(sub, list):
             columnnames = [item for item in config['COLUMNSOFINTEREST']['columnnames'].split(',') if item not in sub]
             columnnames = ','.join(columnnames)
@@ -1092,8 +1100,7 @@ def row_reduction(db):
 
 def export_db_to_pickle(db, path=None, filename=None, **kwargs):
     """
-    Stores the DataFrame given in the input as a .pkl file to the given path, or if the path is
-     not given to the ExportData folder in the root path with the given filename.
+    Stores the DataFrame given in the input as a .pkl file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
 
     Parameters
     ----------
@@ -1102,8 +1109,7 @@ def export_db_to_pickle(db, path=None, filename=None, **kwargs):
     path : String, optional
         Path under which the DataFrame is stored.
     filename : String, optional
-        If the path is not given, this is the file name under which the DataFrame is
-         stored in the ExportData folder of the project
+        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
     kwargs : Type, optional
         pandas.to_pickle() input arguments
 
@@ -1130,14 +1136,12 @@ def export_db_to_pickle(db, path=None, filename=None, **kwargs):
         return None
 
     db.to_pickle(path, **kwargs)
-
     return None
 
 
 def export_db_to_csv(db, path=None, filename=None, **kwargs):
     """
-    Stores the DataFrame given in the input as a .csv file to the given path,
-     or if the path is not given to the ExportData folder in the root path with the given filename.
+    Stores the DataFrame given in the input as a .csv file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
 
     Parameters
     ----------
@@ -1146,8 +1150,7 @@ def export_db_to_csv(db, path=None, filename=None, **kwargs):
     path : String, optional
         Path under which the DataFrame is stored.
     filename : String, optional
-        If the path is not given, this is the file name under which the DataFrame is stored
-         in the ExportData folder of the project
+        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
     kwargs : Type, optional
         pandas.to_csv() input arguments
 
@@ -1159,13 +1162,11 @@ def export_db_to_csv(db, path=None, filename=None, **kwargs):
     if path is None and filename is None:
         print('A filename is required')
         return None
-
     elif path is None:
         config = configparser.ConfigParser()
         config.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'configuration', 'configuration.ini'))
         path = config['PATH']['path']
         path = os.path.join(os.path.join(path, 'ExportData'), filename)
-
     elif path is not None and filename is not None:
         path = os.path.join(path, filename)
 
@@ -1181,8 +1182,7 @@ def export_db_to_csv(db, path=None, filename=None, **kwargs):
 
 def export_db_to_excel(db, path=None, filename=None, **kwargs):
     """
-    Stores the DataFrame given in the input as a .xlsx file to the given path, or if the path is not given
-    to the ExportData folder in the root path with the given filename.
+    Stores the DataFrame given in the input as a .xlsx file to the given path, or if the path is not given to the ExportData folder in the root path with the given filename.
 
     Parameters
     ----------
@@ -1191,8 +1191,7 @@ def export_db_to_excel(db, path=None, filename=None, **kwargs):
     path : String, optional
         Path under which the DataFrame is stored.
     filename : String, optional
-        If the path is not given, this is the file name under which the DataFrame
-        is stored in the ExportData folder of the project
+        If the path is not given, this is the file name under which the DataFrame ist stored in the ExportData folder of the project
     kwargs : Type, optional
         pandas.to_excel() input arguments
 
