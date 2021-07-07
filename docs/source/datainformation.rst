@@ -235,7 +235,7 @@ Map Data
 | *Spatialtype* has three different options: RG (region), BD (boundary) and LB. For the emipy visualisation functions, the information, stored in the RG file are necessary. Therefore it is chosen by default. Mainly for layout configuration, you can choose BD to only show the borders.
 | Take into acount, that for the higher NUTS levels, the file just stores new occuring borders. So you would have to plot level 0, 1, 2 and then 3 on top of each other (or level None) to get a map with the complete level 3 borders. LB displays points for the regions.
 | *NUTS_LVL* is the Level of the NUTS-classification. You can choose from no level at all up to level 0, 1, 2 and 3. If you put the level on *None*, the loaded shp file contains all objects from the other levels.
-| *Projection* refers to the spatial projetion of the displayed map. You can choose from EPSG: 4326, 3035, 3857. When the data is loaded into the session you can also transfer the corresponding reference system (crs) with geopandas or emipy.
+| *Projection* refers to the spatial projection of the displayed map. You can choose from EPSG: 4326, 3035, 3857. When the data is loaded into the session you can also transfer the corresponding reference system (crs) with geopandas or emipy.
 | The default setting is:
 
 .. code-block:: python
