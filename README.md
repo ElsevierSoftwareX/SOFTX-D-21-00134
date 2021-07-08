@@ -15,7 +15,8 @@ The data are provided by the [European Environment Agency](https://www.eea.europ
 For the documentation take a look over [here](https://emipy.readthedocs.io/en/latest/).
 
 # Contribution
-We are happy about ideas for new features or concrete implementations in emipy. Just get in touch and we will hopefully work together on your subject ASAP.
+We are happy about ideas for new features or concrete implementations in emipy. 
+Just get in touch and we will hopefully work together on your subject ASAP.
 
 To contribute changes:
 
