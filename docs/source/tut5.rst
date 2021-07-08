@@ -200,3 +200,43 @@ Calliope Export
     coordinates:
         lat: 50.776516546
         lon: 6.48949128038
+
+Impurity Analysis
+-----------------
+This example illustrates emipy's functionality for impurity analysis,
+which are particularly important for the analysis of carbon sources for Power-To-X applications.
+
+.. code-block :: python
+
+    db = ep.read_db()
+
+    data1 = ep.f_db(db, ReportingYear=2015, CountryName='France', NUTSRegionGeoCode='FR30',
+                    PollutantName='Carbon dioxide (CO2)')
+    data1 = ep.change_unit(data1, unit='megaton')
+    data2 = ep.f_db(db, ReportingYear=2015, CountryName='France', NUTSRegionGeoCode='FR30')
+
+    testdata=ep.get_PollutantVolume(data1, FirstOrder='FacilityReportID').sort_values('TotalQuantity', ascending=False)
+    testdata2=ep.get_ImpurityVolume(data2, target='Carbon dioxide (CO2)', impurity='Nitrogen oxides (NOx/NO2)', absolute=True).sort_values('TotalQuantity', ascending=False)
+    testdata2.loc[:,'Nitrogen oxides (NOx/NO2)'] /= 1000000
+
+    testdata3=ep.get_ImpurityVolume(data2, target='Carbon dioxide (CO2)', impurity='Nitrogen oxides (NOx/NO2)').sort_values('TotalQuantity', ascending=False)
+    testdata3.loc[:,'Nitrogen oxides (NOx/NO2)'] *= 1000
+    testdata4=ep.get_ImpurityVolume(data2, target='Carbon dioxide (CO2)', impurity='Nitrogen oxides (NOx/NO2)', statistics=True)
+    testdata4.loc[:,'Nitrogen oxides (NOx/NO2)'] *= 1000
+    testdata4 = testdata4.drop('count')
+
+    fig3, ax = plt.subplots(2, 2)
+
+    testdata.plot(x='FacilityReportID', y='TotalQuantity', ax=ax[0, 0], kind='bar')
+    testdata2.plot(x='FacilityReportID', y='Nitrogen oxides (NOx/NO2)', ax=ax[0,1], kind='bar')
+    testdata3.plot(x='FacilityReportID', y='Nitrogen oxides (NOx/NO2)', ax=ax[1,0], kind='bar')
+    testdata4.plot(y='Nitrogen oxides (NOx/NO2)', ax=ax[1,1], kind='bar', rot=0)
+
+    plt.tight_layout()
+    ep.export_fig(fig3, filename='impurity_analysis.pdf')
+
+.. image:: ./pictures/Tut5pic1.svg
+    :width: 100%
+    :align: center
+    :height: 500px
+    :alt: Tut5pic1

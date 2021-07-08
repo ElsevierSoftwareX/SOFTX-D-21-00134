@@ -449,7 +449,7 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
             db = db[db.PollutantGroupName == PollutantGroupName]
 
     if NACEMainEconomicActivityCode is not None:
-        #This part is for creating and filtering dbna
+        # This part is for creating and filtering dbna
         dbna = dbna.append(db[db.NACEMainEconomicActivityCode.isna()])
         if dbna.empty is False:
             foo1 = dbna[dbna.NACEMainEconomicActivityCode.isna()]
@@ -471,16 +471,16 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
         if isinstance(NACEMainEconomicActivityCode, list):
             foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
                 NACEMainEconomicActivityCode).any(1).astype(int)
-            db = db.assign(foo=foo.values)
-            db = db[db.foo == 1].drop(['foo'], axis=1)
+
             # The following does not work. Seems like pandas can not handle lists as values in the dataframe.
             # db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
         else:
             NACEMainEconomicActivityCode = [NACEMainEconomicActivityCode]
             foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
                 NACEMainEconomicActivityCode).any(1).astype(int)
-            db = db.assign(foo=foo.values)
-            db = db[db.foo == 1].drop(['foo'], axis=1)
+
+        db = db.assign(foo=foo.values)
+        db = db[db.foo == 1].drop(['foo'], axis=1)
 
     if NUTSRegionGeoCode is not None:
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
