@@ -459,8 +459,7 @@ class Testf_db:
     def test_f_db12(self):
         #
         assert len(ep.f_db(df, PollutantGroupName='Greenhouse gases')) == 2
-    """
-    These tests are ready to use, when the new emipy version is uploaded (07.07.2021)
+
     def test_f_db13(self):
         #
         assert type(ep.f_db(df, NACEMainEconomicActivityCode='38.22')) == pd.core.frame.DataFrame
@@ -496,7 +495,7 @@ class Testf_db:
     def test_f_db14_8(self):
         #
         assert len(ep.f_db(pd.DataFrame(columns=list(df.columns)), NACEMainEconomicActivityCode=['21.11'])) == 0
-    """
+
     def test_f_db15(self):
         #
         assert type(ep.f_db(df, NUTSRegionGeoCode='AT31')) == pd.core.frame.DataFrame

@@ -456,31 +456,38 @@ def f_db(db, FacilityReportID=None, CountryName=None, ReportingYear=None, Releas
             foo_dbna_list = dbna[dbna.NACEMainEconomicActivityCode.apply(lambda x: isinstance(x, list))]
             foo_dbna_nolist = dbna[dbna.NACEMainEconomicActivityCode.apply(lambda x: isinstance(x, str))]
             if isinstance(NACEMainEconomicActivityCode, list):
-                foo_dbna_nolist = foo_dbna_nolist[foo_dbna_nolist.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
+                foo_dbna_nolist = foo_dbna_nolist[
+                    foo_dbna_nolist.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
             else:
-                foo_dbna_nolist = foo_dbna_nolist[foo_dbna_nolist.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]       
+                foo_dbna_nolist = foo_dbna_nolist[
+                    foo_dbna_nolist.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
             if isinstance(NACEMainEconomicActivityCode, list) is False:
                 NACEMEAC = [NACEMainEconomicActivityCode]
             else:
                 NACEMEAC = NACEMainEconomicActivityCode
-            foo = pd.DataFrame(foo_dbna_list.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMEAC).any(1).astype(int)
+            foo = pd.DataFrame(foo_dbna_list.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMEAC).any(
+                1).astype(int)
             foo_dbna_list = foo_dbna_list.assign(foo=foo.values)
-            foo_dbna_list = foo_dbna_list[foo_dbna_list.foo == 1].drop(['foo'], axis=1)    
+            foo_dbna_list = foo_dbna_list[foo_dbna_list.foo == 1].drop(['foo'], axis=1)
             dbna = foo1.append(foo_dbna_nolist).append(foo_dbna_list).sort_index()
 
-        if isinstance(NACEMainEconomicActivityCode, list):
-            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
-                NACEMainEconomicActivityCode).any(1).astype(int)
-
-            # The following does not work. Seems like pandas can not handle lists as values in the dataframe.
-            # db = db[db.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
-        else:
-            NACEMainEconomicActivityCode = [NACEMainEconomicActivityCode]
-            foo = pd.DataFrame(db.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(
-                NACEMainEconomicActivityCode).any(1).astype(int)
-
-        db = db.assign(foo=foo.values)
-        db = db[db.foo == 1].drop(['foo'], axis=1)
+        # This part is for filtering db
+        if db.empty is False:
+            foo_list = db[db.NACEMainEconomicActivityCode.apply(lambda x: isinstance(x, list))]
+            foo_nolist = db[db.NACEMainEconomicActivityCode.apply(lambda x: isinstance(x, str))]
+            if isinstance(NACEMainEconomicActivityCode, list):
+                foo_nolist = foo_nolist[foo_nolist.NACEMainEconomicActivityCode.isin(NACEMainEconomicActivityCode)]
+            else:
+                foo_nolist = foo_nolist[foo_nolist.NACEMainEconomicActivityCode == NACEMainEconomicActivityCode]
+            if isinstance(NACEMainEconomicActivityCode, list) is False:
+                NACEMEAC = [NACEMainEconomicActivityCode]
+            else:
+                NACEMEAC = NACEMainEconomicActivityCode
+            foo = pd.DataFrame(foo_list.loc[:, 'NACEMainEconomicActivityCode'].tolist()).isin(NACEMEAC).any(1).astype(
+                int)
+            foo_list = foo_list.assign(foo=foo.values)
+            foo_list = foo_list[foo_list.foo == 1].drop(['foo'], axis=1)
+            db = foo_nolist.append(foo_list).sort_index()
 
     if NUTSRegionGeoCode is not None:
         dbna = dbna.append(db[db.NUTSRegionGeoCode.isna()])
