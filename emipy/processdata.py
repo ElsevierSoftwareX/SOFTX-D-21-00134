@@ -18,9 +18,11 @@ def read_db(path=None, NewData=False):
     Parameters
     ----------
     path : String, optional
-        Path to the file, that is to be loaded. The file has to be a .pkl file. If None is given, the function loades the data file, stored in the emipy project, that is specified in the config file. The default is 'None'.
+        Path to the file, that is to be loaded. The file has to be a .pkl file. If None is given, the function loads
+         the data file, stored in the emipy project, that is specified in the config file. The default is 'None'.
     NewData : Boolean, optional
-        If this is set to True, the data base with data from 2017 - 2019 is loaded instead of the one with data from 2001 - 2017. The default is False.
+        If this is set to True, the data base with data from 2017 - 2019 is loaded
+        instead of the one with data from 2001 - 2017. The default is False.
 
     Returns
     -------

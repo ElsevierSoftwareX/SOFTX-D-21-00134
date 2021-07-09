@@ -562,11 +562,13 @@ class Testf_db:
 
     def test_f_db31(self):
         #
-        assert type(ep.f_db(df, NACEMainEconomicActivityName='Sewage and refuse disposal, sanitation and similar activities')) == pd.core.frame.DataFrame
+        assert type(ep.f_db(df, NACEMainEconomicActivityName='Sewage and refuse disposal,'
+                                                             ' sanitation and similar activities')) == pd.core.frame.DataFrame
 
     def test_f_db32(self):
         #
-        assert len(ep.f_db(df, NACEMainEconomicActivityName='Sewage and refuse disposal, sanitation and similar activities')) == 1
+        assert len(ep.f_db(df, NACEMainEconomicActivityName='Sewage and refuse disposal,'
+                                                            ' sanitation and similar activities')) == 1
 
     def test_f_db33(self):
         #
