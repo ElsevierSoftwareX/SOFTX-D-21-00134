@@ -43,7 +43,7 @@ Visualize data sets
     :height: 400px
     :alt: Tut2pic2
 
-| Keep in mind, that the plot functions do not filter the data. If you would like to plot e.g. just the output from Austria you would have to create a new data set, and specifiy this as input in a new plot:
+| Keep in mind that the plot functions do not filter the data. If you would like to plot e.g. just the output from Austria you would have to create a new data set, and specifiy this as input in a new plot:
 
 .. code-block:: python
 
@@ -104,7 +104,7 @@ Visualize data sets
     fig1_axes[1,0] = ep.plot_PollutantVolumeRel(data1, FirstOrder='ReportingYear',
                                                 ax=fig1_axes[1,0], rot=0, ylabel='Normalized Emission')
     fig1_axes[0,1] = ep.plot_PollutantVolumeChange(data1, FirstOrder='ReportingYear',
-                                                   ax=fig1_axes[0,1], rot=0, ylabel='Emission [kg]')
+                                                   ax=fig1_axes[0,1], rot=0, ylabel='Change of Emission [kg]')
     fig1_axes[1,1] = ep.plot_PollutantVolume(data1, FirstOrder='ReportingYear', ax=fig1_axes[1,1],
                                              SecondOrder='CountryName', rot=0, ylabel='Emission [kg]')
 

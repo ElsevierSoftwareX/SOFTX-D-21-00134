@@ -37,7 +37,9 @@ Change Units
 
 .. code-block:: python
 
-	data2 = ep.change_unit(data1, unit='megaton')
+    db = ep.read_db()
+    data1 = ep.f_db(db,CountryName='Germany')
+    data2 = ep.change_unit(data1, unit='megaton')
 
 Data Table Adaption
 -------------------
@@ -47,15 +49,16 @@ Data Table Adaption
 
 .. code-block:: python
 
-	total=['CountryCode', 'CountryName']
-	ep.change_ColumnsOfInterest(total=total, add=None, sub=None, reset=False)
-	data4 = ep.row_reduction(data3)
-	ep.change_ColumnsOfInterest(total=None, add='Lat', sub=None, reset=False)
-	data5 = ep.row_reduction(data3)
-	ep.change_ColumnsOfInterest(total=None, add=None, sub='CountryCode', reset=False)
-	data6 = ep.row_reduction(data3)
-	ep.change_ColumnsOfInterest(total=None, add=None, sub=None, reset=True)
-	data7 = ep.row_reduction(data3)
+    data3 = ep.row_reduction(data1)
+    total=['CountryCode', 'CountryName']
+    ep.change_ColumnsOfInterest(total=total, add=None, sub=None, reset=False)
+    data4 = ep.row_reduction(data3)
+    ep.change_ColumnsOfInterest(total=None, add='Lat', sub=None, reset=False)
+    data5 = ep.row_reduction(data3)
+    ep.change_ColumnsOfInterest(total=None, add=None, sub='CountryCode', reset=False)
+    data6 = ep.row_reduction(data3)
+    ep.change_ColumnsOfInterest(total=None, add=None, sub=None, reset=True)
+    data7 = ep.row_reduction(data3)
 
 | There is also an option to rename the columns at large scale. The working principle is the same as the column reduction but you have to insert dicts instead of strings or lists.
 

@@ -46,12 +46,12 @@ Export Data and Figures
 .. code-block:: python
 
     NUTS_LVL = '2'
-    resoution = '10M'
+    resolution = '10M'
     projection = '4326'
     SpatialType = 'RG'
     m_year = '2013'
 
-    mb = ep.read_mb(resoution=resoution, SpatialType=SpatialType, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
+    mb = ep.read_mb(resolution=resolution, SpatialType=SpatialType, NUTS_LVL=NUTS_LVL, m_year=m_year, projection=projection)
 
     mapdata1 = ep.f_mb(mb, CNTR_CODE=['BE', 'LU', 'NL'])
 
