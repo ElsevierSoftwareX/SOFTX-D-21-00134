@@ -93,7 +93,8 @@ NACE-Code selection
 
 .. code-block :: python
 
-	db = ep.perform_NACETransition(db)
+    db2 = ep.read_db()
+    db = ep.perform_NACETransition(db2)
 
 | The transition does not allow an unique assignment of new codes, which is why the new codes may be stored as list of multiple codes. In a consequence, entries might pass your filter, but are not truly part of your requested data. You might want to check for these entries, if they really are part of your economic field.
 | There exist entries in the old data, that have 2 different NACE 1.1 Code, which have no assignment in the `transition tables <https://ec.europa.eu/eurostat/de/web/nace-rev2/correspondence_tables>`_. For these cases we decided for a assignment. 
@@ -110,7 +111,7 @@ NACE-Code selection
 
 	print(ep.get_NACECode_filter())
 	NACECode = ep.get_NACECode_filter(specify = 'animal production')
-	data14 = ep.f_db(db, NACEMainEconomicActivityCode=NACECode)
+	data14 = ep.f_db(db2, NACEMainEconomicActivityCode=NACECode)
 
 | You can create your own NACE-Code lists with *change_NACECode_filter()*. This works very much like *change_RenameDict()*. You can add and subtract single key/value pairs, or replace the complete dictionary. For the right syntax, make sure your codes are 5 characters long and seperated by a comma.
 
@@ -123,26 +124,20 @@ Impurity analysis
 -----------------
 
 | The emission of specific pollutants comes with emission of other pollutants. In consequence you do not have pure emissions, but impurities to your target pollutant. To analyse these, emipy provides the functions *get_ImpurityVolume()* and *plot_ImpurityVolume()*.
-
-.. code-block :: python
-
-	data15 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)')
-	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)')
-
 | You can specify your analysis with a few parameters. At first you specify your data that is to analyse with calling db. Then you name the target pollutant, which is the impured one. For the plot function you also have to specify the impurity molecule that you are looking for.
 | Additional paramters for the get_ function are *FirstOrder*, *ReleaseMediumName*, *absolute*, *FacilityFocus*, *impurity* and *statistics*. With *FirstOrder*, you specify the column at which your data is sorted. The default is FacilityReportID, since it is very intuitive to look for the impurities of specific facilities. Nontheless, you could also choose for example NUTSRegionGeoCode, to make a region analysis, rather than a facility analysis.
 
 .. code-block :: python
 
-	data16 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', FirstOrder='NUTSRegionGeoCode')
-	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', FirstOrder='NUTSRegionGeoCode')
+    data = ep.f_db(db, CountryName='Germany')
+    data16 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', FirstOrder='NUTSRegionGeoCode')
+    ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', FirstOrder='NUTSRegionGeoCode')
 
 | You can change the *ReleaseMediumName* to Water or Soil, if your target pollutant is emitted in another medium than air. The function returns the emission value of your impurity in relation to the emission of your target. If you want to get the absolute value, you can change the *absolute* parameter to True.
 
 .. code-block :: python
 
 	data17 = ep.get_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', ReleaseMediumName='Air', absolute=True)
-	ep.plot_ImpurityVolume(db=data, target='Carbon dioxide (CO2)', impurity='Carbon monoxide (CO)', ReleaseMediumName='Air', absolute=True)
 
 | If your *FirstOrder* is something else than FacilityReportID, the *FacilityFocus* parameter becomes interesting. If this parameter is True, only impurities emitted in facilities that aswell emit your target pollutant are considered. You can put the parameter to False, to turn this feature off and analyse the impurities of all facilities in your Order parameter.
 
