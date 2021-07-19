@@ -12,7 +12,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="emipy",
-    version="0.1.0",
+    version="0.1.1",
     author="Florian Overberg, Philipp C. Böttcher, Simon Morgenthaler",
     author_email="p.boettcher@fz-juelich.de",
     description="Python package for emission data analysis based on the E-PRTR database.",
