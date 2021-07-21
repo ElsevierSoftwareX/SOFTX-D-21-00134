@@ -12,6 +12,7 @@ import pandas as pd
 
 RootPath = os.path.join(os.getcwd(), 'Project')
 
+
 class TestCompleteInitiation:
 
     def test_init_emipy_start(self):
@@ -40,7 +41,7 @@ class TestCompleteInitiation:
 
     def test_init_emipy_5(self):
         # Test if the mapping data is downloaded in the initiation process.
-        assert len(os.listdir(os.path.join(RootPath, 'MappingData'))) == 1214
+        assert len(os.listdir(os.path.join(RootPath, 'MappingData'))) == 1365
 
     def test_init_emipy_6(self):
         # Test if the transition data is downloaded in the initiation process.
@@ -70,7 +71,8 @@ class TestCompleteInitiation:
         foo = os.getcwd()
         ep.download_MapData(RootPath, resolution=60)
         os.chdir(foo)
-        assert len(os.listdir(os.path.join(RootPath, 'MappingData'))) == 1969
+        assert len(os.listdir(os.path.join(RootPath, 'MappingData'))) == 2120
+
 
 class TestReadData:
 
