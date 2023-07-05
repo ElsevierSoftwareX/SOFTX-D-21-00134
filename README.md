@@ -1,5 +1,5 @@
-[![pipeline status](https://jugit.fz-juelich.de/network-science-group/emipy/badges/dev/pipeline.svg)](https://jugit.fz-juelich.de/network-science-group/emipy/-/commits/dev)
-[![coverage report](https://jugit.fz-juelich.de/network-science-group/emipy/badges/dev/coverage.svg)](https://jugit.fz-juelich.de/network-science-group/emipy/-/commits/dev)
+[![pipeline status](https://jugit.fz-juelich.de/network-science-group/emipy/badges/master/pipeline.svg)](https://jugit.fz-juelich.de/network-science-group/emipy/-/commits/master)
+[![coverage report](https://jugit.fz-juelich.de/network-science-group/emipy/badges/master/coverage.svg)](https://jugit.fz-juelich.de/network-science-group/emipy/-/commits/master)
 [![PyPI version](https://img.shields.io/pypi/v/emipy.svg)](https://pypi.org/project/emipy/)
 [![Documentation build status](https://img.shields.io/readthedocs/emipy.svg)](https://readthedocs.org/projects/emipy/builds/)
 ![Python version](https://img.shields.io/pypi/pyversions/emipy.svg)
