@@ -20,11 +20,11 @@ Just get in touch and we will hopefully work together on your subject ASAP.
 
 To contribute changes:
 
-1. Fork the project on GitLab
+1. Fork the project on [GitLab](https://jugit.fz-juelich.de/network-science-group/emipy)
 2. Create a feature branch to work in your fork
 3. Commit your changes to the feature branch
-4. Push the branch to GitLab
-5. Create a new pull request from the feature branch on GitLab
+4. Push the branch to [GitLab](https://jugit.fz-juelich.de/network-science-group/emipy)
+5. Create a new pull request from the feature branch on [GitLab](https://jugit.fz-juelich.de/network-science-group/emipy)
 
 # Contact
 For contact write a mail to p.boettcher@fz-juelich.de
