@@ -2,8 +2,15 @@ name: Tests using Pytest
 on: [push, pull_request]
 
 jobs:
-  test_pytest:
+  testing:
     runs-on: ubuntu-latest
     steps:
-      - run: pip install -e . pytest pytest-cov geopandas
-      - run: python -m pytest --cov=emipy tests/
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+      - name: Install dependencies 
+        run: pip install . pytest pytest-cov geopandas
+      - name: Test with pytest
+        run: python -m pytest --cov=emipy tests/
