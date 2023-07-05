@@ -5,5 +5,5 @@ jobs:
   test_pytest:
     runs-on: ubuntu-latest
     steps:
-      - run: pip install . pytest pytest-cov geopandas
+      - run: pip install -e . pytest pytest-cov geopandas
       - run: python -m pytest --cov=emipy tests/
