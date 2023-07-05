@@ -1,4 +1,5 @@
 name: Tests using Pytest
+on: [push, pull_request]
 
 jobs:
   test_pytest:
