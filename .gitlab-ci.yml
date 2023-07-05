@@ -10,3 +10,5 @@ testing:
   stage: Test
   script:
     - python -m pytest --cov=emipy tests/
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  
